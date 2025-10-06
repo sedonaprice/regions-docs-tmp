@@ -10,10 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup python
       - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
       - name: Install dependencies
         run: |
-          pip install sphinx>=4.1.2 sphinx_rtd_theme astropy matplotlib numpy shapely sphinx-astropy>=1.9 jinja2<3.1
+          pip install sphinx>=4.1.2 sphinx_rtd_theme myst_parser astropy matplotlib numpy shapely sphinx-astropy>=1.9 jinja2<3.1
       - name: Sphinx build
         run: |
           sphinx-build -W -b html . _build/html
