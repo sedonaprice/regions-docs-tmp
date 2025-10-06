@@ -3,7 +3,7 @@ name: Build Docs
 on:
   push:
     branches:
-      - add-spherical-regions-docs-build
+      - main
 
 jobs:
   build:
