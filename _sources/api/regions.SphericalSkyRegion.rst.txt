@@ -1,0 +1,49 @@
+SphericalSkyRegion
+==================
+
+.. currentmodule:: regions
+
+.. autoclass:: SphericalSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~SphericalSkyRegion.bounding_circle
+      ~SphericalSkyRegion.bounding_lonlat
+      ~SphericalSkyRegion.frame
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~SphericalSkyRegion.contains
+      ~SphericalSkyRegion.discretize_boundary
+      ~SphericalSkyRegion.intersection
+      ~SphericalSkyRegion.serialize
+      ~SphericalSkyRegion.symmetric_difference
+      ~SphericalSkyRegion.to_pixel
+      ~SphericalSkyRegion.to_sky
+      ~SphericalSkyRegion.transform_to
+      ~SphericalSkyRegion.union
+      ~SphericalSkyRegion.write
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: bounding_circle
+   .. autoattribute:: bounding_lonlat
+   .. autoattribute:: frame
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
+   .. automethod:: discretize_boundary
+   .. automethod:: intersection
+   .. automethod:: serialize
+   .. automethod:: symmetric_difference
+   .. automethod:: to_pixel
+   .. automethod:: to_sky
+   .. automethod:: transform_to
+   .. automethod:: union
+   .. automethod:: write

@@ -1,0 +1,33 @@
+Meta
+====
+
+.. currentmodule:: regions
+
+.. autoclass:: Meta
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~Meta.key_mapping
+      ~Meta.valid_keys
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~Meta.copy
+      ~Meta.setdefault
+      ~Meta.update
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: key_mapping
+   .. autoattribute:: valid_keys
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: copy
+   .. automethod:: setdefault
+   .. automethod:: update

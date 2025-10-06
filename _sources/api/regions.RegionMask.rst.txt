@@ -1,0 +1,35 @@
+RegionMask
+==========
+
+.. currentmodule:: regions
+
+.. autoclass:: RegionMask
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~RegionMask.shape
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~RegionMask.cutout
+      ~RegionMask.get_overlap_slices
+      ~RegionMask.get_values
+      ~RegionMask.multiply
+      ~RegionMask.to_image
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: shape
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: cutout
+   .. automethod:: get_overlap_slices
+   .. automethod:: get_values
+   .. automethod:: multiply
+   .. automethod:: to_image

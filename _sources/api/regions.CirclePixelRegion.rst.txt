@@ -1,0 +1,47 @@
+CirclePixelRegion
+=================
+
+.. currentmodule:: regions
+
+.. autoclass:: CirclePixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~CirclePixelRegion.area
+      ~CirclePixelRegion.bounding_box
+      ~CirclePixelRegion.center
+      ~CirclePixelRegion.meta
+      ~CirclePixelRegion.radius
+      ~CirclePixelRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~CirclePixelRegion.as_artist
+      ~CirclePixelRegion.contains
+      ~CirclePixelRegion.rotate
+      ~CirclePixelRegion.to_mask
+      ~CirclePixelRegion.to_sky
+      ~CirclePixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: area
+   .. autoattribute:: bounding_box
+   .. autoattribute:: center
+   .. autoattribute:: meta
+   .. autoattribute:: radius
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: contains
+   .. automethod:: rotate
+   .. automethod:: to_mask
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

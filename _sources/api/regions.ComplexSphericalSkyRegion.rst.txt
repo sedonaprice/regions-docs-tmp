@@ -1,0 +1,27 @@
+ComplexSphericalSkyRegion
+=========================
+
+.. currentmodule:: regions
+
+.. autoclass:: ComplexSphericalSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ComplexSphericalSkyRegion.frame
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~ComplexSphericalSkyRegion.copy
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: frame
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: copy

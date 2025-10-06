@@ -1,0 +1,6 @@
+CRTFRegionParserError
+=====================
+
+.. currentmodule:: regions
+
+.. autoexception:: CRTFRegionParserError

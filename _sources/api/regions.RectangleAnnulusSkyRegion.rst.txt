@@ -1,0 +1,39 @@
+RectangleAnnulusSkyRegion
+=========================
+
+.. currentmodule:: regions
+
+.. autoclass:: RectangleAnnulusSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~RectangleAnnulusSkyRegion.angle
+      ~RectangleAnnulusSkyRegion.center
+      ~RectangleAnnulusSkyRegion.inner_height
+      ~RectangleAnnulusSkyRegion.inner_width
+      ~RectangleAnnulusSkyRegion.outer_height
+      ~RectangleAnnulusSkyRegion.outer_width
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~RectangleAnnulusSkyRegion.to_pixel
+      ~RectangleAnnulusSkyRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: angle
+   .. autoattribute:: center
+   .. autoattribute:: inner_height
+   .. autoattribute:: inner_width
+   .. autoattribute:: outer_height
+   .. autoattribute:: outer_width
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky

@@ -1,0 +1,35 @@
+AnnulusPixelRegion
+==================
+
+.. currentmodule:: regions
+
+.. autoclass:: AnnulusPixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~AnnulusPixelRegion.area
+      ~AnnulusPixelRegion.bounding_box
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~AnnulusPixelRegion.as_artist
+      ~AnnulusPixelRegion.contains
+      ~AnnulusPixelRegion.rotate
+      ~AnnulusPixelRegion.to_mask
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: area
+   .. autoattribute:: bounding_box
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: contains
+   .. automethod:: rotate
+   .. automethod:: to_mask

@@ -1,0 +1,39 @@
+EllipseSkyRegion
+================
+
+.. currentmodule:: regions
+
+.. autoclass:: EllipseSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~EllipseSkyRegion.angle
+      ~EllipseSkyRegion.center
+      ~EllipseSkyRegion.height
+      ~EllipseSkyRegion.meta
+      ~EllipseSkyRegion.visual
+      ~EllipseSkyRegion.width
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~EllipseSkyRegion.to_pixel
+      ~EllipseSkyRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: angle
+   .. autoattribute:: center
+   .. autoattribute:: height
+   .. autoattribute:: meta
+   .. autoattribute:: visual
+   .. autoattribute:: width
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky

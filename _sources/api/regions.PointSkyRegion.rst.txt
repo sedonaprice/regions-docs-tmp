@@ -1,0 +1,35 @@
+PointSkyRegion
+==============
+
+.. currentmodule:: regions
+
+.. autoclass:: PointSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~PointSkyRegion.center
+      ~PointSkyRegion.meta
+      ~PointSkyRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~PointSkyRegion.contains
+      ~PointSkyRegion.to_pixel
+      ~PointSkyRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: center
+   .. autoattribute:: meta
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky

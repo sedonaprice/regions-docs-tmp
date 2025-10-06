@@ -1,0 +1,29 @@
+RegionVisual
+============
+
+.. currentmodule:: regions
+
+.. autoclass:: RegionVisual
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~RegionVisual.key_mapping
+      ~RegionVisual.valid_keys
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~RegionVisual.define_mpl_kwargs
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: key_mapping
+   .. autoattribute:: valid_keys
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: define_mpl_kwargs

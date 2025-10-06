@@ -1,0 +1,43 @@
+RegionBoundingBox
+=================
+
+.. currentmodule:: regions
+
+.. autoclass:: RegionBoundingBox
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~RegionBoundingBox.center
+      ~RegionBoundingBox.extent
+      ~RegionBoundingBox.shape
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~RegionBoundingBox.as_artist
+      ~RegionBoundingBox.from_float
+      ~RegionBoundingBox.get_overlap_slices
+      ~RegionBoundingBox.intersection
+      ~RegionBoundingBox.plot
+      ~RegionBoundingBox.to_region
+      ~RegionBoundingBox.union
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: center
+   .. autoattribute:: extent
+   .. autoattribute:: shape
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: from_float
+   .. automethod:: get_overlap_slices
+   .. automethod:: intersection
+   .. automethod:: plot
+   .. automethod:: to_region
+   .. automethod:: union

@@ -1,0 +1,6 @@
+make_example_dataset
+====================
+
+.. currentmodule:: regions
+
+.. autofunction:: make_example_dataset

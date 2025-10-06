@@ -1,0 +1,47 @@
+LinePixelRegion
+===============
+
+.. currentmodule:: regions
+
+.. autoclass:: LinePixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~LinePixelRegion.area
+      ~LinePixelRegion.bounding_box
+      ~LinePixelRegion.end
+      ~LinePixelRegion.meta
+      ~LinePixelRegion.start
+      ~LinePixelRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~LinePixelRegion.as_artist
+      ~LinePixelRegion.contains
+      ~LinePixelRegion.rotate
+      ~LinePixelRegion.to_mask
+      ~LinePixelRegion.to_sky
+      ~LinePixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: area
+   .. autoattribute:: bounding_box
+   .. autoattribute:: end
+   .. autoattribute:: meta
+   .. autoattribute:: start
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: contains
+   .. automethod:: rotate
+   .. automethod:: to_mask
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

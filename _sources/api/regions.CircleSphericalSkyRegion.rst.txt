@@ -1,0 +1,45 @@
+CircleSphericalSkyRegion
+========================
+
+.. currentmodule:: regions
+
+.. autoclass:: CircleSphericalSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~CircleSphericalSkyRegion.bounding_circle
+      ~CircleSphericalSkyRegion.bounding_lonlat
+      ~CircleSphericalSkyRegion.center
+      ~CircleSphericalSkyRegion.meta
+      ~CircleSphericalSkyRegion.radius
+      ~CircleSphericalSkyRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~CircleSphericalSkyRegion.contains
+      ~CircleSphericalSkyRegion.discretize_boundary
+      ~CircleSphericalSkyRegion.to_pixel
+      ~CircleSphericalSkyRegion.to_sky
+      ~CircleSphericalSkyRegion.transform_to
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: bounding_circle
+   .. autoattribute:: bounding_lonlat
+   .. autoattribute:: center
+   .. autoattribute:: meta
+   .. autoattribute:: radius
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
+   .. automethod:: discretize_boundary
+   .. automethod:: to_pixel
+   .. automethod:: to_sky
+   .. automethod:: transform_to

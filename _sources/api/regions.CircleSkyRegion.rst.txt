@@ -1,0 +1,35 @@
+CircleSkyRegion
+===============
+
+.. currentmodule:: regions
+
+.. autoclass:: CircleSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~CircleSkyRegion.center
+      ~CircleSkyRegion.meta
+      ~CircleSkyRegion.radius
+      ~CircleSkyRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~CircleSkyRegion.to_pixel
+      ~CircleSkyRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: center
+   .. autoattribute:: meta
+   .. autoattribute:: radius
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky

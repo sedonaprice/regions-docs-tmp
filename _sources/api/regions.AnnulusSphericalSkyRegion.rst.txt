@@ -1,0 +1,31 @@
+AnnulusSphericalSkyRegion
+=========================
+
+.. currentmodule:: regions
+
+.. autoclass:: AnnulusSphericalSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~AnnulusSphericalSkyRegion.bounding_circle
+      ~AnnulusSphericalSkyRegion.bounding_lonlat
+      ~AnnulusSphericalSkyRegion.frame
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~AnnulusSphericalSkyRegion.contains
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: bounding_circle
+   .. autoattribute:: bounding_lonlat
+   .. autoattribute:: frame
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
