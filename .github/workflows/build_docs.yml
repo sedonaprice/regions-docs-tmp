@@ -19,6 +19,7 @@ jobs:
           pip install sphinx sphinx_rtd_theme myst_parser astropy matplotlib numpy shapely sphinx-astropy
       - name: Sphinx build
         run: |
+          pip install -e .
           sphinx-build -W -b html docs docs/_build/html
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
