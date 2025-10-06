@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v1
     # Example of using a custom build-command.
     # - uses: ammaraskar/sphinx-action@master
     - uses: ammaraskar/sphinx-action@0.4
@@ -21,7 +21,7 @@ jobs:
         # # build-command: "make html"
         # build-command: "sphinx-build -D plot_formats='svg,pdf,hires.png' -b html . _build"
         #build-command: "sphinx-build -M html . _build -D plot_formats='svg,pdf,hires.png'"
-        build-command: "sphinx-build -b html . _build"
+        build-command: "sphinx-build -W -b html . _build/html"
     # Publish built docs to gh-pages branch.
     # ===============================
     - name: Commit documentation changes
