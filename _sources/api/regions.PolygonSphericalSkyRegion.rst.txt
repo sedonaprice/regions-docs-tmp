@@ -1,0 +1,49 @@
+PolygonSphericalSkyRegion
+=========================
+
+.. currentmodule:: regions
+
+.. autoclass:: PolygonSphericalSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~PolygonSphericalSkyRegion.bounding_circle
+      ~PolygonSphericalSkyRegion.bounding_lonlat
+      ~PolygonSphericalSkyRegion.centroid
+      ~PolygonSphericalSkyRegion.centroid_avg
+      ~PolygonSphericalSkyRegion.centroid_mindist
+      ~PolygonSphericalSkyRegion.meta
+      ~PolygonSphericalSkyRegion.vertices
+      ~PolygonSphericalSkyRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~PolygonSphericalSkyRegion.contains
+      ~PolygonSphericalSkyRegion.discretize_boundary
+      ~PolygonSphericalSkyRegion.to_pixel
+      ~PolygonSphericalSkyRegion.to_sky
+      ~PolygonSphericalSkyRegion.transform_to
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: bounding_circle
+   .. autoattribute:: bounding_lonlat
+   .. autoattribute:: centroid
+   .. autoattribute:: centroid_avg
+   .. autoattribute:: centroid_mindist
+   .. autoattribute:: meta
+   .. autoattribute:: vertices
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
+   .. automethod:: discretize_boundary
+   .. automethod:: to_pixel
+   .. automethod:: to_sky
+   .. automethod:: transform_to

@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.shapes.range &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.shapes.range</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines a range spherical sky region (bounded by longitude</span>
+<span class="sd">and/or latitude ranges).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">circmean</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._utils.spherical_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cross_product_skycoord2skycoord</span><span class="p">,</span> <span class="n">cross_product_sum_skycoord2skycoord</span><span class="p">,</span>
+    <span class="n">discretize_all_edge_boundaries</span><span class="p">,</span> <span class="n">get_edge_raw_lonlat_bounds_circ_edges</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">TwoValAngleorNone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundSphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComplexSphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionMeta</span><span class="p">,</span> <span class="n">RegionVisual</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.pixcoord</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.annulus</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleAnnulusSphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.lune</span><span class="w"> </span><span class="kn">import</span> <span class="n">LuneSphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.polygon</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">PolygonPixelRegion</span><span class="p">,</span> <span class="n">PolygonSkyRegion</span><span class="p">,</span>
+                                    <span class="n">PolygonSphericalSkyRegion</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.whole_sky</span><span class="w"> </span><span class="kn">import</span> <span class="n">WholeSphericalSkyRegion</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RangeSphericalSkyRegion&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="RangeSphericalSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.RangeSphericalSkyRegion.html#regions.RangeSphericalSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RangeSphericalSkyRegion</span><span class="p">(</span><span class="n">ComplexSphericalSkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sky Region defined within a range of longitude and/or latitudes. At</span>
+<span class="sd">    least one set of longitude or latitude bounds must be set.</span>
+
+<span class="sd">    If latitude_range[0] &gt; latitude_range[1], will wrap over the poles</span>
+<span class="sd">    (eg, will *exclude* the central latitude range.)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frame : `~astropy.coordinates.BaseCoordinateFrame`</span>
+<span class="sd">        The coordinate frame for the specified range region.</span>
+
+<span class="sd">    longitude_range : length 2 list-like of `~astropy.coordinates.Angle` or</span>
+<span class="sd">        `~astropy.units.Quantity` or None</span>
+<span class="sd">        Longitude range in region. Spans from first to second entries</span>
+<span class="sd">        (in increasing longitude value), so inverting the order will select</span>
+<span class="sd">        the complement longitude range.</span>
+
+<span class="sd">    latitude_range : length 2 list-like of `~astropy.coordinates.Angle` or</span>
+<span class="sd">        `~astropy.units.Quantity` or None</span>
+<span class="sd">        Latitude range in region. Spans from first to second entries</span>
+<span class="sd">        (in increasing latitude value), so inverting the order will select</span>
+<span class="sd">        the complement latitude range.</span>
+<span class="sd">        I.e., if latitude_range[0] &gt; latitude_range[1], will wrap over the poles,</span>
+<span class="sd">        and will instead exclude the central latitude range.</span>
+
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+
+<span class="sd">    **kwargs : Keyword arguments</span>
+<span class="sd">        Additional keyword arguments passed when created new instances</span>
+<span class="sd">        after coordinate transformations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;longitude_range&#39;</span><span class="p">,</span> <span class="s1">&#39;latitude_range&#39;</span><span class="p">)</span>
+    <span class="n">_boundaries</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;longitude_bounds&#39;</span><span class="p">,</span> <span class="s1">&#39;latitude_bounds&#39;</span><span class="p">)</span>
+    <span class="n">longitude_range</span> <span class="o">=</span> <span class="n">TwoValAngleorNone</span><span class="p">(</span>
+        <span class="s1">&#39;The range of longitude values, as a length-2 |Quantity| angle or list or as None&#39;</span>
+    <span class="p">)</span>
+    <span class="n">latitude_range</span> <span class="o">=</span> <span class="n">TwoValAngleorNone</span><span class="p">(</span>
+        <span class="s1">&#39;The range of longitude values, as a length-2 |Quantity| angle or list or as None&#39;</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">longitude_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">latitude_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span> <span class="o">=</span> <span class="n">longitude_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span> <span class="o">=</span> <span class="n">latitude_range</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_longitude_bounds</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latitude_bounds</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vertices</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_original_frame</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_is_original_frame&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># TODO:</span>
+        <span class="c1"># Validate lon/lat range inputs, to ensure lat range has expected definition.</span>
+
+        <span class="c1"># Check if &quot;_frame&quot; is passed as a kwarg, from a copy:</span>
+        <span class="n">_frame</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_frame&#39;</span><span class="p">,</span> <span class="s1">&#39;missing&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;missing&#39;</span><span class="p">:</span>
+            <span class="n">_frame</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_frame&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Passing frame overrides any value passed in &quot;_frame&quot; in the kwargs,</span>
+        <span class="c1"># so only if &quot;frame&quot;=None is &quot;_frame&quot; used:</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">_frame</span>
+
+        <span class="c1"># Validate frame and get into standard format:</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="c1"># --------------------</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">longitude_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">latitude_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_longitude_bounds&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="o">|</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_latitude_bounds&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="c1"># Create class by directly passing long/lat bounds</span>
+                <span class="c1"># -- for cases when creating transformed RangeSphericalSkyRegion instances</span>
+
+                <span class="c1"># TODO: validation of direct bounds inputs</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_longitude_bounds</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_longitude_bounds&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_latitude_bounds</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_latitude_bounds&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                <span class="c1"># Also directly input _vertices, as these are only computed in the</span>
+                <span class="c1"># original frame</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vertices</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_vertices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                <span class="c1"># Also set _params to to just (&quot;frame&quot;) for this transformed instance.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;A range for at least one of longitude and latitude must be set&#39;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Stash frame in private attribute to access when building on-the-fly</span>
+        <span class="c1"># derived attributes &amp; bounds:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">frame</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="c1"># Equality operator for RangeSphericalSkyRegion.</span>
+
+        <span class="c1"># Modified from default, because the lon/lat ranges can be none</span>
+        <span class="c1"># -- requiring comparison of boundaries.</span>
+
+        <span class="c1"># All Region properties are compared for strict equality except</span>
+        <span class="c1"># for Quantity parameters, which allow for different units if they</span>
+        <span class="c1"># are directly convertible.</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">meta_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="s1">&#39;visual&#39;</span><span class="p">]</span>
+        <span class="n">intern_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_frame&#39;</span><span class="p">,</span> <span class="s1">&#39;_vertices&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_original_frame&#39;</span><span class="p">,</span> <span class="s1">&#39;_params&#39;</span><span class="p">]</span>
+        <span class="n">params_list</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">bn</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">bn</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span><span class="p">)]</span>
+            <span class="o">+</span> <span class="n">intern_params</span> <span class="o">+</span> <span class="n">meta_params</span>
+        <span class="p">)</span>
+
+        <span class="c1"># now check the parameter values</span>
+        <span class="c1"># Note that Quantity comparisons allow for different units</span>
+        <span class="c1"># if they directly convertible (e.g., 1. * u.deg == 60. * u.arcmin)</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params_list</span><span class="p">:</span>
+            <span class="c1"># np.any is used for SkyCoord array comparisons</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">param</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1"># Note frame comparisons are done directly, so no</span>
+        <span class="c1"># catching of TypeError is necessary</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># ALWAYS derive boundaries on the fly, IF all _params are not None</span>
+    <span class="c1"># --- only a concern for RangeSphericalSkyRegion....</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__longitude_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Internal, on-the-fly boundaries determination.</span>
+        <span class="c1"># A concern if range values change after original _longitude_bounds</span>
+        <span class="c1"># are computed, if these were &quot;static&quot; for all cases</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Define GC centers based on longitude range</span>
+        <span class="n">c1</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">c2</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="c1"># Cross product to get pole.</span>
+        <span class="c1"># Invert order if lon_range[1] &gt; lon_range[0]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">c_pole</span> <span class="o">=</span> <span class="n">cross_product_skycoord2skycoord</span><span class="p">(</span><span class="n">c2</span><span class="p">,</span> <span class="n">c1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">c_pole</span> <span class="o">=</span> <span class="n">cross_product_skycoord2skycoord</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">)</span>
+
+        <span class="c1"># GC centers from cross products:</span>
+        <span class="n">center_gc1</span> <span class="o">=</span> <span class="n">cross_product_skycoord2skycoord</span><span class="p">(</span><span class="n">c_pole</span><span class="p">,</span> <span class="n">c1</span><span class="p">)</span>
+        <span class="n">center_gc2</span> <span class="o">=</span> <span class="n">cross_product_skycoord2skycoord</span><span class="p">(</span><span class="n">c2</span><span class="p">,</span> <span class="n">c_pole</span><span class="p">)</span>
+
+        <span class="n">c_gc1_sph</span> <span class="o">=</span> <span class="n">center_gc1</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+        <span class="n">c_gc2_sph</span> <span class="o">=</span> <span class="n">center_gc2</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Squash small machine-rounding problems in cross product:</span>
+        <span class="c1"># latitude should be 0 for these longitude-describing GCs,</span>
+        <span class="c1"># as they pass through the poles.</span>
+        <span class="c1"># Only possible in the original frame, when defining from longitude_range</span>
+
+        <span class="n">center_gc1</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">c_gc1_sph</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">center_gc2</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">c_gc2_sph</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">LuneSphericalSkyRegion</span><span class="p">(</span>
+            <span class="n">center_gc1</span><span class="p">,</span> <span class="n">center_gc2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__latitude_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Internal, on-the-fly boundaries determination.</span>
+        <span class="c1"># A concern if range values change after original _latitude_bounds</span>
+        <span class="c1"># are computed, if these were &quot;static&quot; for all cases</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Define north pole: 0 lon, 90 lat</span>
+        <span class="n">c_pole</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+        <span class="c1"># Define south pole:</span>
+        <span class="n">c_pole_s</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="n">lat_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Logic if this is a &quot;across-polar&quot; region is handled by swapping</span>
+        <span class="c1"># the logic of the latitude boundary itself:</span>
+        <span class="n">_wraps_poles</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">lat_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">lat_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">_wraps_poles</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">lat_arr</span> <span class="o">=</span> <span class="n">lat_arr</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">inner_rad</span> <span class="o">=</span> <span class="mf">90.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">-</span> <span class="n">lat_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">outer_rad</span> <span class="o">=</span> <span class="mf">90.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">-</span> <span class="n">lat_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Special handling: check if either edge of the range is -90 or 90:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">lat_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">))</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">lat_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">Angle</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">))</span>
+        <span class="p">):</span>
+            <span class="c1"># Whole sky: no constraint:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">elif</span> <span class="n">lat_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">_wraps_poles</span><span class="p">:</span>
+                <span class="c1"># Check if it wrapped pole, with input [90*u.deg, X*u.deg]:</span>
+                <span class="c1"># equivalent to [-90*u.deg, X*u.deg], and is a</span>
+                <span class="c1"># simple circle centered at S pole:</span>
+                <span class="n">lat_bounds</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span>
+                    <span class="n">c_pole_s</span><span class="p">,</span> <span class="n">lat_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">90.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Simple circle case:</span>
+                <span class="n">lat_bounds</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span>
+                    <span class="n">c_pole</span><span class="p">,</span> <span class="n">outer_rad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">lat_bounds</span>
+        <span class="k">elif</span> <span class="n">lat_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">Angle</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">_wraps_poles</span><span class="p">:</span>
+                <span class="c1"># Check if it wrapped pole, with input [X*u.deg, -90*u.deg],</span>
+                <span class="c1"># equivalent to [X*u.deg, 90*u.deg], and is a simple circle</span>
+                <span class="c1"># Radius from input X*u.deg constraint is in inner_rad after swap</span>
+                <span class="n">lat_bounds</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span>
+                    <span class="n">c_pole</span><span class="p">,</span> <span class="n">inner_rad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Simple circle centered at S pole:</span>
+                <span class="n">lat_bounds</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span>
+                    <span class="n">c_pole_s</span><span class="p">,</span> <span class="n">lat_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">90.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">lat_bounds</span>
+
+        <span class="c1"># True annular range:</span>
+        <span class="k">if</span> <span class="n">_wraps_poles</span><span class="p">:</span>
+            <span class="c1"># Negate by passing as xor with whole sky</span>
+            <span class="k">return</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">(</span>
+                <span class="n">WholeSphericalSkyRegion</span><span class="p">(),</span>
+                <span class="n">CircleAnnulusSphericalSkyRegion</span><span class="p">(</span>
+                    <span class="n">c_pole</span><span class="p">,</span> <span class="n">inner_rad</span><span class="p">,</span> <span class="n">outer_rad</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+                <span class="p">),</span>
+                <span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Not wrapping poles:</span>
+        <span class="k">return</span> <span class="n">CircleAnnulusSphericalSkyRegion</span><span class="p">(</span>
+            <span class="n">c_pole</span><span class="p">,</span> <span class="n">inner_rad</span><span class="p">,</span> <span class="n">outer_rad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_bound_nverts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Number of vertices for boundary:</span>
+        <span class="c1"># lat-only: 0 (annulus)</span>
+        <span class="c1"># lon-only: 2 (lune)</span>
+        <span class="c1"># both: 4 (range), unless one touches the pole: 3</span>
+
+        <span class="c1"># Only compute params once:</span>
+        <span class="n">lon_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span>
+        <span class="n">lat_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">lon_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lat_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lat_bounds</span><span class="p">,</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">):</span>
+                <span class="n">nverts</span> <span class="o">=</span> <span class="mi">6</span>
+                <span class="c1"># pole-wrapping gives 2 disjoint triangles</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lat_bounds</span><span class="p">,</span> <span class="n">CircleAnnulusSphericalSkyRegion</span><span class="p">):</span>
+                <span class="c1"># 4 vertices:</span>
+                <span class="n">nverts</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lat_bounds</span><span class="p">,</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">):</span>
+                <span class="n">nverts</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">lon_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lat_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="c1"># 2 vertices:</span>
+            <span class="n">nverts</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Only lat_bounds: 0 vertices</span>
+            <span class="n">nverts</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">nverts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_edge_circs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get list of the circles defining the range boundaries.</span>
+
+<span class="sd">        Only used if vertices=4, otherwise lune/annulus properties used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bound_nverts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bound_nverts</span>
+
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">_circle_1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="o">.</span><span class="n">_outer_region</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">_circle_2</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="o">.</span><span class="n">_inner_region</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">_circle_1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">_circle_2</span><span class="p">,</span>
+            <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compound_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span>
+
+        <span class="k">return</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="p">,</span>
+            <span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">longitude_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Longitude bounds of the range spherical sky region.</span>
+
+<span class="sd">        Defined as a spherical lune, or None if no longitude bound set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If only boundaries are set: get bounds from internal attribute:</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_longitude_bounds&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_longitude_bounds</span>
+
+        <span class="c1"># Otherwise derive on-the-fly</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__longitude_bounds</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">latitude_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Latitude bounds of the range spherical sky region.</span>
+
+<span class="sd">        Defined as a spherical circular annulus, a circle (if ending at</span>
+<span class="sd">        a pole), or None if no latitude bound set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If only boundaries are set: get bounds from internal attribute:</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_latitude_bounds&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_latitude_bounds</span>
+
+        <span class="c1"># Otherwise derive on-the-fly</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__latitude_bounds</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Region centroid.</span>
+
+<span class="sd">        If both longitude and latitude bounds are set:</span>
+
+<span class="sd">        Defined as the point equidistant from all vertices.</span>
+
+<span class="sd">        However, if this point falls outside of the region</span>
+<span class="sd">        (as in cases very &quot;long and narrow&quot; ranges),</span>
+<span class="sd">        the centroid is instead approximated as the average</span>
+<span class="sd">        of the longitude and latitudes of all vertices.</span>
+
+<span class="sd">        If only longitude or only latitude bounds are set,</span>
+<span class="sd">        the centroid is taken as the centroid of that</span>
+<span class="sd">        boundary shape (i.e., the lune centroid or annulus center).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid_mindist</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">centroid_avg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An approximate &quot;centroid&quot;, taking the average of the vertices</span>
+<span class="sd">        longitude / latitudes, and invert as needed to define an</span>
+<span class="sd">        &quot;inside&quot; point for a wide angle longitude range.</span>
+
+<span class="sd">        Will behave poorly for regions crossing the poles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bound_nverts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bound_nverts</span>
+
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="c1"># Both lon and lat bounds</span>
+            <span class="n">verts_sph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+
+            <span class="n">lons</span> <span class="o">=</span> <span class="n">verts_sph</span><span class="o">.</span><span class="n">lon</span>
+            <span class="n">lats</span> <span class="o">=</span> <span class="n">verts_sph</span><span class="o">.</span><span class="n">lat</span>
+
+            <span class="n">lon</span> <span class="o">=</span> <span class="n">circmean</span><span class="p">(</span><span class="n">lons</span><span class="p">)</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">lats</span><span class="p">)</span>
+            <span class="n">centroid</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">centroid</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span>
+                    <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">centroid</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">):</span>
+                <span class="c1"># If centroid not contained in range, or in subset longitude bounds:</span>
+                <span class="c1"># modify longitude by adding 180 deg:</span>
+                <span class="n">centroid</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">centroid</span>
+        <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Only lon bounds: just get centroid of lune:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">centroid</span>
+        <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Only lat_bounds: just get center of annulus:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="o">.</span><span class="n">center</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">centroid_mindist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Region centroid.</span>
+
+<span class="sd">        Defined as the point equidistant from all vertices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bound_nverts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bound_nverts</span>
+
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="c1"># If both lon/lat bounds:</span>
+            <span class="c1"># Calculate from sum of cross products of vertices with cartesian representation</span>
+            <span class="c1"># verts are in CW order:</span>
+            <span class="n">centroid_mindist</span> <span class="o">=</span> <span class="n">cross_product_sum_skycoord2skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">((</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">centroid_mindist</span><span class="p">))</span>
+               <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">centroid_mindist</span><span class="p">))):</span>
+                <span class="c1"># If it&#39;s not contained, check if it&#39;s because it&#39;s</span>
+                <span class="c1"># outside the latitude range: if so, instead just use avg centroid:</span>
+
+                <span class="c1"># Problem of very elongated bounds at high latitude --</span>
+                <span class="c1"># end up outside range. If so, fall back to average</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid_avg</span>
+
+            <span class="k">return</span> <span class="n">centroid_mindist</span>
+        <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Only lon bounds: just get centroid of lune:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">centroid</span>
+        <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Only lat_bounds: just get center of annulus:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="o">.</span><span class="n">center</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Region vertices.</span>
+
+<span class="sd">        The result depends on which ranges are set:</span>
+
+<span class="sd">        If both longitude and latitude ranges are set, returns 4 vertices</span>
+<span class="sd">        (the &quot;corners&quot; of the composite range) as a SkyCoord.</span>
+
+<span class="sd">        If only a longitude range is set, returns 2 vertices (the</span>
+<span class="sd">        vertices of the longitude spherical lune boundary) as a SkyCoord.</span>
+
+<span class="sd">        If only latitude ranges are set, returns None (no vertices</span>
+<span class="sd">        for the spherical circular annulus latitude bounds).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_vertices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vertices</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bound_nverts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bound_nverts</span>
+
+            <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+            <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="c1"># Both lon/lat bounds:on the fly construct from the lon/lat range attrib</span>
+                <span class="c1"># Longitude min is on the right, so derive CW from lower right corner.</span>
+
+                <span class="c1"># Note this is never called for transformed instances,</span>
+                <span class="c1"># which have vertices info stashed in _vertices.</span>
+                <span class="n">verts_lon</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="p">]</span>
+                <span class="n">verts_lat</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="p">]</span>
+                <span class="k">return</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">verts_lon</span><span class="p">,</span> <span class="n">verts_lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="c1"># Both lon/lat bounds:on the fly construct from the lon/lat range attrib</span>
+                <span class="c1"># Longitude min is on the right, so derive CW from lower right corner.</span>
+                <span class="c1"># However, ONE of the vertices is on a pole.</span>
+
+                <span class="c1"># Note this is never called for transformed instances,</span>
+                <span class="c1"># which have vertices info stashed in _vertices.</span>
+
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">90</span><span class="p">:</span>
+                    <span class="n">verts_lon</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="p">]</span>
+                    <span class="n">verts_lat</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="p">]</span>
+
+                <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">90</span><span class="p">:</span>
+                    <span class="n">verts_lon</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="p">]</span>
+                    <span class="n">verts_lat</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="p">]</span>
+                <span class="k">return</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">verts_lon</span><span class="p">,</span> <span class="n">verts_lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="c1"># 2 vertices: directly return from lune itself.</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">vertices</span>
+            <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Only lat_bounds: no vertices</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bound_nverts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bound_nverts</span>
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># No vertices: only an annulus:</span>
+            <span class="c1"># Use the annulus bounding circle:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="o">.</span><span class="n">bounding_circle</span>
+        <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Lune: get lune bounding circle</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">bounding_circle</span>
+        <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="c1"># Quadrilateral: use max of seps to vertices:</span>
+            <span class="n">cent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid_mindist</span>
+            <span class="n">seps</span> <span class="o">=</span> <span class="n">cent</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">cent</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">seps</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_lonlat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bound_nverts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bound_nverts</span>
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Only an annulus: Use the annulus bounding lonlat:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="o">.</span><span class="n">bounding_lonlat</span>
+
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Lune: get lune bounding lonlat</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">bounding_lonlat</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="c1"># Only used for both lon+lat bounds,</span>
+            <span class="c1"># otherwise directly calls lon or lat bounding_lonlat()</span>
+            <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span> <span class="o">=</span> <span class="n">get_edge_raw_lonlat_bounds_circ_edges</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_circs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># If original frame: keep lon bounds if touching a pole</span>
+            <span class="c1"># Only validate and change if not the original frame</span>
+            <span class="c1"># (eg, when the region could cap the pole)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_original_frame</span><span class="p">:</span>
+                <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_lonlat_bounds</span><span class="p">(</span><span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span>
+
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="RangeSphericalSkyRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.RangeSphericalSkyRegion.html#regions.RangeSphericalSkyRegion.contains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coord</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_original_frame</span><span class="p">:</span>
+            <span class="c1"># Just compute directly from lon/lat ranges:</span>
+
+            <span class="c1"># Ensure coordinate is in same frame:</span>
+            <span class="n">c_repr</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Longitude range constraints:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Ensure lon range is wrapped at 360, matching internal SkyCoord convention</span>
+                <span class="c1"># To handle possible cases of lon ranges &quot;wrapping around&quot; across</span>
+                <span class="c1"># the standard 360-&gt;0 wrap, wrap lon ranges + coord values</span>
+                <span class="c1"># around the first entry angle</span>
+                <span class="n">wrap_ang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">coord_lons</span> <span class="o">=</span> <span class="n">c_repr</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">wrap_at</span><span class="p">(</span><span class="n">wrap_ang</span><span class="p">)</span>
+                <span class="n">in_range_lon</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">coord_lons</span> <span class="o">&gt;=</span> <span class="n">Angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">wrap_at</span><span class="p">(</span><span class="n">wrap_ang</span><span class="p">))</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">coord_lons</span> <span class="o">&lt;=</span> <span class="n">Angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">longitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">wrap_at</span><span class="p">(</span><span class="n">wrap_ang</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="c1"># No constraints</span>
+            <span class="k">elif</span> <span class="n">coord</span><span class="o">.</span><span class="n">isscalar</span><span class="p">:</span>
+                <span class="n">in_range_lon</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">in_range_lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+            <span class="c1"># Latitude range constraints:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">coord_lat</span> <span class="o">=</span> <span class="n">c_repr</span><span class="o">.</span><span class="n">lat</span>
+
+                <span class="c1"># Check if latitude ranges are &quot;simpler&quot;:</span>
+                <span class="c1"># Equivalent to no constraints, or simpler circles:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">))</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">Angle</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">))</span>
+                <span class="p">):</span>
+                    <span class="c1"># Whole sky:</span>
+                    <span class="k">if</span> <span class="n">coord</span><span class="o">.</span><span class="n">isscalar</span><span class="p">:</span>
+                        <span class="n">in_range_lat</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">in_range_lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="c1"># Range includes latitude up to N pole</span>
+                    <span class="n">in_range_lat</span> <span class="o">=</span> <span class="n">coord_lat</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">Angle</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="c1"># Range includes latitudes down to S pole</span>
+                    <span class="n">in_range_lat</span> <span class="o">=</span> <span class="n">coord_lat</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Actual annulus</span>
+                    <span class="n">in_range_lat</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="p">(</span><span class="n">coord_lat</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">coord_lat</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="p">)</span>
+            <span class="c1"># No constraints</span>
+            <span class="k">elif</span> <span class="n">coord</span><span class="o">.</span><span class="n">isscalar</span><span class="p">:</span>
+                <span class="n">in_range_lat</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">in_range_lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+            <span class="n">in_range</span> <span class="o">=</span> <span class="n">in_range_lon</span> <span class="o">&amp;</span> <span class="n">in_range_lat</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;include&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">in_range</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">in_range</span><span class="p">)</span>
+
+        <span class="c1"># If transformed: must use boundary compound region logic:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compound_region</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RangeSphericalSkyRegion.transform_to">
+<a class="viewcode-back" href="../../../api/regions.RangeSphericalSkyRegion.html#regions.RangeSphericalSkyRegion.transform_to">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="n">transformed</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Internal attribute noting this is a transformed frame.</span>
+        <span class="n">transformed</span><span class="p">[</span><span class="s1">&#39;_is_original_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="c1"># High-level lon/lat attributes will not transform: set to None</span>
+            <span class="n">transformed</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">boundaries</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">bound</span> <span class="ow">in</span> <span class="n">boundaries</span><span class="p">:</span>
+            <span class="c1"># Will be passing directly into internal attributes</span>
+            <span class="c1"># _longitude_bounds, _latitude_bounds</span>
+            <span class="n">bound_orig</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bound_orig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">transformed</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">bound</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bound_orig</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span>
+                    <span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="n">merge_attributes</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">transformed</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">bound</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
+
+        <span class="c1"># Also transform vertices:</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;_vertices&#39;</span><span class="p">]:</span>
+            <span class="n">verts</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">))</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">verts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_original_frame</span><span class="p">:</span>
+                <span class="c1"># If internal attribute not set, and original frame,</span>
+                <span class="c1"># get the on-the-fly-derived verts.</span>
+                <span class="n">verts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span>
+            <span class="k">if</span> <span class="n">verts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">transformed</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">verts</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span>
+                    <span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="n">merge_attributes</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">transformed</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Add transformed frame to transformed dict:</span>
+        <span class="n">transformed</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">transformed</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RangeSphericalSkyRegion.discretize_boundary">
+<a class="viewcode-back" href="../../../api/regions.RangeSphericalSkyRegion.html#regions.RangeSphericalSkyRegion.discretize_boundary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">discretize_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">bound_nverts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bound_nverts</span>
+
+        <span class="k">if</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude_bounds</span><span class="o">.</span><span class="n">discretize_boundary</span><span class="p">(</span><span class="n">n_points</span><span class="o">=</span><span class="n">n_points</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude_bounds</span><span class="o">.</span><span class="n">discretize_boundary</span><span class="p">(</span><span class="n">n_points</span><span class="o">=</span><span class="n">n_points</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">bound_verts</span> <span class="o">=</span> <span class="n">discretize_all_edge_boundaries</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_circs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">n_points</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">PolygonSphericalSkyRegion</span><span class="p">(</span><span class="n">bound_verts</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">bound_nverts</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="RangeSphericalSkyRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.RangeSphericalSkyRegion.html#regions.RangeSphericalSkyRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires spherical to planar projection (from WCS) and discretization</span>
+            <span class="c1"># Use to_pixel(), then apply &quot;small angle approx&quot; to get planar sky.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span>
+                <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="n">include_boundary_distortions</span><span class="p">,</span>
+                <span class="n">wcs</span><span class="o">=</span><span class="n">wcs</span><span class="p">,</span>
+                <span class="n">discretize_kwargs</span><span class="o">=</span><span class="n">discretize_kwargs</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to_sky</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">PolygonSkyRegion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span>
+            <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
+            <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RangeSphericalSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.RangeSphericalSkyRegion.html#regions.RangeSphericalSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires spherical to planar projection (from WCS) and discretization</span>
+            <span class="n">disc_bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">discretize_boundary</span><span class="p">(</span><span class="o">**</span><span class="n">discretize_kwargs</span><span class="p">)</span>
+            <span class="c1"># Anticipating complex, wrapped over the poles case:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">disc_bound</span><span class="p">,</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">disc_bound</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span>
+
+            <span class="n">verts</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">world_to_pixel</span><span class="p">(</span><span class="n">disc_bound</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">PolygonPixelRegion</span><span class="p">(</span>
+                <span class="n">PixCoord</span><span class="p">(</span><span class="o">*</span><span class="n">verts</span><span class="p">),</span> <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_sky</span><span class="p">()</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

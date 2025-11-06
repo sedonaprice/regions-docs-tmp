@@ -1,0 +1,45 @@
+CompoundPixelRegion
+===================
+
+.. currentmodule:: regions
+
+.. autoclass:: CompoundPixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~CompoundPixelRegion.area
+      ~CompoundPixelRegion.bounding_box
+      ~CompoundPixelRegion.operator
+      ~CompoundPixelRegion.region1
+      ~CompoundPixelRegion.region2
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~CompoundPixelRegion.as_artist
+      ~CompoundPixelRegion.contains
+      ~CompoundPixelRegion.rotate
+      ~CompoundPixelRegion.to_mask
+      ~CompoundPixelRegion.to_sky
+      ~CompoundPixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: area
+   .. autoattribute:: bounding_box
+   .. autoattribute:: operator
+   .. autoattribute:: region1
+   .. autoattribute:: region2
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: contains
+   .. automethod:: rotate
+   .. automethod:: to_mask
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

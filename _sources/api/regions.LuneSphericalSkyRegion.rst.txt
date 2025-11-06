@@ -1,0 +1,51 @@
+LuneSphericalSkyRegion
+======================
+
+.. currentmodule:: regions
+
+.. autoclass:: LuneSphericalSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~LuneSphericalSkyRegion.bounding_circle
+      ~LuneSphericalSkyRegion.bounding_lonlat
+      ~LuneSphericalSkyRegion.center_gc1
+      ~LuneSphericalSkyRegion.center_gc2
+      ~LuneSphericalSkyRegion.centroid
+      ~LuneSphericalSkyRegion.frame
+      ~LuneSphericalSkyRegion.meta
+      ~LuneSphericalSkyRegion.vertices
+      ~LuneSphericalSkyRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~LuneSphericalSkyRegion.contains
+      ~LuneSphericalSkyRegion.discretize_boundary
+      ~LuneSphericalSkyRegion.to_pixel
+      ~LuneSphericalSkyRegion.to_sky
+      ~LuneSphericalSkyRegion.transform_to
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: bounding_circle
+   .. autoattribute:: bounding_lonlat
+   .. autoattribute:: center_gc1
+   .. autoattribute:: center_gc2
+   .. autoattribute:: centroid
+   .. autoattribute:: frame
+   .. autoattribute:: meta
+   .. autoattribute:: vertices
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
+   .. automethod:: discretize_boundary
+   .. automethod:: to_pixel
+   .. automethod:: to_sky
+   .. automethod:: transform_to

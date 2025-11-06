@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>make_example_dataset &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="AnnulusPixelRegion" href="regions.AnnulusPixelRegion.html" />
+    <link rel="prev" title="Reference/API" href="../api.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.AnnulusPixelRegion.html" title="AnnulusPixelRegion">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="../api.html" title="Reference/API">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>make_example_dataset</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="make-example-dataset">
+<h1>make_example_dataset<a class="headerlink" href="#make-example-dataset" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="regions.make_example_dataset">
+<span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">make_example_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'simulated'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/_utils/examples.html#make_example_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.make_example_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>Make an example dataset.</p>
+<p>This is a factory function for <code class="docutils literal notranslate"><span class="pre">ExampleDataset</span></code> objects.</p>
+<p>The following config options are available (default values shown):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">crval</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">crpix</span> <span class="pre">=</span> <span class="pre">180,</span> <span class="pre">90</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cdelt</span> <span class="pre">=</span> <span class="pre">-1,</span> <span class="pre">1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">180,</span> <span class="pre">360</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ctype</span> <span class="pre">=</span> <span class="pre">'GLON-AIT',</span> <span class="pre">'GLAT-AIT'</span></code></p></li>
+</ul>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">{‘simulated’, ‘fermi’}</span></dt><dd><p>The dataset to use.</p>
+</dd>
+<dt><strong>config</strong><span class="classifier">dict or None</span></dt><dd><p>Configuration options.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>dataset</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">ExampleDataset</span></code></span></dt><dd><p>An example dataset object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Make an example dataset:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_example_dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">crpix</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">cdelt</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">36</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">make_example_dataset</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;simulated&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Access properties of the <code class="docutils literal notranslate"><span class="pre">dataset</span></code> object:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">source_table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">event_table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">wcs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">image</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">hdu_list</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">make_example_dataset</a><ul>
+<li><a class="reference internal" href="#regions.make_example_dataset"><code class="docutils literal notranslate"><span class="pre">make_example_dataset()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.make_example_dataset.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

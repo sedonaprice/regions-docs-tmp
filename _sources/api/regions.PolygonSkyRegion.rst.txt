@@ -1,0 +1,33 @@
+PolygonSkyRegion
+================
+
+.. currentmodule:: regions
+
+.. autoclass:: PolygonSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~PolygonSkyRegion.meta
+      ~PolygonSkyRegion.vertices
+      ~PolygonSkyRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~PolygonSkyRegion.to_pixel
+      ~PolygonSkyRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: meta
+   .. autoattribute:: vertices
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky

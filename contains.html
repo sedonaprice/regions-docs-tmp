@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Checking for Points Inside Regions &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Combining Regions" href="compound.html" />
+    <link rel="prev" title="Region Metadata" href="metadata.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="compound.html" title="Combining Regions">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="metadata.html" title="Region Metadata">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Checking for Points Inside Regions</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="checking-for-points-inside-regions">
+<h1>Checking for Points Inside Regions<a class="headerlink" href="#checking-for-points-inside-regions" title="Link to this heading">¶</a></h1>
+<section id="points-inside-planar-regions">
+<h2>Points Inside Planar Regions<a class="headerlink" href="#points-inside-planar-regions" title="Link to this heading">¶</a></h2>
+<p>Let’s start by defining both a planar sky and pixel region:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSkyRegion</span><span class="p">,</span> <span class="n">PixCoord</span><span class="p">,</span> <span class="n">CirclePixelRegion</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sky_center</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sky_radius</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sky_region</span> <span class="o">=</span> <span class="n">CircleSkyRegion</span><span class="p">(</span><span class="n">sky_center</span><span class="p">,</span> <span class="n">sky_radius</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sky_region</span><span class="p">)</span>
+<span class="go">Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="go">    (42., 43.)&gt;</span>
+<span class="go">radius: 25.0 deg</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixel_center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixel_radius</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixel_region</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span><span class="p">(</span><span class="n">pixel_center</span><span class="p">,</span> <span class="n">pixel_radius</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pixel_region</span><span class="p">)</span>
+<span class="go">Region: CirclePixelRegion</span>
+<span class="go">center: PixCoord(x=42, y=43)</span>
+<span class="go">radius: 42</span>
+</pre></div>
+</div>
+<p>Let’s also define a WCS object using our example dataset:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_example_dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">make_example_dataset</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;simulated&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">wcs</span>
+</pre></div>
+</div>
+<p>To test if a given point is inside or outside the region, the Python
+<code class="docutils literal notranslate"><span class="pre">in</span></code> operator can be called:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PixCoord</span><span class="p">(</span><span class="mi">55</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pixel_region</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PixCoord</span><span class="p">(</span><span class="mi">55</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pixel_region</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">in</span></code> operator works only for scalar coordinates and pixel regions.
+If you try to use <code class="docutils literal notranslate"><span class="pre">in</span></code> for non-scalar coordinates, you’ll get a
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ValueError</span></code></a>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">60</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span> <span class="ow">in</span> <span class="n">pixel_region</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">coord must be scalar. coord=PixCoord(x=[50 50], y=[10 60])</span>
+</pre></div>
+</div>
+<p>If you have arrays of coordinates, use the <a class="reference internal" href="api/regions.SkyRegion.html#regions.SkyRegion.contains" title="regions.SkyRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regions.SkyRegion.contains</span></code></a>
+or <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion.contains" title="regions.PixelRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regions.PixelRegion.contains</span></code></a> methods:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoords</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="o">.</span><span class="n">from_sky</span><span class="p">(</span><span class="n">sky_center</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixel_region</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pixcoords</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Note that <a class="reference internal" href="api/regions.SkyRegion.html#regions.SkyRegion.contains" title="regions.SkyRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regions.SkyRegion.contains</span></code></a> requires a WCS to be passed:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">skycoord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sky_region</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">skycoord</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+<span class="go">array([False, True])</span>
+</pre></div>
+</div>
+</section>
+<section id="points-inside-spherical-regions">
+<h2>Points Inside Spherical Regions<a class="headerlink" href="#points-inside-spherical-regions" title="Link to this heading">¶</a></h2>
+<p>For <a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> objects, checking whether point(s) are
+contained inside that region requires no other input — since these
+regions are defined with a the spherical geometry, and not a projected geometry
+(as captured through the projection encoded in a WCS) as in
+<a class="reference internal" href="api/regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a>.</p>
+<p>Let’s define a spherical sky region:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSphericalSkyRegion</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sph_sky_center</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sph_sky_radius</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sph_sky_region</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="n">sph_sky_center</span><span class="p">,</span>
+<span class="gp">... </span>                                          <span class="n">sph_sky_radius</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sph_sky_region</span><span class="p">)</span>
+<span class="go">Region: CircleSphericalSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="go">    (42., 43.)&gt;</span>
+<span class="go">radius: 25.0 deg</span>
+</pre></div>
+</div>
+<p>Use the <a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.contains" title="regions.SphericalSkyRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains()</span></code></a> method to determine which
+point(s) lie inside or outside the region:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">skycoord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sph_sky_region</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">skycoord</span><span class="p">)</span>
+<span class="go">array([False, True])</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Checking for Points Inside Regions</a><ul>
+<li><a class="reference internal" href="#points-inside-planar-regions">Points Inside Planar Regions</a></li>
+<li><a class="reference internal" href="#points-inside-spherical-regions">Points Inside Spherical Regions</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/contains.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

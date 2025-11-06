@@ -1,0 +1,57 @@
+RectanglePixelRegion
+====================
+
+.. currentmodule:: regions
+
+.. autoclass:: RectanglePixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~RectanglePixelRegion.angle
+      ~RectanglePixelRegion.area
+      ~RectanglePixelRegion.bounding_box
+      ~RectanglePixelRegion.center
+      ~RectanglePixelRegion.corners
+      ~RectanglePixelRegion.height
+      ~RectanglePixelRegion.meta
+      ~RectanglePixelRegion.visual
+      ~RectanglePixelRegion.width
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~RectanglePixelRegion.as_artist
+      ~RectanglePixelRegion.as_mpl_selector
+      ~RectanglePixelRegion.contains
+      ~RectanglePixelRegion.rotate
+      ~RectanglePixelRegion.to_mask
+      ~RectanglePixelRegion.to_polygon
+      ~RectanglePixelRegion.to_sky
+      ~RectanglePixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: angle
+   .. autoattribute:: area
+   .. autoattribute:: bounding_box
+   .. autoattribute:: center
+   .. autoattribute:: corners
+   .. autoattribute:: height
+   .. autoattribute:: meta
+   .. autoattribute:: visual
+   .. autoattribute:: width
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: as_mpl_selector
+   .. automethod:: contains
+   .. automethod:: rotate
+   .. automethod:: to_mask
+   .. automethod:: to_polygon
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

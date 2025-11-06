@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.shapes.annulus &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.shapes.annulus</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines annulus regions in both pixel and sky coordinates.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._utils.wcs_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pixel_scale_angle_at_skycoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">PositiveScalar</span><span class="p">,</span> <span class="n">PositiveScalarAngle</span><span class="p">,</span>
+                                     <span class="n">RegionMetaDescr</span><span class="p">,</span> <span class="n">RegionVisualDescr</span><span class="p">,</span>
+                                     <span class="n">ScalarAngle</span><span class="p">,</span> <span class="n">ScalarPixCoord</span><span class="p">,</span>
+                                     <span class="n">ScalarSkyCoord</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">CompoundPixelRegion</span><span class="p">,</span>
+                                   <span class="n">CompoundSphericalSkyRegion</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixelRegion</span><span class="p">,</span> <span class="n">SkyRegion</span><span class="p">,</span> <span class="n">SphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionMeta</span><span class="p">,</span> <span class="n">RegionVisual</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.pixcoord</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CirclePixelRegion</span><span class="p">,</span> <span class="n">CircleSphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.ellipse</span><span class="w"> </span><span class="kn">import</span> <span class="n">EllipsePixelRegion</span><span class="p">,</span> <span class="n">EllipseSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.rectangle</span><span class="w"> </span><span class="kn">import</span> <span class="n">RectanglePixelRegion</span><span class="p">,</span> <span class="n">RectangleSkyRegion</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AnnulusPixelRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;AnnulusSphericalSkyRegion&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;AsymmetricAnnulusPixelRegion&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;AsymmetricAnnulusSkyRegion&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;CircleAnnulusPixelRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;CircleAnnulusSkyRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;CircleAnnulusSphericalSkyRegion&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EllipseAnnulusPixelRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;EllipseAnnulusSkyRegion&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;RectangleAnnulusPixelRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;RectangleAnnulusSkyRegion&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="AnnulusPixelRegion">
+<a class="viewcode-back" href="../../../api/regions.AnnulusPixelRegion.html#regions.AnnulusPixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnnulusPixelRegion</span><span class="p">(</span><span class="n">PixelRegion</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for annulus pixel regions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compound_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CompoundPixelRegion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_region</span><span class="p">,</span>
+                                   <span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_region</span><span class="o">.</span><span class="n">area</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_region</span><span class="o">.</span><span class="n">area</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_region</span><span class="o">.</span><span class="n">bounding_box</span>
+
+<div class="viewcode-block" id="AnnulusPixelRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.AnnulusPixelRegion.html#regions.AnnulusPixelRegion.contains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixcoord</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compound_region</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pixcoord</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AnnulusPixelRegion.as_artist">
+<a class="viewcode-back" href="../../../api/regions.AnnulusPixelRegion.html#regions.AnnulusPixelRegion.as_artist">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compound_region</span><span class="o">.</span><span class="n">as_artist</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AnnulusPixelRegion.to_mask">
+<a class="viewcode-back" href="../../../api/regions.AnnulusPixelRegion.html#regions.AnnulusPixelRegion.to_mask">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">subpixels</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compound_region</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">subpixels</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AnnulusPixelRegion.rotate">
+<a class="viewcode-back" href="../../../api/regions.AnnulusPixelRegion.html#regions.AnnulusPixelRegion.rotate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rotate the region.</span>
+
+<span class="sd">        Positive ``angle`` corresponds to counter-clockwise rotation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        center : `~regions.PixCoord`</span>
+<span class="sd">            The rotation center point.</span>
+<span class="sd">        angle : `~astropy.coordinates.Angle`</span>
+<span class="sd">            The rotation angle.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        region : `~regions.AnnulusPixelRegion`</span>
+<span class="sd">            The rotated region (which is an independent copy).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">changes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">changes</span><span class="p">[</span><span class="s1">&#39;center&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">):</span>
+            <span class="n">changes</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">+</span> <span class="n">angle</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="o">**</span><span class="n">changes</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AnnulusSphericalSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.AnnulusSphericalSkyRegion.html#regions.AnnulusSphericalSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnnulusSphericalSkyRegion</span><span class="p">(</span><span class="n">SphericalSkyRegion</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for spherical sky annulus regions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compound_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_region</span><span class="p">,</span>
+                                          <span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_region</span><span class="o">.</span><span class="n">frame</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_region</span><span class="o">.</span><span class="n">bounding_circle</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_lonlat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Bounding lonlat of inner, outer regions</span>
+        <span class="c1"># Check of inner region goes over the pole so</span>
+        <span class="c1"># a more limited lat range is needed</span>
+        <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_region</span><span class="o">.</span><span class="n">bounding_lonlat</span>
+
+        <span class="c1"># Check if shape covers either pole &amp; modify lats arr accordingly,</span>
+        <span class="c1"># accounting for annular geometry:</span>
+        <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_lonlat_bounds</span><span class="p">(</span>
+            <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span><span class="p">,</span> <span class="n">inner_region</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner_region</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span>
+
+<div class="viewcode-block" id="AnnulusSphericalSkyRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.AnnulusSphericalSkyRegion.html#regions.AnnulusSphericalSkyRegion.contains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coord</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compound_region</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CircleAnnulusPixelRegion">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusPixelRegion.html#regions.CircleAnnulusPixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CircleAnnulusPixelRegion</span><span class="p">(</span><span class="n">AnnulusPixelRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A circular annulus in pixel coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~regions.PixCoord`</span>
+<span class="sd">        The position of the center of the annulus.</span>
+<span class="sd">    inner_radius : float</span>
+<span class="sd">        The inner radius of the annulus in pixels.</span>
+<span class="sd">    outer_radius : float</span>
+<span class="sd">        The outer radius of the annulus in pixels.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        from regions import PixCoord, CircleAnnulusPixelRegion</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+
+<span class="sd">        fig, ax = plt.subplots(1, 1)</span>
+
+<span class="sd">        reg = CircleAnnulusPixelRegion(PixCoord(x=6, y=6),</span>
+<span class="sd">                                       inner_radius=5.5,</span>
+<span class="sd">                                       outer_radius=8.0)</span>
+<span class="sd">        patch = reg.plot(ax=ax, facecolor=&#39;none&#39;, edgecolor=&#39;red&#39;, lw=2,</span>
+<span class="sd">                         label=&#39;Circle Annulus&#39;)</span>
+
+<span class="sd">        ax.legend(handles=(patch,), loc=&#39;upper center&#39;)</span>
+<span class="sd">        ax.set_xlim(-5, 20)</span>
+<span class="sd">        ax.set_ylim(-5, 20)</span>
+<span class="sd">        ax.set_aspect(&#39;equal&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_component_class</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span>
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;inner_radius&#39;</span><span class="p">,</span> <span class="s1">&#39;outer_radius&#39;</span><span class="p">)</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarPixCoord</span><span class="p">(</span><span class="s1">&#39;The center pixel position as a |PixCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">inner_radius</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The inner radius in pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">outer_radius</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The outer radius in pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_radius</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span> <span class="o">=</span> <span class="n">inner_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span> <span class="o">=</span> <span class="n">outer_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">inner_radius</span> <span class="o">&gt;=</span> <span class="n">outer_radius</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;outer_radius must be greater than inner_radius&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_inner_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_outer_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CircleAnnulusPixelRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusPixelRegion.html#regions.CircleAnnulusPixelRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pixscale</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pixel_scale_angle_at_skycoord</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+        <span class="n">inner_radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pix</span> <span class="o">*</span> <span class="n">pixscale</span>
+        <span class="n">outer_radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pix</span> <span class="o">*</span> <span class="n">pixscale</span>
+        <span class="k">return</span> <span class="n">CircleAnnulusSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">inner_radius</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="CircleAnnulusPixelRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusPixelRegion.html#regions.CircleAnnulusPixelRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires planar to spherical projection (using WCS) and discretization</span>
+            <span class="c1"># Will require implementing discretization in pixel space</span>
+            <span class="c1"># to get correct handling of distortions.</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+            <span class="c1"># ### Potential solution:</span>
+            <span class="c1"># # Leverage polygon class to_spherical_sky() functionality without</span>
+            <span class="c1"># # distortions, as the distortions were already computed in creating</span>
+            <span class="c1"># # that polygon approximation</span>
+            <span class="c1"># return self.discretize_boundary(**discretize_kwargs).to_spherical_sky(</span>
+            <span class="c1">#     wcs=wcs, include_boundary_distortions=False</span>
+            <span class="c1"># )</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_sky</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span><span class="o">.</span><span class="n">to_spherical_sky</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CircleAnnulusSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusSkyRegion.html#regions.CircleAnnulusSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CircleAnnulusSkyRegion</span><span class="p">(</span><span class="n">SkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A circular annulus in sky coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The position of the center of the annulus.</span>
+<span class="sd">    inner_radius : `~astropy.units.Quantity`</span>
+<span class="sd">        The inner radius of the annulus in angular units.</span>
+<span class="sd">    outer_radius : `~astropy.units.Quantity`</span>
+<span class="sd">        The outer radius of the annulus in angular units.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;inner_radius&#39;</span><span class="p">,</span> <span class="s1">&#39;outer_radius&#39;</span><span class="p">)</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarSkyCoord</span><span class="p">(</span><span class="s1">&#39;The center position as a |SkyCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">inner_radius</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The inner radius as a |Quantity| &#39;</span>
+                                       <span class="s1">&#39;angle.&#39;</span><span class="p">)</span>
+    <span class="n">outer_radius</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The outer radius as a |Quantity| &#39;</span>
+                                       <span class="s1">&#39;angle.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_radius</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span> <span class="o">=</span> <span class="n">inner_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span> <span class="o">=</span> <span class="n">outer_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">inner_radius</span> <span class="o">&gt;=</span> <span class="n">outer_radius</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;outer_radius must be greater than inner_radius&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CircleAnnulusSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusSkyRegion.html#regions.CircleAnnulusSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">center</span><span class="p">,</span> <span class="n">pixscale</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pixel_scale_angle_at_skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+        <span class="n">inner_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span> <span class="o">/</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">pix</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">outer_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span> <span class="o">/</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">pix</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">CircleAnnulusPixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">inner_radius</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span>
+                                        <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                        <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="CircleAnnulusSkyRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusSkyRegion.html#regions.CircleAnnulusSkyRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires planar to spherical projection (using WCS) and discretization</span>
+            <span class="c1"># Will require implementing discretization in pixel space</span>
+            <span class="c1"># to get correct handling of distortions.</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+            <span class="c1"># ### Potential solution:</span>
+            <span class="c1"># # Leverage polygon class to_spherical_sky() functionality without</span>
+            <span class="c1"># # distortions, as the distortions were already computed in creating</span>
+            <span class="c1"># # that polygon approximation</span>
+            <span class="c1"># return self.to_pixel(wcs).discretize_boundary(**discretize_kwargs).to_spherical_sky(</span>
+            <span class="c1">#     wcs=wcs, include_boundary_distortions=False</span>
+            <span class="c1"># )</span>
+
+        <span class="k">return</span> <span class="n">CircleAnnulusSphericalSkyRegion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CircleAnnulusSphericalSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusSphericalSkyRegion.html#regions.CircleAnnulusSphericalSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CircleAnnulusSphericalSkyRegion</span><span class="p">(</span><span class="n">AnnulusSphericalSkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for a circular annulus sky region, where the circular annulus</span>
+<span class="sd">    is interpreted within a spherical geometry reference frame.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The center position.</span>
+<span class="sd">    inner_radius : `~astropy.units.Quantity`</span>
+<span class="sd">        The inner radius in angular units.</span>
+<span class="sd">    outer_radius : `~astropy.units.Quantity`</span>
+<span class="sd">        The outer radius in angular units.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_component_class</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span>
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;inner_radius&#39;</span><span class="p">,</span> <span class="s1">&#39;outer_radius&#39;</span><span class="p">)</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarSkyCoord</span><span class="p">(</span><span class="s1">&#39;The center position as a |SkyCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">inner_radius</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The inner radius as a |Quantity| &#39;</span>
+                                       <span class="s1">&#39;angle.&#39;</span><span class="p">)</span>
+    <span class="n">outer_radius</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The outer radius as a |Quantity| &#39;</span>
+                                       <span class="s1">&#39;angle.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_radius</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span> <span class="o">=</span> <span class="n">inner_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span> <span class="o">=</span> <span class="n">outer_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">inner_radius</span> <span class="o">&gt;=</span> <span class="n">outer_radius</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;outer_radius must be greater than inner_radius&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_inner_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_outer_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CircleAnnulusSphericalSkyRegion.transform_to">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusSphericalSkyRegion.html#regions.CircleAnnulusSphericalSkyRegion.transform_to">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="c1"># Only center transforms, radii preserved</span>
+        <span class="n">center_transf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="n">merge_attributes</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">CircleAnnulusSphericalSkyRegion</span><span class="p">(</span>
+            <span class="n">center_transf</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CircleAnnulusSphericalSkyRegion.discretize_boundary">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusSphericalSkyRegion.html#regions.CircleAnnulusSphericalSkyRegion.discretize_boundary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">discretize_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inner_region</span><span class="o">.</span><span class="n">discretize_boundary</span><span class="p">(</span><span class="n">n_points</span><span class="o">=</span><span class="n">n_points</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_outer_region</span><span class="o">.</span><span class="n">discretize_boundary</span><span class="p">(</span><span class="n">n_points</span><span class="o">=</span><span class="n">n_points</span><span class="p">),</span>
+            <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">,</span>
+            <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CircleAnnulusSphericalSkyRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusSphericalSkyRegion.html#regions.CircleAnnulusSphericalSkyRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires spherical to planar projection (from WCS) and discretization</span>
+            <span class="c1"># Use to_pixel(), then apply &quot;small angle approx&quot; to get planar sky.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span>
+                <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="n">include_boundary_distortions</span><span class="p">,</span>
+                <span class="n">wcs</span><span class="o">=</span><span class="n">wcs</span><span class="p">,</span>
+                <span class="n">discretize_kwargs</span><span class="o">=</span><span class="n">discretize_kwargs</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to_sky</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">CircleAnnulusSkyRegion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inner_radius</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer_radius</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CircleAnnulusSphericalSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.CircleAnnulusSphericalSkyRegion.html#regions.CircleAnnulusSphericalSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.polygon</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolygonPixelRegion</span>
+
+            <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires spherical to planar projection (from WCS) and discretization</span>
+            <span class="n">polygonized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">discretize_boundary</span><span class="p">(</span><span class="o">**</span><span class="n">discretize_kwargs</span><span class="p">)</span>
+
+            <span class="n">inner_vertices</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">world_to_pixel</span><span class="p">(</span><span class="n">polygonized</span><span class="o">.</span><span class="n">region1</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+            <span class="n">outer_vertices</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">world_to_pixel</span><span class="p">(</span><span class="n">polygonized</span><span class="o">.</span><span class="n">region2</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">CompoundPixelRegion</span><span class="p">(</span>
+                <span class="n">PolygonPixelRegion</span><span class="p">(</span><span class="n">PixCoord</span><span class="p">(</span><span class="o">*</span><span class="n">inner_vertices</span><span class="p">)),</span>
+                <span class="n">PolygonPixelRegion</span><span class="p">(</span><span class="n">PixCoord</span><span class="p">(</span><span class="o">*</span><span class="n">outer_vertices</span><span class="p">)),</span>
+                <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">,</span>
+                <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_sky</span><span class="p">()</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AsymmetricAnnulusPixelRegion">
+<a class="viewcode-back" href="../../../api/regions.AsymmetricAnnulusPixelRegion.html#regions.AsymmetricAnnulusPixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsymmetricAnnulusPixelRegion</span><span class="p">(</span><span class="n">AnnulusPixelRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper class for asymmetric annuli sky regions.</span>
+
+<span class="sd">    Used for ellipse and rectangle pixel annulus regions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~regions.PixCoord`</span>
+<span class="sd">        The position of the center of the annulus.</span>
+<span class="sd">    center : `~regions.PixCoord`</span>
+<span class="sd">        The position of the center of the annulus.</span>
+<span class="sd">    inner_width : float</span>
+<span class="sd">        The inner width of the annulus (before rotation) in pixels.</span>
+<span class="sd">    outer_width : float</span>
+<span class="sd">        The outer width of the annulus (before rotation) in pixels.</span>
+<span class="sd">    inner_height : float</span>
+<span class="sd">        The inner height of the annulus (before rotation) in pixels.</span>
+<span class="sd">    outer_height : float</span>
+<span class="sd">        The outer height of the annulus (before rotation) in pixels.</span>
+<span class="sd">    angle : `~astropy.units.Quantity`, optional</span>
+<span class="sd">        The rotation angle of the annulus, measured anti-clockwise. If</span>
+<span class="sd">        set to zero (the default), the width axis is lined up with the x</span>
+<span class="sd">        axis.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;inner_width&#39;</span><span class="p">,</span> <span class="s1">&#39;outer_width&#39;</span><span class="p">,</span> <span class="s1">&#39;inner_height&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;outer_height&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">)</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarPixCoord</span><span class="p">(</span><span class="s1">&#39;The center pixel position as a |PixCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">inner_width</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The inner width (before rotation) in &#39;</span>
+                                 <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">outer_width</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The outer width (before rotation) in &#39;</span>
+                                 <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">inner_height</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The inner height (before rotation) in &#39;</span>
+                                  <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">outer_height</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The outer height (before rotation) in &#39;</span>
+                                  <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">ScalarAngle</span><span class="p">(</span><span class="s1">&#39;The rotation angle measured anti-clockwise as a &#39;</span>
+                        <span class="s1">&#39;|Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                 <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_width</span> <span class="o">=</span> <span class="n">inner_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_width</span> <span class="o">=</span> <span class="n">outer_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_height</span> <span class="o">=</span> <span class="n">inner_height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_height</span> <span class="o">=</span> <span class="n">outer_height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">inner_width</span> <span class="o">&gt;=</span> <span class="n">outer_width</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;outer_width must be greater than inner_width&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inner_height</span> <span class="o">&gt;=</span> <span class="n">outer_height</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;outer_height must be greater than inner_height&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_inner_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner_width</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">inner_height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_outer_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_width</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">outer_height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AsymmetricAnnulusPixelRegion.to_sky_args">
+<a class="viewcode-back" href="../../../api/regions.AsymmetricAnnulusPixelRegion.html#regions.AsymmetricAnnulusPixelRegion.to_sky_args">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pixscale</span><span class="p">,</span> <span class="n">north_angle</span> <span class="o">=</span> <span class="n">pixel_scale_angle_at_skycoord</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+        <span class="n">inner_width</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner_width</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pix</span> <span class="o">*</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span>
+        <span class="n">outer_width</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_width</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pix</span> <span class="o">*</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span>
+        <span class="n">inner_height</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner_height</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pix</span> <span class="o">*</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span>
+        <span class="n">outer_height</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_height</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pix</span> <span class="o">*</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span>
+        <span class="c1"># region sky angles are defined relative to the WCS longitude axis;</span>
+        <span class="c1"># photutils aperture sky angles are defined as the PA of the</span>
+        <span class="c1"># semimajor axis (i.e., relative to the WCS latitude axis)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">-</span> <span class="p">(</span><span class="n">north_angle</span> <span class="o">-</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span> <span class="n">outer_height</span><span class="p">,</span>
+                <span class="n">angle</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AsymmetricAnnulusSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.AsymmetricAnnulusSkyRegion.html#regions.AsymmetricAnnulusSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsymmetricAnnulusSkyRegion</span><span class="p">(</span><span class="n">SkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper class for asymmetric annuli sky regions.</span>
+
+<span class="sd">    Used for ellipse and rectangle sky annulus regions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The position of the center of the annulus.</span>
+<span class="sd">    inner_width : `~astropy.units.Quantity`</span>
+<span class="sd">        The inner width of the annulus (before rotation) as an angle.</span>
+<span class="sd">    outer_width : `~astropy.units.Quantity`</span>
+<span class="sd">        The outer width of the annulus (before rotation) as an angle.</span>
+<span class="sd">    inner_height : `~astropy.units.Quantity`</span>
+<span class="sd">        The inner height of the annulus (before rotation) as an angle.</span>
+<span class="sd">    outer_height : `~astropy.units.Quantity`</span>
+<span class="sd">        The outer height of the annulus (before rotation) as an angle.</span>
+<span class="sd">    angle : `~astropy.units.Quantity`, optional</span>
+<span class="sd">        The rotation angle of the annulus, measured anti-clockwise. If</span>
+<span class="sd">        set to zero (the default), the width axis is lined up with the</span>
+<span class="sd">        longitude axis of the celestial coordinates.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;inner_width&#39;</span><span class="p">,</span> <span class="s1">&#39;outer_width&#39;</span><span class="p">,</span> <span class="s1">&#39;inner_height&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;outer_height&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">)</span>
+
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarSkyCoord</span><span class="p">(</span><span class="s1">&#39;The center position as a |SkyCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">inner_width</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The inner width (before rotation) as &#39;</span>
+                                      <span class="s1">&#39;a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">outer_width</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The outer width (before rotation) as &#39;</span>
+                                      <span class="s1">&#39;a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">inner_height</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The inner height (before rotation) &#39;</span>
+                                       <span class="s1">&#39;as a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">outer_height</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The outer height (before rotation) &#39;</span>
+                                       <span class="s1">&#39;as a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">ScalarAngle</span><span class="p">(</span><span class="s1">&#39;The rotation angle measured anti-clockwise as a&#39;</span>
+                        <span class="s1">&#39;|Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                 <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_width</span> <span class="o">=</span> <span class="n">inner_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_width</span> <span class="o">=</span> <span class="n">outer_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_height</span> <span class="o">=</span> <span class="n">inner_height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_height</span> <span class="o">=</span> <span class="n">outer_height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">inner_width</span> <span class="o">&gt;=</span> <span class="n">outer_width</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;outer_width must be greater than inner_width&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inner_height</span> <span class="o">&gt;=</span> <span class="n">outer_height</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;outer_height must be greater than inner_height&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AsymmetricAnnulusSkyRegion.to_pixel_args">
+<a class="viewcode-back" href="../../../api/regions.AsymmetricAnnulusSkyRegion.html#regions.AsymmetricAnnulusSkyRegion.to_pixel_args">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">center</span><span class="p">,</span> <span class="n">pixscale</span><span class="p">,</span> <span class="n">north_angle</span> <span class="o">=</span> <span class="n">pixel_scale_angle_at_skycoord</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">center</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">inner_width</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner_width</span> <span class="o">/</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">pix</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">outer_width</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_width</span> <span class="o">/</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">pix</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">inner_height</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner_height</span> <span class="o">/</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">pix</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">outer_height</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_height</span> <span class="o">/</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">pix</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="c1"># region sky angles are defined relative to the WCS longitude axis;</span>
+        <span class="c1"># photutils aperture sky angles are defined as the PA of the</span>
+        <span class="c1"># semimajor axis (i.e., relative to the WCS latitude axis)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">+</span> <span class="p">(</span><span class="n">north_angle</span> <span class="o">-</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span> <span class="n">outer_height</span><span class="p">,</span>
+                <span class="n">angle</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="EllipseAnnulusPixelRegion">
+<a class="viewcode-back" href="../../../api/regions.EllipseAnnulusPixelRegion.html#regions.EllipseAnnulusPixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EllipseAnnulusPixelRegion</span><span class="p">(</span><span class="n">AsymmetricAnnulusPixelRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A elliptical annulus in pixel coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~regions.PixCoord`</span>
+<span class="sd">        The position of the center of the elliptical annulus.</span>
+<span class="sd">    inner_width : float</span>
+<span class="sd">        The inner width of the elliptical annulus (before rotation) in</span>
+<span class="sd">        pixels.</span>
+<span class="sd">    outer_width : float</span>
+<span class="sd">        The outer width of the elliptical annulus (before rotation) in</span>
+<span class="sd">        pixels.</span>
+<span class="sd">    inner_height : float</span>
+<span class="sd">        The inner height of the elliptical annulus (before rotation) in</span>
+<span class="sd">        pixels.</span>
+<span class="sd">    outer_height : float</span>
+<span class="sd">        The outer height of the elliptical annulus (before rotation) in</span>
+<span class="sd">        pixels.</span>
+<span class="sd">    angle : `~astropy.units.Quantity`, optional</span>
+<span class="sd">        The rotation angle of the elliptical annulus, measured</span>
+<span class="sd">        anti-clockwise. If set to zero (the default), the width axis is</span>
+<span class="sd">        lined up with the x axis.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        from astropy.coordinates import Angle</span>
+<span class="sd">        from regions import PixCoord, EllipseAnnulusPixelRegion</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+
+<span class="sd">        fig, ax = plt.subplots(1, 1)</span>
+
+<span class="sd">        reg = EllipseAnnulusPixelRegion(PixCoord(6, 6),</span>
+<span class="sd">                                        inner_width=5.5,</span>
+<span class="sd">                                        outer_width=8.5,</span>
+<span class="sd">                                        inner_height=3.5,</span>
+<span class="sd">                                        outer_height=6.5,</span>
+<span class="sd">                                        angle=Angle(&#39;45deg&#39;))</span>
+<span class="sd">        patch = reg.plot(ax=ax, facecolor=&#39;none&#39;, edgecolor=&#39;red&#39;, lw=2,</span>
+<span class="sd">                         label=&#39;Ellipse Annulus&#39;)</span>
+
+<span class="sd">        ax.legend(handles=(patch,), loc=&#39;upper center&#39;)</span>
+<span class="sd">        ax.set_xlim(-5, 20)</span>
+<span class="sd">        ax.set_ylim(-5, 20)</span>
+<span class="sd">        ax.set_aspect(&#39;equal&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># duplicated from AsymmetricAnnulusPixelRegion because otherwise Sphinx</span>
+    <span class="c1"># ignores the docstrings in the parent class</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarPixCoord</span><span class="p">(</span><span class="s1">&#39;The center pixel position as a |PixCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">inner_width</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The inner width (before rotation) in &#39;</span>
+                                 <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">outer_width</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The outer width (before rotation) in &#39;</span>
+                                 <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">inner_height</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The inner height (before rotation) in &#39;</span>
+                                  <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">outer_height</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The outer height (before rotation) in &#39;</span>
+                                  <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">ScalarAngle</span><span class="p">(</span><span class="s1">&#39;The rotation angle measured anti-clockwise as a &#39;</span>
+                        <span class="s1">&#39;|Quantity| angle.&#39;</span><span class="p">)</span>
+
+    <span class="n">_component_class</span> <span class="o">=</span> <span class="n">EllipsePixelRegion</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                 <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                         <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">visual</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EllipseAnnulusPixelRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.EllipseAnnulusPixelRegion.html#regions.EllipseAnnulusPixelRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">EllipseAnnulusSkyRegion</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">to_sky_args</span><span class="p">(</span><span class="n">wcs</span><span class="p">),</span>
+                                       <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                       <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="EllipseAnnulusPixelRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.EllipseAnnulusPixelRegion.html#regions.EllipseAnnulusPixelRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="EllipseAnnulusSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.EllipseAnnulusSkyRegion.html#regions.EllipseAnnulusSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EllipseAnnulusSkyRegion</span><span class="p">(</span><span class="n">AsymmetricAnnulusSkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A elliptical annulus in `~astropy.coordinates.SkyCoord` coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The position of the center of the elliptical annulus.</span>
+<span class="sd">    inner_width : `~astropy.units.Quantity`</span>
+<span class="sd">        The inner width of the elliptical annulus (before rotation) as</span>
+<span class="sd">        an angle.</span>
+<span class="sd">    outer_width : `~astropy.units.Quantity`</span>
+<span class="sd">        The outer width of the elliptical annulus (before rotation) as</span>
+<span class="sd">        an angle.</span>
+<span class="sd">    inner_height : `~astropy.units.Quantity`</span>
+<span class="sd">        The inner height of the elliptical annulus (before rotation) as</span>
+<span class="sd">        an angle.</span>
+<span class="sd">    outer_height : `~astropy.units.Quantity`</span>
+<span class="sd">        The outer height of the elliptical annulus (before rotation) as</span>
+<span class="sd">        an angle.</span>
+<span class="sd">    angle : `~astropy.units.Quantity`, optional</span>
+<span class="sd">        The rotation angle of the elliptical annulus, measured</span>
+<span class="sd">        anti-clockwise. If set to zero (the default), the width axis is</span>
+<span class="sd">        lined up with the longitude axis of the celestial coordinates.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># duplicated from AsymmetricAnnulusSkyRegion because otherwise Sphinx</span>
+    <span class="c1"># ignores the docstrings in the parent class</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarSkyCoord</span><span class="p">(</span><span class="s1">&#39;The center position as a |SkyCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">inner_width</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The inner width (before rotation) as &#39;</span>
+                                      <span class="s1">&#39;a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">outer_width</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The outer width (before rotation) as &#39;</span>
+                                      <span class="s1">&#39;a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">inner_height</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The inner height (before rotation) &#39;</span>
+                                       <span class="s1">&#39;as a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">outer_height</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The outer height (before rotation) &#39;</span>
+                                       <span class="s1">&#39;as a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">ScalarAngle</span><span class="p">(</span><span class="s1">&#39;The rotation angle measured anti-clockwise as a &#39;</span>
+                        <span class="s1">&#39;|Quantity| angle.&#39;</span><span class="p">)</span>
+
+    <span class="n">_component_class</span> <span class="o">=</span> <span class="n">EllipseSkyRegion</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                 <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                         <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">visual</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EllipseAnnulusSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.EllipseAnnulusSkyRegion.html#regions.EllipseAnnulusSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">EllipseAnnulusPixelRegion</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">to_pixel_args</span><span class="p">(</span><span class="n">wcs</span><span class="p">),</span>
+                                         <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                         <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="EllipseAnnulusSkyRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.EllipseAnnulusSkyRegion.html#regions.EllipseAnnulusSkyRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RectangleAnnulusPixelRegion">
+<a class="viewcode-back" href="../../../api/regions.RectangleAnnulusPixelRegion.html#regions.RectangleAnnulusPixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RectangleAnnulusPixelRegion</span><span class="p">(</span><span class="n">AsymmetricAnnulusPixelRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A rectangular annulus in pixel coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~regions.PixCoord`</span>
+<span class="sd">        The position of the center of the rectangular annulus.</span>
+<span class="sd">    inner_width : float</span>
+<span class="sd">        The inner width of the rectangular annulus (before rotation) in</span>
+<span class="sd">        pixels.</span>
+<span class="sd">    outer_width : float</span>
+<span class="sd">        The outer width of the rectangular annulus (before rotation) in</span>
+<span class="sd">        pixels.</span>
+<span class="sd">    inner_height : float</span>
+<span class="sd">        The inner height of the rectangular annulus (before rotation) in</span>
+<span class="sd">        pixels.</span>
+<span class="sd">    outer_height : float</span>
+<span class="sd">        The outer height of the rectangular annulus (before rotation) in</span>
+<span class="sd">        pixels.</span>
+<span class="sd">    angle : `~astropy.units.Quantity`, optional</span>
+<span class="sd">        The rotation angle of the rectangular annulus, measured</span>
+<span class="sd">        anti-clockwise. If set to zero (the default), the width axis is</span>
+<span class="sd">        lined up with the x axis.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        from astropy.coordinates import Angle</span>
+<span class="sd">        from regions import PixCoord, RectangleAnnulusPixelRegion</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+
+<span class="sd">        fig, ax = plt.subplots(1, 1)</span>
+
+<span class="sd">        reg = RectangleAnnulusPixelRegion(PixCoord(x=6, y=6),</span>
+<span class="sd">                                          inner_width=5.5,</span>
+<span class="sd">                                          outer_width=8.5,</span>
+<span class="sd">                                          inner_height=3.5,</span>
+<span class="sd">                                          outer_height=6.5,</span>
+<span class="sd">                                          angle=Angle(&#39;45deg&#39;))</span>
+<span class="sd">        patch = reg.plot(ax=ax, facecolor=&#39;none&#39;, edgecolor=&#39;red&#39;, lw=2,</span>
+<span class="sd">                         label=&#39;Rectangle Annulus&#39;)</span>
+
+<span class="sd">        ax.legend(handles=(patch,), loc=&#39;upper center&#39;)</span>
+<span class="sd">        ax.set_xlim(-5, 20)</span>
+<span class="sd">        ax.set_ylim(-5, 20)</span>
+<span class="sd">        ax.set_aspect(&#39;equal&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># duplicated from AsymmetricAnnulusPixelRegion because otherwise Sphinx</span>
+    <span class="c1"># ignores the docstrings in the parent class</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarPixCoord</span><span class="p">(</span><span class="s1">&#39;The center pixel position as a |PixCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">inner_width</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The inner width (before rotation) in &#39;</span>
+                                 <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">outer_width</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The outer width (before rotation) in &#39;</span>
+                                 <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">inner_height</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The inner height (before rotation) in &#39;</span>
+                                  <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">outer_height</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The outer height (before rotation) in &#39;</span>
+                                  <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">ScalarAngle</span><span class="p">(</span><span class="s1">&#39;The rotation angle measured anti-clockwise as a &#39;</span>
+                        <span class="s1">&#39;|Quantity| angle.&#39;</span><span class="p">)</span>
+
+    <span class="n">_component_class</span> <span class="o">=</span> <span class="n">RectanglePixelRegion</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                 <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                         <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">visual</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RectangleAnnulusPixelRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.RectangleAnnulusPixelRegion.html#regions.RectangleAnnulusPixelRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">RectangleAnnulusSkyRegion</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">to_sky_args</span><span class="p">(</span><span class="n">wcs</span><span class="p">),</span>
+                                         <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                         <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="RectangleAnnulusPixelRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.RectangleAnnulusPixelRegion.html#regions.RectangleAnnulusPixelRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RectangleAnnulusSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.RectangleAnnulusSkyRegion.html#regions.RectangleAnnulusSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RectangleAnnulusSkyRegion</span><span class="p">(</span><span class="n">AsymmetricAnnulusSkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A rectangular annulus in `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">    coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The position of the center of the rectangular annulus.</span>
+<span class="sd">    inner_width : `~astropy.units.Quantity`</span>
+<span class="sd">        The inner width of the rectangular annulus (before rotation) as</span>
+<span class="sd">        an angle.</span>
+<span class="sd">    outer_width : `~astropy.units.Quantity`</span>
+<span class="sd">        The outer width of the rectangular annulus (before rotation) as</span>
+<span class="sd">        an angle.</span>
+<span class="sd">    inner_height : `~astropy.units.Quantity`</span>
+<span class="sd">        The inner height of the rectangular annulus (before rotation) as</span>
+<span class="sd">        an angle.</span>
+<span class="sd">    outer_height : `~astropy.units.Quantity`</span>
+<span class="sd">        The outer height of the rectangular annulus (before rotation) as</span>
+<span class="sd">        an angle.</span>
+<span class="sd">    angle : `~astropy.units.Quantity`, optional</span>
+<span class="sd">        The rotation angle of the rectangular annulus, measured</span>
+<span class="sd">        anti-clockwise. If set to zero (the default), the width axis is</span>
+<span class="sd">        lined up with the longitude axis of the celestial coordinates.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># duplicated from AsymmetricAnnulusSkyRegion because otherwise Sphinx</span>
+    <span class="c1"># ignores the docstrings in the parent class</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarSkyCoord</span><span class="p">(</span><span class="s1">&#39;The center position as a |SkyCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">inner_width</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The inner width (before rotation) as &#39;</span>
+                                      <span class="s1">&#39;a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">outer_width</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The outer width (before rotation) as &#39;</span>
+                                      <span class="s1">&#39;a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">inner_height</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The inner height (before rotation) &#39;</span>
+                                       <span class="s1">&#39;as a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">outer_height</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The outer height (before rotation) &#39;</span>
+                                       <span class="s1">&#39;as a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">ScalarAngle</span><span class="p">(</span><span class="s1">&#39;The rotation angle measured anti-clockwise as a &#39;</span>
+                        <span class="s1">&#39;|Quantity| angle.&#39;</span><span class="p">)</span>
+
+    <span class="n">_component_class</span> <span class="o">=</span> <span class="n">RectangleSkyRegion</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                 <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">inner_width</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">inner_height</span><span class="p">,</span>
+                         <span class="n">outer_height</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">visual</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RectangleAnnulusSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.RectangleAnnulusSkyRegion.html#regions.RectangleAnnulusSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">RectangleAnnulusPixelRegion</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">to_pixel_args</span><span class="p">(</span><span class="n">wcs</span><span class="p">),</span>
+                                           <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                           <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="RectangleAnnulusSkyRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.RectangleAnnulusSkyRegion.html#regions.RectangleAnnulusSkyRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

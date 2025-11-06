@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Combining Regions &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Computing Overlap Masks" href="masks.html" />
+    <link rel="prev" title="Checking for Points Inside Regions" href="contains.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="masks.html" title="Computing Overlap Masks">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="contains.html" title="Checking for Points Inside Regions">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Combining Regions</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="combining-regions">
+<h1>Combining Regions<a class="headerlink" href="#combining-regions" title="Link to this heading">¶</a></h1>
+<p>There are a few ways to combine any two <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a> objects
+into a compound region, i.e., a <a class="reference internal" href="api/regions.CompoundPixelRegion.html#regions.CompoundPixelRegion" title="regions.CompoundPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompoundPixelRegion</span></code></a>,
+<a class="reference internal" href="api/regions.CompoundSkyRegion.html#regions.CompoundSkyRegion" title="regions.CompoundSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompoundSkyRegion</span></code></a>, or <a class="reference internal" href="api/regions.CompoundSphericalSkyRegion.html#regions.CompoundSphericalSkyRegion" title="regions.CompoundSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompoundSphericalSkyRegion</span></code></a> object.</p>
+<p>Let’s start by defining two sky regions:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSkyRegion</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">circle1</span> <span class="o">=</span> <span class="n">CircleSkyRegion</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">center</span><span class="o">=</span><span class="n">SkyCoord</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;galactic&#39;</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="n">radius</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="s1">&#39;5 deg&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">circle2</span> <span class="o">=</span> <span class="n">CircleSkyRegion</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">center</span><span class="o">=</span><span class="n">SkyCoord</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;galactic&#39;</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="n">radius</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="s1">&#39;3 deg&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<section id="intersection-and">
+<h2>Intersection (AND)<a class="headerlink" href="#intersection-and" title="Link to this heading">¶</a></h2>
+<p>To create an intersection compound region, use either the <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> operator
+or the <a class="reference internal" href="api/regions.Region.html#regions.Region.intersection" title="regions.Region.intersection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">intersection()</span></code></a> method:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">comp_region</span> <span class="o">=</span> <span class="n">circle1</span> <span class="o">&amp;</span> <span class="n">circle2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">comp_region</span><span class="p">)</span>
+<span class="go">Region: CompoundSkyRegion</span>
+<span class="go">region1: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (1., 2.)&gt;</span>
+<span class="go">radius: 5.0 deg</span>
+<span class="go">region2: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (356., 3.)&gt;</span>
+<span class="go">radius: 3.0 deg</span>
+<span class="go">operator: &lt;built-in function and_&gt;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">comp_region</span> <span class="o">=</span> <span class="n">circle1</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">circle2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">comp_region</span><span class="p">)</span>
+<span class="go">Region: CompoundSkyRegion</span>
+<span class="go">region1: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (1., 2.)&gt;</span>
+<span class="go">radius: 5.0 deg</span>
+<span class="go">region2: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (356., 3.)&gt;</span>
+<span class="go">radius: 3.0 deg</span>
+<span class="go">operator: &lt;built-in function and_&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="union-or">
+<h2>Union (OR)<a class="headerlink" href="#union-or" title="Link to this heading">¶</a></h2>
+<p>To create a union compound region, use either the <code class="docutils literal notranslate"><span class="pre">|</span></code> operator or the
+<a class="reference internal" href="api/regions.Region.html#regions.Region.union" title="regions.Region.union"><code class="xref py py-meth docutils literal notranslate"><span class="pre">union()</span></code></a> method:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">comp_region</span> <span class="o">=</span> <span class="n">circle1</span> <span class="o">|</span> <span class="n">circle2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">comp_region</span><span class="p">)</span>
+<span class="go">Region: CompoundSkyRegion</span>
+<span class="go">region1: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (1., 2.)&gt;</span>
+<span class="go">radius: 5.0 deg</span>
+<span class="go">region2: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (356., 3.)&gt;</span>
+<span class="go">radius: 3.0 deg</span>
+<span class="go">operator: &lt;built-in function or_&gt;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">comp_region</span> <span class="o">=</span> <span class="n">circle1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">circle2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">comp_region</span><span class="p">)</span>
+<span class="go">Region: CompoundSkyRegion</span>
+<span class="go">region1: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (1., 2.)&gt;</span>
+<span class="go">radius: 5.0 deg</span>
+<span class="go">region2: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (356., 3.)&gt;</span>
+<span class="go">radius: 3.0 deg</span>
+<span class="go">operator: &lt;built-in function or_&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="symmetric-difference-xor">
+<h2>Symmetric Difference (XOR)<a class="headerlink" href="#symmetric-difference-xor" title="Link to this heading">¶</a></h2>
+<p>To create a symmetric difference compound region, use either the <code class="docutils literal notranslate"><span class="pre">^</span></code>
+operator or the <a class="reference internal" href="api/regions.Region.html#regions.Region.symmetric_difference" title="regions.Region.symmetric_difference"><code class="xref py py-meth docutils literal notranslate"><span class="pre">symmetric_difference()</span></code></a> method:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">comp_region</span> <span class="o">=</span> <span class="n">circle1</span> <span class="o">^</span> <span class="n">circle2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">comp_region</span><span class="p">)</span>
+<span class="go">Region: CompoundSkyRegion</span>
+<span class="go">region1: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (1., 2.)&gt;</span>
+<span class="go">radius: 5.0 deg</span>
+<span class="go">region2: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (356., 3.)&gt;</span>
+<span class="go">radius: 3.0 deg</span>
+<span class="go">operator: &lt;built-in function xor&gt;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">comp_region</span> <span class="o">=</span> <span class="n">circle1</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="n">circle2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">comp_region</span><span class="p">)</span>
+<span class="go">Region: CompoundSkyRegion</span>
+<span class="go">region1: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (1., 2.)&gt;</span>
+<span class="go">radius: 5.0 deg</span>
+<span class="go">region2: Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (356., 3.)&gt;</span>
+<span class="go">radius: 3.0 deg</span>
+<span class="go">operator: &lt;built-in function xor&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="example-illustrating-compound-regions">
+<h2>Example Illustrating Compound Regions<a class="headerlink" href="#example-illustrating-compound-regions" title="Link to this heading">¶</a></h2>
+<p>The following examples demonstrate how to combine planar sky regions
+and spherical sky regions, with the same circle centers and radii.</p>
+<p>(<a class="reference download internal" download="" href="_downloads/e8e2921172e07af672c04fbd96cbf2c2/compound-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/1ab25de5a046784f35a2b00862bd0a58/compound-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/78210221ba1bd5def8cf36d9caba96ca/compound-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/38aa7097b00771e1bb1bbf346b33da2a/compound-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/d889407f7b88314474125659980f707d/compound-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/compound-1.png" class="plot-directive" src="_images/compound-1.png" />
+</figure>
+<p>(<a class="reference download internal" download="" href="_downloads/cae791cbd9bd21d95a2a81e828542af3/compound-2.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/60e9754808ef3f1259260bc7fb896168/compound-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/afc54bef6e04c2e4b5d9b76910599362/compound-2.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/2ed1a8b5ac68caff272344ae3376e710/compound-2.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/43d8fbebf2a24b70e7c23534e9b3b5a1/compound-2.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/compound-2.png" class="plot-directive" src="_images/compound-2.png" />
+</figure>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Combining Regions</a><ul>
+<li><a class="reference internal" href="#intersection-and">Intersection (AND)</a></li>
+<li><a class="reference internal" href="#union-or">Union (OR)</a></li>
+<li><a class="reference internal" href="#symmetric-difference-xor">Symmetric Difference (XOR)</a></li>
+<li><a class="reference internal" href="#example-illustrating-compound-regions">Example Illustrating Compound Regions</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/compound.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

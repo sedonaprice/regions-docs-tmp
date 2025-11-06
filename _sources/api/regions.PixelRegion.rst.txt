@@ -1,0 +1,49 @@
+PixelRegion
+===========
+
+.. currentmodule:: regions
+
+.. autoclass:: PixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~PixelRegion.area
+      ~PixelRegion.bounding_box
+      ~PixelRegion.meta
+      ~PixelRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~PixelRegion.as_artist
+      ~PixelRegion.contains
+      ~PixelRegion.intersection
+      ~PixelRegion.plot
+      ~PixelRegion.symmetric_difference
+      ~PixelRegion.to_mask
+      ~PixelRegion.to_sky
+      ~PixelRegion.to_spherical_sky
+      ~PixelRegion.union
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: area
+   .. autoattribute:: bounding_box
+   .. autoattribute:: meta
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: contains
+   .. automethod:: intersection
+   .. automethod:: plot
+   .. automethod:: symmetric_difference
+   .. automethod:: to_mask
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky
+   .. automethod:: union

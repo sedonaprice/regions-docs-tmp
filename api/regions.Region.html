@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Region &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="RegionBoundingBox" href="regions.RegionBoundingBox.html" />
+    <link rel="prev" title="RectangleSkyRegion" href="regions.RectangleSkyRegion.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.RegionBoundingBox.html" title="RegionBoundingBox">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.RectangleSkyRegion.html" title="RectangleSkyRegion">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>Region</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="region">
+<h1>Region<a class="headerlink" href="#region" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.Region">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">Region</span></span><a class="reference internal" href="../_modules/regions/core/core.html#Region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.Region" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Base class for all regions.</p>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.Region.copy" title="regions.Region.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>(**changes)</p></td>
+<td><p>Make an independent (deep) copy.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.Region.get_formats" title="regions.Region.get_formats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_formats</span></code></a>()</p></td>
+<td><p>Get the registered I/O formats as a Table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.Region.intersection" title="regions.Region.intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code></a>(other)</p></td>
+<td><p>Return a region representing the intersection of this region with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.Region.serialize" title="regions.Region.serialize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serialize</span></code></a>([format])</p></td>
+<td><p>Serialize the region to a region string or table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.Region.symmetric_difference" title="regions.Region.symmetric_difference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symmetric_difference</span></code></a>(other)</p></td>
+<td><p>Return the union of the two regions minus any areas contained in the intersection of the two regions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.Region.union" title="regions.Region.union"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union</span></code></a>(other)</p></td>
+<td><p>Return a region representing the union of this region with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.Region.write" title="regions.Region.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(filename[, format, overwrite])</p></td>
+<td><p>Write the region to a region file in the specified format.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.Region.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">changes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#Region.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.Region.copy" title="Link to this definition">¶</a></dt>
+<dd><p>Make an independent (deep) copy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>**changes</strong><span class="classifier">dict</span></dt><dd><p>Changes to make to the region parameters.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.Region.get_formats">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_formats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#Region.get_formats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.Region.get_formats" title="Link to this definition">¶</a></dt>
+<dd><p>Get the registered I/O formats as a Table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.Region.intersection">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#Region.intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.Region.intersection" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region representing the intersection of this region
+with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a></span></dt><dd><p>The other region to use for the intersection.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.Region.serialize">
+<span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#Region.serialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.Region.serialize" title="Link to this definition">¶</a></dt>
+<dd><p>Serialize the region to a region string or table.</p>
+<p>This method allows serializing regions in many supported data
+formats, e.g.,:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reg1_str</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ds9&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg2_str</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;crtf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg3_tbl</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fits&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A list of the available formats for <a class="reference internal" href="#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a> is
+available using:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Region</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Region</span><span class="o">.</span><span class="n">get_formats</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>format</strong><span class="classifier">str, optional</span></dt><dd><p>The file format specifier.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Keyword arguments passed to the data serializer.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.Region.symmetric_difference">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">symmetric_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#Region.symmetric_difference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.Region.symmetric_difference" title="Link to this definition">¶</a></dt>
+<dd><p>Return the union of the two regions minus any areas contained in
+the intersection of the two regions.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a></span></dt><dd><p>The other region to use for the symmetric difference.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.Region.union">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#Region.union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.Region.union" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region representing the union of this region with
+<code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a></span></dt><dd><p>The other region to use for the union.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.Region.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#Region.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.Region.write" title="Link to this definition">¶</a></dt>
+<dd><p>Write the region to a region file in the specified format.</p>
+<p>This method allows writing a file in many supported data
+formats, e.g.,:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;new_regions.reg&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ds9&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;new_regions.crtf&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;crtf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;new_regions.fits&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;fits&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A list of the available formats for <a class="reference internal" href="#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a> is
+available using:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Region</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Region</span><span class="o">.</span><span class="n">get_formats</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>The filename or URL of the file to write.</p>
+</dd>
+<dt><strong>format</strong><span class="classifier">str, optional</span></dt><dd><p>The file format specifier.</p>
+</dd>
+<dt><strong>overwrite</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, overwrite the output file if it exists. Raises an
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OSError</span></code></a> if False and the output file exists. Default is
+False.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Keyword arguments passed to the data writer.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Region</a><ul>
+<li><a class="reference internal" href="#regions.Region"><code class="docutils literal notranslate"><span class="pre">Region</span></code></a><ul>
+<li><a class="reference internal" href="#regions.Region.copy"><code class="docutils literal notranslate"><span class="pre">Region.copy()</span></code></a></li>
+<li><a class="reference internal" href="#regions.Region.get_formats"><code class="docutils literal notranslate"><span class="pre">Region.get_formats()</span></code></a></li>
+<li><a class="reference internal" href="#regions.Region.intersection"><code class="docutils literal notranslate"><span class="pre">Region.intersection()</span></code></a></li>
+<li><a class="reference internal" href="#regions.Region.serialize"><code class="docutils literal notranslate"><span class="pre">Region.serialize()</span></code></a></li>
+<li><a class="reference internal" href="#regions.Region.symmetric_difference"><code class="docutils literal notranslate"><span class="pre">Region.symmetric_difference()</span></code></a></li>
+<li><a class="reference internal" href="#regions.Region.union"><code class="docutils literal notranslate"><span class="pre">Region.union()</span></code></a></li>
+<li><a class="reference internal" href="#regions.Region.write"><code class="docutils literal notranslate"><span class="pre">Region.write()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.Region.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

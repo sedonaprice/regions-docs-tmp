@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Bounding Regions for On-Sky Spatial Searches &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plotting Regions with Matplotlib" href="plotting.html" />
+    <link rel="prev" title="Coordinate Frame Transformation of Spherical Regions" href="spherical_frame_transform.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="plotting.html" title="Plotting Regions with Matplotlib">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="spherical_frame_transform.html" title="Coordinate Frame Transformation of Spherical Regions">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Bounding Regions for On-Sky Spatial Searches</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="bounding-regions-for-on-sky-spatial-searches">
+<span id="spherical-bounding-regions"></span><h1>Bounding Regions for On-Sky Spatial Searches<a class="headerlink" href="#bounding-regions-for-on-sky-spatial-searches" title="Link to this heading">¶</a></h1>
+<p>The <a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> classes also provide
+<a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.bounding_circle" title="regions.SphericalSkyRegion.bounding_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_circle</span></code></a> and
+<a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.bounding_lonlat" title="regions.SphericalSkyRegion.bounding_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_lonlat</span></code></a> properties,
+yielding the spherical circle and longitude and latitude ranges
+enclosing the region, respectively.</p>
+<p>This bounding information can be helpful when querying databases
+to select objects with tools such as
+<a class="reference external" href="https://astroquery.readthedocs.io/en/latest/">Astroquery</a>
+or <a class="reference external" href="https://pyvo.readthedocs.io/en/latest/dal/index.html#pyvo-tap">PyVO’s TAP service</a>.</p>
+<p>For many regions of interest, the spherical region properties can
+directly provide the query search boundary
+(e.g., the center and radius for a circle for a cone search,
+or the vertices for a polygon region search).
+However, this depends on what query shapes are supported by
+the database.</p>
+<p>When a particular region shape is not supported by a
+database, these bounding properties can be used to define a
+“padded” search, and the results can then be downselected to only
+those within the region using the <a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.contains" title="regions.SphericalSkyRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains()</span></code></a>.</p>
+<p>(In particular, the bounding properties may be helpful when a
+coordinate frame transformation is necessary to match the database
+coordinate system; see <a class="reference internal" href="spherical_frame_transform.html#spherical-frame-transform"><span class="std std-ref">Coordinate Frame Transformation of Spherical Regions</span></a>.)</p>
+<p>As an example, let’s create two spherical regions, a circle and range,
+and determine their bounding longitude/latitude spans and circle:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">,</span> <span class="n">RangeSphericalSkyRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sph_circ</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="n">SkyCoord</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="o">-</span><span class="mi">40</span><span class="p">,</span><span class="n">unit</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+<span class="gp">... </span>                                             <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;galactic&quot;</span><span class="p">),</span>
+<span class="gp">... </span>                                    <span class="mi">30</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sph_circ</span><span class="o">.</span><span class="n">bounding_lonlat</span><span class="p">)</span>
+<span class="go">(&lt;Longitude [ 59.25424338, 140.74575662] deg&gt;, &lt;Latitude [-70., -10.] deg&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sph_range</span> <span class="o">=</span> <span class="n">RangeSphericalSkyRegion</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="s2">&quot;galactic&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                                    <span class="n">longitude_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">45</span><span class="p">,</span><span class="mi">45</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+<span class="gp">... </span>                                    <span class="n">latitude_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">45</span><span class="p">]</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sph_range</span><span class="o">.</span><span class="n">bounding_circle</span><span class="p">)</span>
+<span class="go">Region: CircleSphericalSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (0., 16.32494994)&gt;</span>
+<span class="go">radius: 47.2657903991002 deg</span>
+</pre></div>
+</div>
+<p>(The bounding circle of a circle is always itself, and in the original
+coordinate frame, the bounding longitude/latitude of a
+spherical range is equivalent to the region.)</p>
+<p>Let’s now transform these regions into the ICRS frame,
+and obtain the new bounds, including the new frame longitude/latitude
+bounds on the transformed Range region:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sph_circ_transf</span> <span class="o">=</span> <span class="n">sph_circ</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sph_circ_transf</span><span class="o">.</span><span class="n">bounding_lonlat</span><span class="p">)</span>
+<span class="go">(&lt;Longitude [322.34509896,  26.43985125] deg&gt;, &lt;Latitude [-10.44033547,  49.55966453] deg&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sph_range_transf</span> <span class="o">=</span> <span class="n">sph_range</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sph_range_transf</span><span class="o">.</span><span class="n">bounding_lonlat</span><span class="p">)</span>
+<span class="go">(&lt;Longitude [201.75437889, 288.42757587] deg&gt;, &lt;Latitude [-60.49575721,  27.00079109] deg&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sph_range_transf</span><span class="o">.</span><span class="n">bounding_circle</span><span class="p">)</span>
+<span class="go">Region: CircleSphericalSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="go">    (251.64674219, -19.64298539)&gt;</span>
+<span class="go">radius: 47.26579039910021 deg</span>
+</pre></div>
+</div>
+<p>These bounding circles and longitude/latitude are visualized below for both
+the original and transformed coordinate frames.</p>
+<p>(<a class="reference download internal" download="" href="_downloads/821ea367ca070ba078797899c135e966/spherical_bounding_regions-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/1f1c5d3670ecc7d29f7e2dba5a5bd55a/spherical_bounding_regions-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/c5c65f87449b5332cf5f84cf0f9b7209/spherical_bounding_regions-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/30b956221d50496f2217f4f77957a421/spherical_bounding_regions-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/e1ada37bddd6114fa69e48e935575b44/spherical_bounding_regions-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/spherical_bounding_regions-1.png" class="plot-directive" src="_images/spherical_bounding_regions-1.png" />
+</figure>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Bounding Regions for On-Sky Spatial Searches</a></li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/spherical_bounding_regions.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

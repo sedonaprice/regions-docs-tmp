@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>PixelRegion &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PointPixelRegion" href="regions.PointPixelRegion.html" />
+    <link rel="prev" title="PixCoord" href="regions.PixCoord.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.PointPixelRegion.html" title="PointPixelRegion">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.PixCoord.html" title="PixCoord">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>PixelRegion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="pixelregion">
+<h1>PixelRegion<a class="headerlink" href="#pixelregion" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.PixelRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">PixelRegion</span></span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regions.Region.html#regions.Region" title="regions.core.core.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a></p>
+<p>Base class for all regions defined in pixel coordinates.</p>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.PixelRegion.area" title="regions.PixelRegion.area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">area</span></code></a></p></td>
+<td><p>The exact analytical area of the region shape.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.PixelRegion.bounding_box" title="regions.PixelRegion.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a></p></td>
+<td><p>The minimal bounding box (in integer pixel coordinates) that contains the region.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.PixelRegion.meta" title="regions.PixelRegion.meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.PixelRegion.visual" title="regions.PixelRegion.visual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visual</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.PixelRegion.as_artist" title="regions.PixelRegion.as_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_artist</span></code></a>([origin])</p></td>
+<td><p>Convert to matplotlib patch object for this region.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.PixelRegion.contains" title="regions.PixelRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code></a>(pixcoord)</p></td>
+<td><p>Check whether a position or positions fall inside the region.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.PixelRegion.intersection" title="regions.PixelRegion.intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code></a>(other)</p></td>
+<td><p>Return a region representing the intersection of this region with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.PixelRegion.plot" title="regions.PixelRegion.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([origin, ax])</p></td>
+<td><p>Plot the region on a matplotlib <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Axes</span></code></a> instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.PixelRegion.symmetric_difference" title="regions.PixelRegion.symmetric_difference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symmetric_difference</span></code></a>(other)</p></td>
+<td><p>Return the union of the two regions minus any areas contained in the intersection of the two regions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.PixelRegion.to_mask" title="regions.PixelRegion.to_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_mask</span></code></a>([mode, subpixels])</p></td>
+<td><p>Return a mask for the region.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.PixelRegion.to_sky" title="regions.PixelRegion.to_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_sky</span></code></a>(wcs)</p></td>
+<td><p>Return a region defined in sky coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.PixelRegion.to_spherical_sky" title="regions.PixelRegion.to_spherical_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_spherical_sky</span></code></a>([wcs, ...])</p></td>
+<td><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.PixelRegion.union" title="regions.PixelRegion.union"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union</span></code></a>(other)</p></td>
+<td><p>Return a region representing the union of this region with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.PixelRegion.area">
+<span class="sig-name descname"><span class="pre">area</span></span><a class="headerlink" href="#regions.PixelRegion.area" title="Link to this definition">¶</a></dt>
+<dd><p>The exact analytical area of the region shape.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.PixelRegion.bounding_box">
+<span class="sig-name descname"><span class="pre">bounding_box</span></span><a class="headerlink" href="#regions.PixelRegion.bounding_box" title="Link to this definition">¶</a></dt>
+<dd><p>The minimal bounding box (in integer pixel coordinates) that
+contains the region.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.PixelRegion.meta">
+<span class="sig-name descname"><span class="pre">meta</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#regions.PixelRegion.meta" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.PixelRegion.visual">
+<span class="sig-name descname"><span class="pre">visual</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#regions.PixelRegion.visual" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.PixelRegion.as_artist">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_artist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion.as_artist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion.as_artist" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to matplotlib patch object for this region.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>origin</strong><span class="classifier">array_like, optional</span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> pixel position of the origin of the displayed
+image.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Any keyword arguments accepted by
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Patch.html#matplotlib.patches.Patch" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Patch</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>patch</strong><span class="classifier"><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Patch.html#matplotlib.patches.Patch" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Patch</span></code></a></span></dt><dd><p>A matplotlib patch.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.PixelRegion.contains">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixcoord</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion.contains" title="Link to this definition">¶</a></dt>
+<dd><p>Check whether a position or positions fall inside the region.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>pixcoord</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The position or positions to check.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.PixelRegion.intersection">
+<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion.intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion.intersection" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region representing the intersection of this region
+with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a></span></dt><dd><p>The other region to use for the intersection.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.PixelRegion.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion.plot" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the region on a matplotlib <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Axes</span></code></a>
+instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>origin</strong><span class="classifier">array_like, optional</span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> pixel position of the origin of the displayed
+image.</p>
+</dd>
+<dt><strong>ax</strong><span class="classifier"><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Axes</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, optional</span></dt><dd><p>The matplotlib axes on which to plot.  If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, then the
+current <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Axes</span></code></a> instance is used.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Any keyword arguments accepted by
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Patch.html#matplotlib.patches.Patch" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Patch</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>artist</strong><span class="classifier"><a class="reference external" href="https://matplotlib.org/stable/api/artist_api.html#matplotlib.artist.Artist" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.artist.Artist</span></code></a></span></dt><dd><p>The matplotlib artist (typically a <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Patch.html#matplotlib.patches.Patch" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Patch</span></code></a>
+object) for the plotted region. The artist can be used, for
+example, when adding a plot legend.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.PixelRegion.symmetric_difference">
+<span class="sig-name descname"><span class="pre">symmetric_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion.symmetric_difference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion.symmetric_difference" title="Link to this definition">¶</a></dt>
+<dd><p>Return the union of the two regions minus any areas contained in
+the intersection of the two regions.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a></span></dt><dd><p>The other region to use for the symmetric difference.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.PixelRegion.to_mask">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'center'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subpixels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion.to_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion.to_mask" title="Link to this definition">¶</a></dt>
+<dd><p>Return a mask for the region.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>mode</strong><span class="classifier">{‘center’, ‘exact’, ‘subpixels’}, optional</span></dt><dd><p>The method used to determine the overlap of the region on
+the pixel grid. Not all options are available for all region
+types. Note that the more precise methods are generally
+slower. The following methods are available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'center'</span></code>:
+A pixel is considered to be entirely in or out of the
+region depending on whether its center is in or out of
+the region. The returned mask will contain values only
+of 0 (out) and 1 (in).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'exact'</span></code> (default):
+The exact fractional overlap of the region and each
+pixel is calculated. The returned mask will contain
+values between 0 and 1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'subpixel'</span></code>:
+A pixel is divided into subpixels (see the
+<code class="docutils literal notranslate"><span class="pre">subpixels</span></code> keyword), each of which are considered
+to be entirely in or out of the region depending
+on whether its center is in or out of the region.
+If <code class="docutils literal notranslate"><span class="pre">subpixels=1</span></code>, this method is equivalent to
+<code class="docutils literal notranslate"><span class="pre">'center'</span></code>. The returned mask will contain values
+between 0 and 1.</p></li>
+</ul>
+</div></blockquote>
+</dd>
+<dt><strong>subpixels</strong><span class="classifier">int, optional</span></dt><dd><p>For the <code class="docutils literal notranslate"><span class="pre">'subpixel'</span></code> mode, resample pixels by this factor
+in each dimension. That is, each pixel is divided into
+<code class="docutils literal notranslate"><span class="pre">subpixels</span> <span class="pre">**</span> <span class="pre">2</span></code> subpixels.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>mask</strong><span class="classifier"><a class="reference internal" href="regions.RegionMask.html#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMask</span></code></a></span></dt><dd><p>A mask for the region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.PixelRegion.to_sky">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion.to_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion.to_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region defined in sky coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a></span></dt><dd><p>The world coordinate system transformation to use to convert
+from pixels to sky coordinates.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a></span></dt><dd><p>The sky region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.PixelRegion.to_spherical_sky">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_spherical_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_boundary_distortions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discretize_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion.to_spherical_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion.to_spherical_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a>
+instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a> instance, optional</span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates. Required if transforming
+with boundary distortions (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).
+Ignored if boundary distortions not included.</p>
+</dd>
+<dt><strong>include_boundary_distortions</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, accounts for boundary boundary distortions in spherical to planar
+conversions, by discretizing the boundary and converting the boundary polygon.
+Default is False, which converts to an equivalent idealized shape.</p>
+</dd>
+<dt><strong>discretize_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Optional keyword arguments to pass to discretize_boundary() method
+if including boundary distortions.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>spherical_sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a></span></dt><dd><p>A spherical sky region, with an equivalent shape (if
+<code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is False), or a discretized polygon of
+the boundary (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.PixelRegion.union">
+<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#PixelRegion.union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.PixelRegion.union" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region representing the union of this region with
+<code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a></span></dt><dd><p>The other region to use for the union.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">PixelRegion</a><ul>
+<li><a class="reference internal" href="#regions.PixelRegion"><code class="docutils literal notranslate"><span class="pre">PixelRegion</span></code></a><ul>
+<li><a class="reference internal" href="#regions.PixelRegion.area"><code class="docutils literal notranslate"><span class="pre">PixelRegion.area</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.bounding_box"><code class="docutils literal notranslate"><span class="pre">PixelRegion.bounding_box</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.meta"><code class="docutils literal notranslate"><span class="pre">PixelRegion.meta</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.visual"><code class="docutils literal notranslate"><span class="pre">PixelRegion.visual</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.as_artist"><code class="docutils literal notranslate"><span class="pre">PixelRegion.as_artist()</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.contains"><code class="docutils literal notranslate"><span class="pre">PixelRegion.contains()</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.intersection"><code class="docutils literal notranslate"><span class="pre">PixelRegion.intersection()</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.plot"><code class="docutils literal notranslate"><span class="pre">PixelRegion.plot()</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.symmetric_difference"><code class="docutils literal notranslate"><span class="pre">PixelRegion.symmetric_difference()</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.to_mask"><code class="docutils literal notranslate"><span class="pre">PixelRegion.to_mask()</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.to_sky"><code class="docutils literal notranslate"><span class="pre">PixelRegion.to_sky()</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.to_spherical_sky"><code class="docutils literal notranslate"><span class="pre">PixelRegion.to_spherical_sky()</span></code></a></li>
+<li><a class="reference internal" href="#regions.PixelRegion.union"><code class="docutils literal notranslate"><span class="pre">PixelRegion.union()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.PixelRegion.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

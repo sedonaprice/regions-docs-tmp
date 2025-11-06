@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions._utils.examples &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions._utils.examples</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.table</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.table</span><span class="w"> </span><span class="kn">import</span> <span class="n">vstack</span> <span class="k">as</span> <span class="n">table_vstack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">lazyproperty</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.wcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">WCS</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.pixcoord</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;make_example_dataset&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="make_example_dataset">
+<a class="viewcode-back" href="../../../api/regions.make_example_dataset.html#regions.make_example_dataset">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_example_dataset</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;simulated&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make an example dataset.</span>
+
+<span class="sd">    This is a factory function for ``ExampleDataset`` objects.</span>
+
+<span class="sd">    The following config options are available (default values shown):</span>
+
+<span class="sd">    * ``crval = 0, 0``</span>
+<span class="sd">    * ``crpix = 180, 90``</span>
+<span class="sd">    * ``cdelt = -1, 1``</span>
+<span class="sd">    * ``shape = 180, 360``</span>
+<span class="sd">    * ``ctype = &#39;GLON-AIT&#39;, &#39;GLAT-AIT&#39;``</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : {&#39;simulated&#39;, &#39;fermi&#39;}</span>
+<span class="sd">        The dataset to use.</span>
+
+<span class="sd">    config : dict or None</span>
+<span class="sd">        Configuration options.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dataset : ``ExampleDataset``</span>
+<span class="sd">        An example dataset object.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Make an example dataset:</span>
+
+<span class="sd">    &gt;&gt;&gt; from regions import make_example_dataset</span>
+<span class="sd">    &gt;&gt;&gt; config = dict(crpix=(18, 9), cdelt=(-10, 10), shape=(18, 36))</span>
+<span class="sd">    &gt;&gt;&gt; dataset = make_example_dataset(data=&#39;simulated&#39;, config=config)</span>
+
+<span class="sd">    Access properties of the ``dataset`` object:</span>
+
+<span class="sd">    &gt;&gt;&gt; dataset.source_table   # doctest: +IGNORE_OUTPUT</span>
+<span class="sd">    &gt;&gt;&gt; dataset.event_table   # doctest: +IGNORE_OUTPUT</span>
+<span class="sd">    &gt;&gt;&gt; dataset.wcs   # doctest: +IGNORE_OUTPUT</span>
+<span class="sd">    &gt;&gt;&gt; dataset.image   # doctest: +IGNORE_OUTPUT</span>
+<span class="sd">    &gt;&gt;&gt; dataset.hdu_list   # doctest: +IGNORE_OUTPUT</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;simulated&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ExampleDatasetSimulated</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;fermi&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ExampleDatasetFermi</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid selection data: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ExampleDataset</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for an example dataset.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : dict or None</span>
+<span class="sd">        Configuration options.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">config_default</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="c1"># These parameters are FITS WCS order: (x, y)</span>
+        <span class="n">config_default</span><span class="p">[</span><span class="s1">&#39;crval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="n">config_default</span><span class="p">[</span><span class="s1">&#39;crpix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">90</span>
+        <span class="n">config_default</span><span class="p">[</span><span class="s1">&#39;cdelt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+
+        <span class="c1"># This parameter is numpy order: (y, x)</span>
+        <span class="n">config_default</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">360</span>
+        <span class="n">config_default</span><span class="p">[</span><span class="s1">&#39;ctype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;GLON-AIT&#39;</span><span class="p">,</span> <span class="s1">&#39;GLAT-AIT&#39;</span>
+
+        <span class="c1"># Callers can update the default config parameters they want.</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">:</span>
+            <span class="n">config_default</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config_default</span>
+
+    <span class="nd">@lazyproperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wcs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        World coordinate system (`~astropy.wcs.WCS`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wcs</span> <span class="o">=</span> <span class="n">WCS</span><span class="p">(</span><span class="n">naxis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">crval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;crval&#39;</span><span class="p">]</span>
+        <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">crpix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;crpix&#39;</span><span class="p">]</span>
+        <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">cdelt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;cdelt&#39;</span><span class="p">]</span>
+        <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">ctype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ctype&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">wcs</span>
+
+    <span class="nd">@lazyproperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a &quot;counts&quot; image (`~astropy.io.fits.ImageHDU`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_table</span>
+        <span class="n">skycoord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="s1">&#39;GLON&#39;</span><span class="p">],</span> <span class="n">events</span><span class="p">[</span><span class="s1">&#39;GLAT&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span>
+                            <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;galactic&#39;</span><span class="p">)</span>
+        <span class="n">pixcoord</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="o">.</span><span class="n">from_sky</span><span class="p">(</span><span class="n">skycoord</span><span class="o">=</span><span class="n">skycoord</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wcs</span><span class="p">)</span>
+
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">pixcoord</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">pixcoord</span><span class="o">.</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+        <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">to_header</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fits</span><span class="o">.</span><span class="n">ImageHDU</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;image&#39;</span><span class="p">)</span>
+
+    <span class="nd">@lazyproperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hdu_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        HDU list (`~astropy.io.fits.HDUList`).</span>
+
+<span class="sd">        Different pieces collected together in a HDU list.</span>
+
+<span class="sd">        This method makes it easy to write the example dataset to a FITS</span>
+<span class="sd">        file with multiple HDUs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hdu_list</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">HDUList</span><span class="p">()</span>
+
+        <span class="n">hdu</span> <span class="o">=</span> <span class="n">_table_to_bintable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_table</span><span class="p">)</span>
+        <span class="n">hdu</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;sources&#39;</span>
+        <span class="n">hdu_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hdu</span><span class="p">)</span>
+
+        <span class="n">hdu</span> <span class="o">=</span> <span class="n">_table_to_bintable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_table</span><span class="p">)</span>
+        <span class="n">hdu</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;events&#39;</span>
+        <span class="n">hdu_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hdu</span><span class="p">)</span>
+
+        <span class="n">hdu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span>
+        <span class="n">hdu</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;image&#39;</span>
+        <span class="n">hdu_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hdu</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">hdu_list</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ExampleDatasetSimulated</span><span class="p">(</span><span class="n">ExampleDataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example simulated dataset.</span>
+
+<span class="sd">    Similar to `ExampleDatasetFermi`, but simulated, not requiring any</span>
+<span class="sd">    data files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@lazyproperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">source_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Source table  (`~astropy.table.Table`).</span>
+
+<span class="sd">        Columns: GLON, GLAT, COUNTS</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
+        <span class="n">table</span><span class="p">[</span><span class="s1">&#39;GLON&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">45</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="p">[</span><span class="s1">&#39;GLAT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">45</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="p">[</span><span class="s1">&#39;COUNTS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">table</span>
+
+    <span class="nd">@lazyproperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">event_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Event table (`~astropy.table.Table`).</span>
+
+<span class="sd">        Columns: GLON, GLAT, SOURCE_IDX</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create event list table for each source</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_table</span><span class="p">:</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="s1">&#39;GLON&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s1">&#39;COUNTS&#39;</span><span class="p">])</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="s1">&#39;GLAT&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s1">&#39;COUNTS&#39;</span><span class="p">])</span>
+
+            <span class="c1"># TODO: scatter positions assuming Gaussian PSF on the sky</span>
+            <span class="c1"># using SkyOffsetFrame.</span>
+            <span class="c1"># coord = SkyCoord(lon, lat, unit=&#39;deg&#39;, frame=&#39;galactic&#39;)</span>
+
+            <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;GLON&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;GLAT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
+            <span class="n">table</span><span class="p">[</span><span class="s1">&#39;SOURCE_IDX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">index</span>
+
+            <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+        <span class="c1"># Stack all tables together</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">table_vstack</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">table</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ExampleDatasetFermi</span><span class="p">(</span><span class="n">ExampleDataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example real dataset using Fermi-LAT 2FHL source catalog and event</span>
+<span class="sd">    list.</span>
+
+<span class="sd">    When saving the HDU list to a FITS file, the file size is 748K, with</span>
+<span class="sd">    the 65k EVENTS taking up most of the space.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@lazyproperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">source_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Source table  (`~astropy.table.Table`).</span>
+
+<span class="sd">        Columns: GLON, GLAT, COUNTS</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://github.com/gammapy/gammapy-extra/raw/master/datasets/&#39;</span>
+               <span class="s1">&#39;fermi_2fhl/gll_psch_v08.fit.gz&#39;</span><span class="p">)</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">hdu</span><span class="o">=</span><span class="s1">&#39;2FHL Source Catalog&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="s1">&#39;Npred&#39;</span><span class="p">,</span> <span class="s1">&#39;COUNTS&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">keep_columns</span><span class="p">([</span><span class="s1">&#39;GLON&#39;</span><span class="p">,</span> <span class="s1">&#39;GLAT&#39;</span><span class="p">,</span> <span class="s1">&#39;COUNTS&#39;</span><span class="p">])</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">table</span>
+
+    <span class="nd">@lazyproperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">event_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Event table (`~astropy.table.Table`).</span>
+
+<span class="sd">        Columns: GLON, GLAT</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://github.com/gammapy/gammapy-extra/raw/master/datasets/&#39;</span>
+               <span class="s1">&#39;fermi_2fhl/2fhl_events.fits.gz&#39;</span><span class="p">)</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">hdu</span><span class="o">=</span><span class="s1">&#39;EVENTS&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;GLON&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;GLAT&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">keep_columns</span><span class="p">([</span><span class="s1">&#39;GLON&#39;</span><span class="p">,</span> <span class="s1">&#39;GLAT&#39;</span><span class="p">])</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">table</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_table_to_bintable</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a `~astropy.table.Table` to a `astropy.io.fits.BinTable`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">Header</span><span class="p">()</span>
+    <span class="n">header</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fits</span><span class="o">.</span><span class="n">BinTableHDU</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">make_example_dataset</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;simulated&#39;</span><span class="p">)</span>
+    <span class="n">dataset</span><span class="o">.</span><span class="n">hdu_list</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="s1">&#39;example-dataset-simulated.fits&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">make_example_dataset</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;fermi&#39;</span><span class="p">)</span>
+    <span class="n">dataset</span><span class="o">.</span><span class="n">hdu_list</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="s1">&#39;example-dataset-fermi.fits&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

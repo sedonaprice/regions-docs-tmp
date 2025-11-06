@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Reference/API &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="make_example_dataset" href="api/regions.make_example_dataset.html" />
+    <link rel="prev" title="Converting Regions to Shapely Objects" href="shapely.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="api/regions.make_example_dataset.html" title="make_example_dataset">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="shapely.html" title="Converting Regions to Shapely Objects">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Reference/API</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="reference-api">
+<h1>Reference/API<a class="headerlink" href="#reference-api" title="Link to this heading">¶</a></h1>
+<section id="module-regions">
+<span id="regions-package"></span><h2>regions Package<a class="headerlink" href="#module-regions" title="Link to this heading">¶</a></h2>
+<p>Regions is Astropy coordinated package to provide tools for region
+handling.</p>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.make_example_dataset.html#regions.make_example_dataset" title="regions.make_example_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_example_dataset</span></code></a>([data, config])</p></td>
+<td><p>Make an example dataset.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.AnnulusPixelRegion.html#regions.AnnulusPixelRegion" title="regions.AnnulusPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnnulusPixelRegion</span></code></a>()</p></td>
+<td><p>A base class for annulus pixel regions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.AnnulusSphericalSkyRegion.html#regions.AnnulusSphericalSkyRegion" title="regions.AnnulusSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnnulusSphericalSkyRegion</span></code></a>()</p></td>
+<td><p>A base class for spherical sky annulus regions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.AsymmetricAnnulusPixelRegion.html#regions.AsymmetricAnnulusPixelRegion" title="regions.AsymmetricAnnulusPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AsymmetricAnnulusPixelRegion</span></code></a>(center, ...[, ...])</p></td>
+<td><p>Helper class for asymmetric annuli sky regions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.AsymmetricAnnulusSkyRegion.html#regions.AsymmetricAnnulusSkyRegion" title="regions.AsymmetricAnnulusSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion</span></code></a>(center, ...[, ...])</p></td>
+<td><p>Helper class for asymmetric annuli sky regions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.CRTFRegionParserError.html#regions.CRTFRegionParserError" title="regions.CRTFRegionParserError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CRTFRegionParserError</span></code></a></p></td>
+<td><p>A generic error class for CRTF region parsing.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.CRTFRegionParserWarning.html#regions.CRTFRegionParserWarning" title="regions.CRTFRegionParserWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CRTFRegionParserWarning</span></code></a></p></td>
+<td><p>A generic warning class for CRTF region parsing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.CircleAnnulusPixelRegion.html#regions.CircleAnnulusPixelRegion" title="regions.CircleAnnulusPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CircleAnnulusPixelRegion</span></code></a>(center, ...[, ...])</p></td>
+<td><p>A circular annulus in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.CircleAnnulusSkyRegion.html#regions.CircleAnnulusSkyRegion" title="regions.CircleAnnulusSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CircleAnnulusSkyRegion</span></code></a>(center, inner_radius, ...)</p></td>
+<td><p>A circular annulus in sky coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.CircleAnnulusSphericalSkyRegion.html#regions.CircleAnnulusSphericalSkyRegion" title="regions.CircleAnnulusSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CircleAnnulusSphericalSkyRegion</span></code></a>(center, ...)</p></td>
+<td><p>Class for a circular annulus sky region, where the circular annulus is interpreted within a spherical geometry reference frame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.CirclePixelRegion.html#regions.CirclePixelRegion" title="regions.CirclePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CirclePixelRegion</span></code></a>(center, radius[, meta, visual])</p></td>
+<td><p>A circle defined using pixel coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.CircleSkyRegion.html#regions.CircleSkyRegion" title="regions.CircleSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CircleSkyRegion</span></code></a>(center, radius[, meta, visual])</p></td>
+<td><p>A circle defined using sky coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.CircleSphericalSkyRegion.html#regions.CircleSphericalSkyRegion" title="regions.CircleSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CircleSphericalSkyRegion</span></code></a>(center, radius[, ...])</p></td>
+<td><p>Class for a circular sky region, where the circle is interpreted within a spherical geometry reference frame.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.ComplexSphericalSkyRegion.html#regions.ComplexSphericalSkyRegion" title="regions.ComplexSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ComplexSphericalSkyRegion</span></code></a>()</p></td>
+<td><p>Base class for complex cases, where the definitional parameters do not / cannot transform between coordinate frames (including RangeSphericalSkyRegion).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.CompoundPixelRegion.html#regions.CompoundPixelRegion" title="regions.CompoundPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompoundPixelRegion</span></code></a>(region1, region2, operator)</p></td>
+<td><p>A class that represents the logical combination of two regions in pixel coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.CompoundSkyRegion.html#regions.CompoundSkyRegion" title="regions.CompoundSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompoundSkyRegion</span></code></a>(region1, region2, operator)</p></td>
+<td><p>A class that represents the logical combination of two regions in sky coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.CompoundSphericalSkyRegion.html#regions.CompoundSphericalSkyRegion" title="regions.CompoundSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompoundSphericalSkyRegion</span></code></a>(region1, region2, ...)</p></td>
+<td><p>A class that represents the logical combination of two regions in spherical sky coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.EllipseAnnulusPixelRegion.html#regions.EllipseAnnulusPixelRegion" title="regions.EllipseAnnulusPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion</span></code></a>(center, ...[, ...])</p></td>
+<td><p>A elliptical annulus in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.EllipseAnnulusSkyRegion.html#regions.EllipseAnnulusSkyRegion" title="regions.EllipseAnnulusSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EllipseAnnulusSkyRegion</span></code></a>(center, inner_width, ...)</p></td>
+<td><p>A elliptical annulus in <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.EllipsePixelRegion.html#regions.EllipsePixelRegion" title="regions.EllipsePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EllipsePixelRegion</span></code></a>(center, width, height[, ...])</p></td>
+<td><p>An ellipse in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.EllipseSkyRegion.html#regions.EllipseSkyRegion" title="regions.EllipseSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EllipseSkyRegion</span></code></a>(center, width, height[, ...])</p></td>
+<td><p>An ellipse defined using sky coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.LinePixelRegion.html#regions.LinePixelRegion" title="regions.LinePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinePixelRegion</span></code></a>(start, end[, meta, visual])</p></td>
+<td><p>A line in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.LineSkyRegion.html#regions.LineSkyRegion" title="regions.LineSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LineSkyRegion</span></code></a>(start, end[, meta, visual])</p></td>
+<td><p>A line in sky coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.LuneSphericalSkyRegion.html#regions.LuneSphericalSkyRegion" title="regions.LuneSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LuneSphericalSkyRegion</span></code></a>(center_gc1, center_gc2)</p></td>
+<td><p>Class for a spherical &quot;lune&quot;, the intersection between to great circles in spherical geometry.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.Meta.html#regions.Meta" title="regions.Meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Meta</span></code></a>([seq])</p></td>
+<td><p>A base class for region metadata.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>(x, y)</p></td>
+<td><p>A class for pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a>()</p></td>
+<td><p>Base class for all regions defined in pixel coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.PointPixelRegion.html#regions.PointPixelRegion" title="regions.PointPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointPixelRegion</span></code></a>(center[, meta, visual])</p></td>
+<td><p>A point position in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.PointSkyRegion.html#regions.PointSkyRegion" title="regions.PointSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointSkyRegion</span></code></a>(center[, meta, visual])</p></td>
+<td><p>A pixel region in sky coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.PolygonPixelRegion.html#regions.PolygonPixelRegion" title="regions.PolygonPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolygonPixelRegion</span></code></a>(vertices[, meta, visual, ...])</p></td>
+<td><p>A polygon in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.PolygonSkyRegion.html#regions.PolygonSkyRegion" title="regions.PolygonSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolygonSkyRegion</span></code></a>(vertices[, meta, visual])</p></td>
+<td><p>A polygon defined using vertices in sky coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.PolygonSphericalSkyRegion.html#regions.PolygonSphericalSkyRegion" title="regions.PolygonSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolygonSphericalSkyRegion</span></code></a>(vertices[, meta, ...])</p></td>
+<td><p>A spherical polygon defined using vertices in sky coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.RangeSphericalSkyRegion.html#regions.RangeSphericalSkyRegion" title="regions.RangeSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RangeSphericalSkyRegion</span></code></a>([frame, ...])</p></td>
+<td><p>Sky Region defined within a range of longitude and/or latitudes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.RectangleAnnulusPixelRegion.html#regions.RectangleAnnulusPixelRegion" title="regions.RectangleAnnulusPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectangleAnnulusPixelRegion</span></code></a>(center, ...[, ...])</p></td>
+<td><p>A rectangular annulus in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.RectangleAnnulusSkyRegion.html#regions.RectangleAnnulusSkyRegion" title="regions.RectangleAnnulusSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectangleAnnulusSkyRegion</span></code></a>(center, ...[, ...])</p></td>
+<td><p>A rectangular annulus in <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion" title="regions.RectanglePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectanglePixelRegion</span></code></a>(center, width, height)</p></td>
+<td><p>A rectangle in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.RectangleSkyRegion.html#regions.RectangleSkyRegion" title="regions.RectangleSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectangleSkyRegion</span></code></a>(center, width, height[, ...])</p></td>
+<td><p>A rectangle in sky coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a>()</p></td>
+<td><p>Base class for all regions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.RegionBoundingBox.html#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a>(ixmin, ixmax, iymin, iymax)</p></td>
+<td><p>A rectangular bounding box in integer (not float) pixel indices.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.RegionMask.html#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMask</span></code></a>(data, bbox)</p></td>
+<td><p>Class for a region mask.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a>([seq])</p></td>
+<td><p>A dictionary subclass that holds the meta attributes of the region.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>([seq])</p></td>
+<td><p>A dictionary subclass which holds the visual attributes of the region.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.Regions.html#regions.Regions" title="regions.Regions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Regions</span></code></a>([regions])</p></td>
+<td><p>Class to hold a list of <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a> objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.RegularPolygonPixelRegion.html#regions.RegularPolygonPixelRegion" title="regions.RegularPolygonPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion</span></code></a>(center, nvertices, ...)</p></td>
+<td><p>A regular polygon in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a>()</p></td>
+<td><p>Base class for all regions defined in celestial coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a>()</p></td>
+<td><p>Base class for all spherical sky regions (compared to the implicitly planar SkyRegions).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/regions.TextPixelRegion.html#regions.TextPixelRegion" title="regions.TextPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TextPixelRegion</span></code></a>(center, text[, meta, visual])</p></td>
+<td><p>A text string in pixel coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/regions.TextSkyRegion.html#regions.TextSkyRegion" title="regions.TextSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TextSkyRegion</span></code></a>(center, text[, meta, visual])</p></td>
+<td><p>A text string in sky coordinates.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Reference/API</a><ul>
+<li><a class="reference internal" href="#module-regions">regions Package</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/api.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

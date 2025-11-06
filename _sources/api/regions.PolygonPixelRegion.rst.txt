@@ -1,0 +1,45 @@
+PolygonPixelRegion
+==================
+
+.. currentmodule:: regions
+
+.. autoclass:: PolygonPixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~PolygonPixelRegion.area
+      ~PolygonPixelRegion.bounding_box
+      ~PolygonPixelRegion.meta
+      ~PolygonPixelRegion.vertices
+      ~PolygonPixelRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~PolygonPixelRegion.as_artist
+      ~PolygonPixelRegion.contains
+      ~PolygonPixelRegion.rotate
+      ~PolygonPixelRegion.to_mask
+      ~PolygonPixelRegion.to_sky
+      ~PolygonPixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: area
+   .. autoattribute:: bounding_box
+   .. autoattribute:: meta
+   .. autoattribute:: vertices
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: contains
+   .. automethod:: rotate
+   .. automethod:: to_mask
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

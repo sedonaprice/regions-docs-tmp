@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>RegularPolygonPixelRegion &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SkyRegion" href="regions.SkyRegion.html" />
+    <link rel="prev" title="Regions" href="regions.Regions.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.SkyRegion.html" title="SkyRegion">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.Regions.html" title="Regions">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>RegularPolygonPixelRegion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="regularpolygonpixelregion">
+<h1>RegularPolygonPixelRegion<a class="headerlink" href="#regularpolygonpixelregion" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.RegularPolygonPixelRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">RegularPolygonPixelRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nvertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle=&lt;Quantity</span> <span class="pre">0.</span> <span class="pre">deg&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visual=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/polygon.html#RegularPolygonPixelRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegularPolygonPixelRegion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regions.PolygonPixelRegion.html#regions.PolygonPixelRegion" title="regions.shapes.polygon.PolygonPixelRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">PolygonPixelRegion</span></code></a></p>
+<p>A regular polygon in pixel coordinates.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This class will be serialized as a generic polygon
+region, thus when read back in it will produce a
+<a class="reference internal" href="regions.PolygonPixelRegion.html#regions.PolygonPixelRegion" title="regions.PolygonPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolygonPixelRegion</span></code></a> object instead of a
+<a class="reference internal" href="#regions.RegularPolygonPixelRegion" title="regions.RegularPolygonPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion</span></code></a> object.</p>
+</div>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>center</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The position of the center of the polygon.</p>
+</dd>
+<dt><strong>nvertices</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The number of polygon vertices (or sides).</p>
+</dd>
+<dt><strong>radius</strong><span class="classifier">float</span></dt><dd><p>The distance from the center to any vertex. This is also known
+as the circumradius.</p>
+</dd>
+<dt><strong>angle</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a>, optional</span></dt><dd><p>The rotation angle of the polygon, measured anti-clockwise. If
+set to zero (the default), the polygon will point “up” following
+the <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.RegularPolygon.html#matplotlib.patches.RegularPolygon" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.RegularPolygon</span></code></a> convention.</p>
+</dd>
+<dt><strong>meta</strong><span class="classifier"><a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the meta attributes of the region.</p>
+</dd>
+<dt><strong>visual</strong><span class="classifier"><a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the visual meta attributes of the
+region.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>side_length</strong><span class="classifier">float</span></dt><dd><p>The side length.</p>
+</dd>
+<dt><strong>inradius</strong><span class="classifier">float</span></dt><dd><p>The radius of the largest circle contained entirely within the
+polygon. This value is identical to the length of a line segment
+from the polygon center to the midpoint of one of its sides
+(known as as the apothem).</p>
+</dd>
+<dt><strong>perimeter</strong><span class="classifier">float</span></dt><dd><p>The polygon perimeter.</p>
+</dd>
+<dt><strong>interior_angle</strong><span class="classifier">float</span></dt><dd><p>The polygon interior angle, which is the angle at each vertex on
+the inside of the polygon.</p>
+</dd>
+<dt><strong>exterior_angle</strong><span class="classifier">float</span></dt><dd><p>The polygon exterior angle, which is an angle at each vertex on
+the outside of the polygon.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span><span class="p">,</span> <span class="n">RegularPolygonPixelRegion</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">reg1</span> <span class="o">=</span> <span class="n">RegularPolygonPixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="n">reg1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">reg2</span> <span class="o">=</span> <span class="n">RegularPolygonPixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="n">reg2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">75</span><span class="p">)</span>
+<span class="n">reg3</span> <span class="o">=</span> <span class="n">RegularPolygonPixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">25</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="n">reg3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">75</span><span class="p">)</span>
+<span class="n">reg4</span> <span class="o">=</span> <span class="n">RegularPolygonPixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="n">reg4</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">reg5</span> <span class="o">=</span> <span class="n">RegularPolygonPixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="n">reg5</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;magenta&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/898fd2a2dbf0c7ec641f395c43488bb2/regions-RegularPolygonPixelRegion-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/f9d57a91049ecb0eb5f498e386022b23/regions-RegularPolygonPixelRegion-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/2b68cb3c7a8846974c87ea4b8a7284bd/regions-RegularPolygonPixelRegion-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/8d3a6cbce160d513fae40f31a4176890/regions-RegularPolygonPixelRegion-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="../_downloads/17c5391bf8b495b62e826d2337e3bb51/regions-RegularPolygonPixelRegion-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/regions-RegularPolygonPixelRegion-1.png" class="plot-directive" src="../_images/regions-RegularPolygonPixelRegion-1.png" />
+</figure>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegularPolygonPixelRegion.angle" title="regions.RegularPolygonPixelRegion.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a></p></td>
+<td><p>The rotation angle measured anti-clockwise as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegularPolygonPixelRegion.center" title="regions.RegularPolygonPixelRegion.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
+<td><p>The center pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegularPolygonPixelRegion.meta" title="regions.RegularPolygonPixelRegion.meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta</span></code></a></p></td>
+<td><p>The meta attributes as a <a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegularPolygonPixelRegion.nvertices" title="regions.RegularPolygonPixelRegion.nvertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nvertices</span></code></a></p></td>
+<td><p>The number of polygon vertices.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegularPolygonPixelRegion.radius" title="regions.RegularPolygonPixelRegion.radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code></a></p></td>
+<td><p>The distance from the center to any vertex in pixels as a float.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegularPolygonPixelRegion.visual" title="regions.RegularPolygonPixelRegion.visual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visual</span></code></a></p></td>
+<td><p>The visual attributes as a <a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegularPolygonPixelRegion.rotate" title="regions.RegularPolygonPixelRegion.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(center, angle)</p></td>
+<td><p>Rotate the region.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegularPolygonPixelRegion.to_polygon" title="regions.RegularPolygonPixelRegion.to_polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_polygon</span></code></a>()</p></td>
+<td><p>Return a <a class="reference internal" href="regions.PolygonPixelRegion.html#regions.PolygonPixelRegion" title="regions.PolygonPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolygonPixelRegion</span></code></a> of this region.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegularPolygonPixelRegion.angle">
+<span class="sig-name descname"><span class="pre">angle</span></span><a class="headerlink" href="#regions.RegularPolygonPixelRegion.angle" title="Link to this definition">¶</a></dt>
+<dd><p>The rotation angle measured anti-clockwise as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegularPolygonPixelRegion.center">
+<span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#regions.RegularPolygonPixelRegion.center" title="Link to this definition">¶</a></dt>
+<dd><p>The center pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegularPolygonPixelRegion.meta">
+<span class="sig-name descname"><span class="pre">meta</span></span><a class="headerlink" href="#regions.RegularPolygonPixelRegion.meta" title="Link to this definition">¶</a></dt>
+<dd><p>The meta attributes as a <a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegularPolygonPixelRegion.nvertices">
+<span class="sig-name descname"><span class="pre">nvertices</span></span><a class="headerlink" href="#regions.RegularPolygonPixelRegion.nvertices" title="Link to this definition">¶</a></dt>
+<dd><p>The number of polygon vertices.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegularPolygonPixelRegion.radius">
+<span class="sig-name descname"><span class="pre">radius</span></span><a class="headerlink" href="#regions.RegularPolygonPixelRegion.radius" title="Link to this definition">¶</a></dt>
+<dd><p>The distance from the center to any vertex in pixels as a float.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegularPolygonPixelRegion.visual">
+<span class="sig-name descname"><span class="pre">visual</span></span><a class="headerlink" href="#regions.RegularPolygonPixelRegion.visual" title="Link to this definition">¶</a></dt>
+<dd><p>The visual attributes as a <a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>.</p>
+</dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegularPolygonPixelRegion.rotate">
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/polygon.html#RegularPolygonPixelRegion.rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegularPolygonPixelRegion.rotate" title="Link to this definition">¶</a></dt>
+<dd><p>Rotate the region.</p>
+<p>Positive <code class="docutils literal notranslate"><span class="pre">angle</span></code> corresponds to counter-clockwise rotation.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>center</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The rotation center point.</p>
+</dd>
+<dt><strong>angle</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html#astropy.coordinates.Angle" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle</span></code></a></span></dt><dd><p>The rotation angle.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>region</strong><span class="classifier"><a class="reference internal" href="regions.PolygonPixelRegion.html#regions.PolygonPixelRegion" title="regions.PolygonPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolygonPixelRegion</span></code></a></span></dt><dd><p>The rotated region (which is an independent copy).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegularPolygonPixelRegion.to_polygon">
+<span class="sig-name descname"><span class="pre">to_polygon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/polygon.html#RegularPolygonPixelRegion.to_polygon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegularPolygonPixelRegion.to_polygon" title="Link to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="regions.PolygonPixelRegion.html#regions.PolygonPixelRegion" title="regions.PolygonPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolygonPixelRegion</span></code></a> of this region.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">RegularPolygonPixelRegion</a><ul>
+<li><a class="reference internal" href="#regions.RegularPolygonPixelRegion"><code class="docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion</span></code></a><ul>
+<li><a class="reference internal" href="#regions.RegularPolygonPixelRegion.angle"><code class="docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion.angle</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegularPolygonPixelRegion.center"><code class="docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion.center</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegularPolygonPixelRegion.meta"><code class="docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion.meta</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegularPolygonPixelRegion.nvertices"><code class="docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion.nvertices</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegularPolygonPixelRegion.radius"><code class="docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion.radius</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegularPolygonPixelRegion.visual"><code class="docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion.visual</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegularPolygonPixelRegion.rotate"><code class="docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion.rotate()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegularPolygonPixelRegion.to_polygon"><code class="docutils literal notranslate"><span class="pre">RegularPolygonPixelRegion.to_polygon()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.RegularPolygonPixelRegion.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

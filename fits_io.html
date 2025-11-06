@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>FITS Region File Format Limitations &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Converting Regions to Shapely Objects" href="shapely.html" />
+    <link rel="prev" title="DS9 Region File Format Limitations" href="ds9_io.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="shapely.html" title="Converting Regions to Shapely Objects">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="ds9_io.html" title="DS9 Region File Format Limitations">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="region_io.html" accesskey="U">Reading/Writing Region Files</a> &#187;</li>
+      
+      <li>FITS Region File Format Limitations</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="fits-region-file-format-limitations">
+<h1>FITS Region File Format Limitations<a class="headerlink" href="#fits-region-file-format-limitations" title="Link to this heading">¶</a></h1>
+<section id="region-shapes">
+<h2>Region Shapes<a class="headerlink" href="#region-shapes" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>FITS regions are specified in pixel units, thus a <a class="reference internal" href="api/regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a>
+cannot be serialized to the FITS region format. Regions are always
+parsed and serialized as <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a> objects when using the
+FITS region format.</p></li>
+<li><p>When reading a <code class="docutils literal notranslate"><span class="pre">elliptannulus</span></code>, the first <code class="docutils literal notranslate"><span class="pre">ROTANG</span></code> will be used
+for both the inner and outer ellipse. The second <code class="docutils literal notranslate"><span class="pre">ROTANG</span></code> will be
+ignored. In other words, you cannot have an elliptical annulus where the
+inner and outer ellipse have different rotation angles.</p></li>
+<li><p>Shapes where the value in the SHAPE column is preceded by an exclamation
+mark (e.g., <code class="docutils literal notranslate"><span class="pre">!circle</span></code>) will be read in as a <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a>
+object and have <code class="docutils literal notranslate"><span class="pre">include</span> <span class="pre">=</span> <span class="pre">0</span></code> in their <code class="docutils literal notranslate"><span class="pre">meta</span></code> dictionary. When
+such objects are serialized, their shape will be prepended by <code class="docutils literal notranslate"><span class="pre">!</span></code>.</p></li>
+<li><p>The FITS <code class="docutils literal notranslate"><span class="pre">box</span></code>, <code class="docutils literal notranslate"><span class="pre">rotbox</span></code>, <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, and <code class="docutils literal notranslate"><span class="pre">rotrectangle</span></code>
+shapes will all be parsed as a <a class="reference internal" href="api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion" title="regions.RectanglePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectanglePixelRegion</span></code></a>. In
+turn, <a class="reference internal" href="api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion" title="regions.RectanglePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectanglePixelRegion</span></code></a> is always serialized as a
+<code class="docutils literal notranslate"><span class="pre">rotbox</span></code> shape.</p></li>
+<li><p>The following <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a> classes do not have corresponding
+FITS shapes and therefore are not supported (a warning will be raised):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="api/regions.RectangleAnnulusPixelRegion.html#regions.RectangleAnnulusPixelRegion" title="regions.RectangleAnnulusPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectangleAnnulusPixelRegion</span></code></a></p></li>
+<li><p><a class="reference internal" href="api/regions.LinePixelRegion.html#regions.LinePixelRegion" title="regions.LinePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinePixelRegion</span></code></a></p></li>
+<li><p><a class="reference internal" href="api/regions.TextPixelRegion.html#regions.TextPixelRegion" title="regions.TextPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TextPixelRegion</span></code></a></p></li>
+<li><p><a class="reference internal" href="api/regions.CompoundPixelRegion.html#regions.CompoundPixelRegion" title="regions.CompoundPixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompoundPixelRegion</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>FITS regions are always parsed and serialized into separate regions.
+Shapes that have the <code class="docutils literal notranslate"><span class="pre">COMPONENT</span></code> column will have that value
+stored in the <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a> <code class="docutils literal notranslate"><span class="pre">meta</span></code> dictionary with the
+<code class="docutils literal notranslate"><span class="pre">component</span></code> key. Such regions will include the <code class="docutils literal notranslate"><span class="pre">COMPONENT</span></code> column
+when serialized.</p></li>
+<li><p>FITS parsing and serialization use only the <code class="docutils literal notranslate"><span class="pre">include</span></code> and
+<code class="docutils literal notranslate"><span class="pre">component</span></code> metadata and no visual metadata.</p></li>
+</ul>
+</section>
+<section id="coordinate-frames">
+<h2>Coordinate Frames<a class="headerlink" href="#coordinate-frames" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a> objects represent abstract shapes that are not
+tied to any particular image or WCS transformation. Therefore, any
+WCS information in the FITS region file header will not be read.
+Regions are always parsed and serialized as <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a>
+objects when using the FITS region format. However, if desired you
+can use the WCS information in the FITS region file to convert a
+<a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a> object to a <a class="reference internal" href="api/regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a> object, e.g.,:</p></li>
+</ul>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.wcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">WCS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">header</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s1">&#39;my_region.fits&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span> <span class="o">=</span> <span class="n">WCS</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">keysel</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;binary&#39;</span><span class="p">,</span> <span class="s1">&#39;pixel&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sky_region</span> <span class="o">=</span> <span class="n">pix_region</span><span class="o">.</span><span class="n">to_sky</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="other-limitations">
+<h2>Other Limitations<a class="headerlink" href="#other-limitations" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Reading and then writing a FITS region file will not produce an
+identical file to the original, but the encoded regions are identical.
+Therefore, it will produce identical <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a> objects
+when read back in again. In other words, read/write/read (or
+parse/serialize/parse) will exactly roundtrip <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a>
+objects.</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">FITS Region File Format Limitations</a><ul>
+<li><a class="reference internal" href="#region-shapes">Region Shapes</a></li>
+<li><a class="reference internal" href="#coordinate-frames">Coordinate Frames</a></li>
+<li><a class="reference internal" href="#other-limitations">Other Limitations</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/fits_io.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

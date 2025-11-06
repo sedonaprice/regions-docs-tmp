@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Computing Overlap Masks &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Coordinate Frame Transformation of Spherical Regions" href="spherical_frame_transform.html" />
+    <link rel="prev" title="Combining Regions" href="compound.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="spherical_frame_transform.html" title="Coordinate Frame Transformation of Spherical Regions">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="compound.html" title="Combining Regions">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Computing Overlap Masks</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="computing-overlap-masks">
+<span id="overlap-masks"></span><h1>Computing Overlap Masks<a class="headerlink" href="#computing-overlap-masks" title="Link to this heading">¶</a></h1>
+<section id="defining-a-region-mask-within-its-bounding-box">
+<h2>Defining a region mask within its bounding box<a class="headerlink" href="#defining-a-region-mask-within-its-bounding-box" title="Link to this heading">¶</a></h2>
+<p>For aperture photometry, a common operation is to compute, for a given
+image and region, a mask or array of pixel indices defining which pixels
+(in the whole image or a minimal rectangular bounding box) are inside
+and outside the region.</p>
+<p>All <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">PixelRegion</span></code></a> objects have a
+<a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion.to_mask" title="regions.PixelRegion.to_mask"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_mask()</span></code></a> method that returns a
+<a class="reference internal" href="api/regions.RegionMask.html#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMask</span></code></a> object that contains information about
+whether pixels are inside the region, and can be used to mask data
+arrays:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CirclePixelRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mf">2.3411</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">to_mask</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span><span class="o">.</span><span class="n">data</span>
+<span class="go">array([[0., 1., 1., 1., 0.],</span>
+<span class="go">       [1., 1., 1., 1., 1.],</span>
+<span class="go">       [1., 1., 1., 1., 1.],</span>
+<span class="go">       [1., 1., 1., 1., 1.],</span>
+<span class="go">       [0., 1., 1., 1., 0.]])</span>
+</pre></div>
+</div>
+<p>The mask data contains floating point that are between 0 (no overlap)
+and 1 (full overlap). By default, this is determined by looking only at
+the central position in each pixel, and:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">to_mask</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>is equivalent to:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The other mask modes that are available are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode='exact'</span></code>: the overlap is determined using the exact
+geometrical overlap between pixels and the region. This is slower
+than using the central position, but allows partial overlap to be
+treated correctly. The mask data values will be between 0 and 1 for
+partial-pixel overlap.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode='subpixels'</span></code>: the overlap is determined by sub-sampling the
+pixel using a grid of sub-pixels. The number of sub-pixels to use in
+this mode should be given using the <code class="docutils literal notranslate"><span class="pre">subpixels</span></code> argument. The mask
+data values will be between 0 and 1 for partial-pixel overlap.</p></li>
+</ul>
+<p>Here are what the region masks produced by different modes look like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CirclePixelRegion</span>
+
+<span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="mf">26.6</span><span class="p">,</span> <span class="mf">27.2</span><span class="p">)</span>
+<span class="n">reg</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="n">mask1</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;mode=&#39;center&#39;&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask1</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+
+<span class="n">mask2</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;mode=&#39;exact&#39;&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask2</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+
+<span class="n">mask3</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;subpixels&#39;</span><span class="p">,</span> <span class="n">subpixels</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;mode=&#39;subpixels&#39;, subpixels=3&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask3</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+
+<span class="n">mask4</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;subpixels&#39;</span><span class="p">,</span> <span class="n">subpixels</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;mode=&#39;subpixels&#39;, subpixels=20&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask4</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/af6a97370c7d3b54eacd861b9ccc2069/masks-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/6eabd0ff8dcac83f24185b5232aa5de5/masks-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/fd9127386214262a037342cde5d67bc9/masks-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/003e7f5731d0b439f04d21a56473a217/masks-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/fc73944beeee10e2669cb5df4f00f8f8/masks-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/masks-1.png" class="plot-directive" src="_images/masks-1.png" />
+</figure>
+<p>As we’ve seen above, the <a class="reference internal" href="api/regions.RegionMask.html#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMask</span></code></a> object has a
+<code class="docutils literal notranslate"><span class="pre">data</span></code> attribute that contains a Numpy array with the mask values.
+However, if you have, for example, a small circular region with a radius
+of 3 pixels at a pixel position of (1000, 1000), it would be inefficient
+to store a large mask array that has a size to cover this position (most
+of the mask values would be zero). Instead, we store the mask using
+the minimal array that contains the region mask along with a <code class="docutils literal notranslate"><span class="pre">bbox</span></code>
+attribute that is a <a class="reference internal" href="api/regions.RegionBoundingBox.html#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> object used to
+indicate where the mask should be applied in an image.</p>
+</section>
+<section id="defining-a-region-mask-within-an-image">
+<h2>Defining a region mask within an image<a class="headerlink" href="#defining-a-region-mask-within-an-image" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="api/regions.RegionMask.html#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMask</span></code></a> objects also have a number of
+methods to make it easy to use the masks with data. The
+<a class="reference internal" href="api/regions.RegionMask.html#regions.RegionMask.to_image" title="regions.RegionMask.to_image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_image()</span></code></a> method can be used to obtain an
+image of the mask in a 2D array of the given shape. This places the
+mask in the correct place in the image and deals properly with boundary
+effects. For this example, let’s place the mask in an image with shape
+(50, 50):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CirclePixelRegion</span>
+
+<span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="mf">26.6</span><span class="p">,</span> <span class="mf">27.2</span><span class="p">)</span>
+<span class="n">reg</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">)</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">to_image</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/00bc7fac4e2be107f9051d78c73560c1/masks-2.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/c19973024a8bfd6154aed913fd7c9636/masks-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/268c0275e34adce9d5ab99dfc0b1fe4f/masks-2.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/50eac58731897bb8076e8c9c6e7395d5/masks-2.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/ece8444a4e4165cccc0e42142627c802/masks-2.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/masks-2.png" class="plot-directive" src="_images/masks-2.png" />
+</figure>
+</section>
+<section id="making-image-cutouts-and-multiplying-the-region-mask">
+<h2>Making image cutouts and multiplying the region mask<a class="headerlink" href="#making-image-cutouts-and-multiplying-the-region-mask" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="api/regions.RegionMask.html#regions.RegionMask.cutout" title="regions.RegionMask.cutout"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cutout()</span></code></a> method can be used to create a
+cutout from the input data over the mask bounding box, and the
+<a class="reference internal" href="api/regions.RegionMask.html#regions.RegionMask.multiply" title="regions.RegionMask.multiply"><code class="xref py py-meth docutils literal notranslate"><span class="pre">multiply()</span></code></a> method can be used to multiply
+the aperture mask with the input data to create a mask-weighted data
+cutout. All of these methods properly handle the cases of partial or
+no overlap of the aperture mask with the data.</p>
+<p>These masks can be used, for example, as the building blocks for
+photometry, which we demonstrate with a simple example. We start off by
+getting an example image:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_pkg_data_filename</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="n">get_pkg_data_filename</span><span class="p">(</span><span class="s1">&#39;photometry/M6707HH.fits&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hdulist</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hdu</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>We then define a circular aperture region:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CirclePixelRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="mf">158.5</span><span class="p">,</span> <span class="mf">1053.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aperture</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mf">4.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We then convert the aperture to a mask and extract a cutout from the
+data, as well as a cutout with the data multiplied by the mask:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">aperture</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">cutout</span><span class="p">(</span><span class="n">hdu</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">weighted_data</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">hdu</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">weighted_data</span></code> will have zeros where the mask is zero; it
+therefore should not be used to compute statistics (see <a class="reference internal" href="#masked-statistics"><span class="std std-ref">Masked
+Statistics</span></a> below). To get the mask-weighted pixel
+values as a 1D array, excluding the pixels where the mask is zero,
+use the <a class="reference internal" href="api/regions.RegionMask.html#regions.RegionMask.get_values" title="regions.RegionMask.get_values"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_values()</span></code></a> method:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">weighted_data_1d</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="n">hdu</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hdulist</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We can take a look at the results to make sure the source overlaps with
+the aperture:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Mask&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="n">extent</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">bbox</span><span class="o">.</span><span class="n">extent</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Data cutout&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="n">extent</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">bbox</span><span class="o">.</span><span class="n">extent</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Data cutout multiplied by mask&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">weighted_data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="n">extent</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">bbox</span><span class="o">.</span><span class="n">extent</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/48bed85e18f40887375662ea2e0f87cc/masks-3.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/bf3608204d01fbc706c85eefc51dd05f/masks-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/1ae107d2bff64317939d25dcf85c61eb/masks-3.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/df7128828b4c492073b24426cc60e53e/masks-3.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/c93250a9f223f2cabd6bacd3fea81d25/masks-3.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-center">
+<img alt="_images/masks-3.png" class="plot-directive" src="_images/masks-3.png" />
+</figure>
+<p>We can also use the <a class="reference internal" href="api/regions.RegionMask.html#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMask</span></code></a> <code class="docutils literal notranslate"><span class="pre">bbox</span></code> attribute to look
+at the extent of the mask in the image:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_pkg_data_filename</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CirclePixelRegion</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="n">get_pkg_data_filename</span><span class="p">(</span><span class="s1">&#39;photometry/M6707HH.fits&#39;</span><span class="p">)</span>
+<span class="n">hdulist</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="n">hdu</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="mf">158.5</span><span class="p">,</span> <span class="mf">1053.5</span><span class="p">)</span>
+<span class="n">aperture</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="mf">4.</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">aperture</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">hdu</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+          <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">bbox</span><span class="o">.</span><span class="n">as_artist</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">aperture</span><span class="o">.</span><span class="n">as_artist</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1059</span><span class="p">)</span>
+<span class="n">hdulist</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/1b6ba28294cab50bde64011d13669759/masks-4.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/c0481795212153898b8c0bb0a81a6fd8/masks-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/97f32b79b65c2dd39ba736ec706c8ba8/masks-4.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/04fbc9fed57c2676af1257eab2ca9ea8/masks-4.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/7ee49282219bbbe8d90d141a8fb94977/masks-4.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-center">
+<img alt="_images/masks-4.png" class="plot-directive" src="_images/masks-4.png" />
+</figure>
+<section id="masked-statistics">
+<span id="id1"></span><h3>Masked Statistics<a class="headerlink" href="#masked-statistics" title="Link to this heading">¶</a></h3>
+<p>Finally, we can use the mask and data values to compute weighted
+statistics:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+<span class="go">9364.012674888021</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="interactive-mask-control">
+<span id="interactive-masks"></span><h2>Interactive Mask Control<a class="headerlink" href="#interactive-mask-control" title="Link to this heading">¶</a></h2>
+<p>In the last example we will show how to use a
+<a class="reference internal" href="shapes.html#regions-as-mpl-selector"><span class="std std-ref">Matplotlib selector</span></a> widget with a custom
+<code class="docutils literal notranslate"><span class="pre">callback</span></code> function for creating a mask and updating it interactively through
+the selector.
+We first create an <a class="reference internal" href="api/regions.EllipsePixelRegion.html#regions.EllipsePixelRegion" title="regions.EllipsePixelRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">EllipsePixelRegion</span></code></a> and add an <code class="docutils literal notranslate"><span class="pre">as_mpl_selector</span></code>
+property linked to the Matplotlib axes. This can be moved around to
+position it on different sources, and resized just like its Rectangle
+counterpart, using the handles of the bounding box.</p>
+<p>The user-defined callback function here generates a mask from this region and overlays
+it on the image as an alpha filter (keeping the areas outside shaded).
+We will use this mask as an aperture as well to calculate integrated
+and averaged flux, which is updated live in the text field of the plot as well.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span><span class="p">,</span> <span class="n">EllipsePixelRegion</span>
+
+<span class="n">hdulist</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="n">hdu</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">hdu</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="mi">1002</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;small&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1059</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">update_sel</span><span class="p">(</span><span class="n">region</span><span class="p">):</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">region</span><span class="o">.</span><span class="n">to_mask</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;subpixels&#39;</span><span class="p">,</span> <span class="n">subpixels</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">im</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">((</span><span class="n">mask</span><span class="o">.</span><span class="n">to_image</span><span class="p">(</span><span class="n">hdu</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">hdu</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">hdu</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">to_image</span><span class="p">(</span><span class="n">hdu</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">text</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total: </span><span class="si">{</span><span class="n">total</span><span class="si">:</span><span class="s1">g</span><span class="si">}</span><span class="se">\n</span><span class="s1">Mean: </span><span class="si">{</span><span class="n">mean</span><span class="si">:</span><span class="s1">g</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">ellipse</span> <span class="o">=</span> <span class="n">EllipsePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">126</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1031</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                             <span class="n">angle</span><span class="o">=-</span><span class="mi">0</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;yellow&#39;</span><span class="p">})</span>
+<span class="n">selector</span> <span class="o">=</span> <span class="n">ellipse</span><span class="o">.</span><span class="n">as_mpl_selector</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">update_sel</span><span class="p">)</span>
+
+<span class="n">hdulist</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/60f1c6ae85601bda966a1d141ed71b94/masks-5.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/84e897b437ccc66b214c3ece366cae38/masks-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/0d33381c2b353b93ff83ea28eecb89c7/masks-5.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/8d6c3e263ab425cd60d23933941e63fe/masks-5.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/730897c6a46925d5873c3d8182b24035/masks-5.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-center">
+<img alt="_images/masks-5.png" class="plot-directive" src="_images/masks-5.png" />
+</figure>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Computing Overlap Masks</a><ul>
+<li><a class="reference internal" href="#defining-a-region-mask-within-its-bounding-box">Defining a region mask within its bounding box</a></li>
+<li><a class="reference internal" href="#defining-a-region-mask-within-an-image">Defining a region mask within an image</a></li>
+<li><a class="reference internal" href="#making-image-cutouts-and-multiplying-the-region-mask">Making image cutouts and multiplying the region mask</a><ul>
+<li><a class="reference internal" href="#masked-statistics">Masked Statistics</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#interactive-mask-control">Interactive Mask Control</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/masks.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

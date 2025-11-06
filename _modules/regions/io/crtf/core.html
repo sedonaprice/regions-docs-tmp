@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.io.crtf.core &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
+    
+    <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.io.crtf.core</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.utils.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AstropyUserWarning</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CRTFRegionParserWarning&#39;</span><span class="p">,</span> <span class="s1">&#39;CRTFRegionParserError&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="CRTFRegionParserWarning">
+<a class="viewcode-back" href="../../../../api/regions.CRTFRegionParserWarning.html#regions.CRTFRegionParserWarning">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CRTFRegionParserWarning</span><span class="p">(</span><span class="n">AstropyUserWarning</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A generic warning class for CRTF region parsing.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="CRTFRegionParserError">
+<a class="viewcode-back" href="../../../../api/regions.CRTFRegionParserError.html#regions.CRTFRegionParserError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CRTFRegionParserError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A generic error class for CRTF region parsing.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<span class="c1"># Valid symbols in CRTF</span>
+<span class="n">valid_symbols</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;.&#39;</span><span class="p">:</span> <span class="s1">&#39;point&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;,&#39;</span><span class="p">:</span> <span class="s1">&#39;pixel&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;o&#39;</span><span class="p">:</span> <span class="s1">&#39;circle&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;v&#39;</span><span class="p">:</span> <span class="s1">&#39;triangle_down&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;^&#39;</span><span class="p">:</span> <span class="s1">&#39;triangle_up&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;&lt;&#39;</span><span class="p">:</span> <span class="s1">&#39;triangle_left&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;triangle_right&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;tri_down&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="s1">&#39;tri_up&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="s1">&#39;tri_left&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;4&#39;</span><span class="p">:</span> <span class="s1">&#39;tri_right&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="s1">&#39;square&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;pentagon&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;*&#39;</span><span class="p">:</span> <span class="s1">&#39;star&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="s1">&#39;hexagon1&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="s1">&#39;hexagon2&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;+&#39;</span><span class="p">:</span> <span class="s1">&#39;plus&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="s1">&#39;diamond&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;thin_diamond&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;|&#39;</span><span class="p">:</span> <span class="s1">&#39;vline&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;_&#39;</span><span class="p">:</span> <span class="s1">&#39;hline&#39;</span><span class="p">}</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

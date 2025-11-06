@@ -1,0 +1,19 @@
+RegionMeta
+==========
+
+.. currentmodule:: regions
+
+.. autoclass:: RegionMeta
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~RegionMeta.key_mapping
+      ~RegionMeta.valid_keys
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: key_mapping
+   .. autoattribute:: valid_keys

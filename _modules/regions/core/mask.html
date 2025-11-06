@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.core.mask &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.core.mask</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines a class for region masks.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">minversion</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RegionMask&#39;</span><span class="p">]</span>
+
+<span class="n">COPY_IF_NEEDED</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">minversion</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="s1">&#39;2.0.0.dev&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="RegionMask">
+<a class="viewcode-back" href="../../../api/regions.RegionMask.html#regions.RegionMask">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RegionMask</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for a region mask.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : array_like</span>
+<span class="sd">        A 2D array representing the fractional overlap of a region</span>
+<span class="sd">        on the pixel grid. This should be the full-sized (i.e., not</span>
+<span class="sd">        truncated) array that is the direct output of one of the</span>
+<span class="sd">        low-level &quot;geometry&quot; functions.</span>
+
+<span class="sd">    bbox : `regions.RegionBoundingBox`</span>
+<span class="sd">        The bounding box object defining the region minimal bounding</span>
+<span class="sd">        box.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Usage examples are provided in the :ref:`overlap-masks` section of</span>
+<span class="sd">    the docs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;mask data and bounding box must have the same &#39;</span>
+                             <span class="s1">&#39;shape&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bbox</span> <span class="o">=</span> <span class="n">bbox</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">COPY_IF_NEEDED</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Array representation of the mask data array (e.g., for</span>
+<span class="sd">        matplotlib).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The shape of the mask data array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+
+<div class="viewcode-block" id="RegionMask.get_overlap_slices">
+<a class="viewcode-back" href="../../../api/regions.RegionMask.html#regions.RegionMask.get_overlap_slices">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_overlap_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get slices for the overlapping part of the region mask and a 2D</span>
+<span class="sd">        array.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        shape : 2-tuple of int</span>
+<span class="sd">            The shape of the 2D array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        slices_large : tuple of slices or `None`</span>
+<span class="sd">            A tuple of slice objects for each axis of the large array,</span>
+<span class="sd">            such that ``large_array[slices_large]`` extracts the region</span>
+<span class="sd">            of the large array that overlaps with the small array.</span>
+<span class="sd">            `None` is returned if there is no overlap of the bounding</span>
+<span class="sd">            box with the given image shape.</span>
+
+<span class="sd">        slices_small : tuple of slices or `None`</span>
+<span class="sd">            A tuple of slice objects for each axis of the region mask</span>
+<span class="sd">            array such that ``small_array[slices_small]`` extracts the</span>
+<span class="sd">            region that is inside the large array. `None` is returned if</span>
+<span class="sd">            there is no overlap of the bounding box with the given image</span>
+<span class="sd">            shape.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bbox</span><span class="o">.</span><span class="n">get_overlap_slices</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RegionMask.to_image">
+<a class="viewcode-back" href="../../../api/regions.RegionMask.html#regions.RegionMask.to_image">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return an image of the mask in a 2D array of the given shape,</span>
+<span class="sd">        taking any edge effects into account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        shape : tuple of int</span>
+<span class="sd">            The ``(ny, nx)`` shape of the output array.</span>
+
+<span class="sd">        dtype : data-type, optional</span>
+<span class="sd">            The desired data type for the array. This should be a</span>
+<span class="sd">            floating data type if the `RegionMask` was created with the</span>
+<span class="sd">            &quot;exact&quot; or &quot;subpixel&quot; mode, otherwise the fractional mask</span>
+<span class="sd">            weights will be altered. A integer data type may be used if</span>
+<span class="sd">            the `RegionMask` was created with the &quot;center&quot; mode.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `~numpy.ndarray`</span>
+<span class="sd">            A 2D array of the mask.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input shape must have 2 elements.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># find the overlap of the mask on the output image shape</span>
+        <span class="n">slices_large</span><span class="p">,</span> <span class="n">slices_small</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_overlap_slices</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">slices_small</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># no overlap</span>
+
+        <span class="c1"># insert the mask into the output image</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">image</span><span class="p">[</span><span class="n">slices_large</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">slices_small</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">image</span></div>
+
+
+<div class="viewcode-block" id="RegionMask.cutout">
+<a class="viewcode-back" href="../../../api/regions.RegionMask.html#regions.RegionMask.cutout">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a cutout from the input data over the mask bounding box,</span>
+<span class="sd">        taking any edge effects into account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : array_like</span>
+<span class="sd">            A 2D array on which to apply the region mask.</span>
+
+<span class="sd">        fill_value : float, optional</span>
+<span class="sd">            The value used to fill pixels where the region mask does not</span>
+<span class="sd">            overlap with the input ``data``.  The default is 0.</span>
+
+<span class="sd">        copy : bool, optional</span>
+<span class="sd">            If `True` then the returned cutout array will always be hold</span>
+<span class="sd">            a copy of the input ``data``.  If `False` and the mask is</span>
+<span class="sd">            fully within the input ``data``, then the returned cutout</span>
+<span class="sd">            array will be a view into the input ``data``.  In cases</span>
+<span class="sd">            where the mask partially overlaps or has no overlap with the</span>
+<span class="sd">            input ``data``, the returned cutout array will always hold a</span>
+<span class="sd">            copy of the input ``data`` (i.e., this keyword has no</span>
+<span class="sd">            effect).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `~numpy.ndarray` or `None`</span>
+<span class="sd">            A 2D array cut out from the input ``data`` representing the</span>
+<span class="sd">            same cutout region as the region mask.  If there is a</span>
+<span class="sd">            partial overlap of the region mask with the input data,</span>
+<span class="sd">            pixels outside of the data will be assigned to</span>
+<span class="sd">            ``fill_value``.  `None` is returned if there is no overlap</span>
+<span class="sd">            of the region with the input ``data``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;data must be a 2D array.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># find the overlap of the mask on the output image shape</span>
+        <span class="n">slices_large</span><span class="p">,</span> <span class="n">slices_small</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_overlap_slices</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">slices_small</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># no overlap</span>
+
+        <span class="n">cutout_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">slices_small</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">slices_small</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+                        <span class="n">slices_small</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">slices_small</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cutout_shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="n">cutout</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">slices_large</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+                <span class="n">cutout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cutout</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">cutout</span>
+
+        <span class="c1"># cutout is always a copy for partial overlap</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span> <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">fill_value</span><span class="p">)</span> <span class="k">else</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="n">cutout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">cutout</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">fill_value</span>
+        <span class="n">cutout</span><span class="p">[</span><span class="n">slices_small</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">slices_large</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+            <span class="n">cutout</span> <span class="o">&lt;&lt;=</span> <span class="n">data</span><span class="o">.</span><span class="n">unit</span>
+
+        <span class="k">return</span> <span class="n">cutout</span></div>
+
+
+<div class="viewcode-block" id="RegionMask.multiply">
+<a class="viewcode-back" href="../../../api/regions.RegionMask.html#regions.RegionMask.multiply">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multiply the region mask with the input data, taking any edge</span>
+<span class="sd">        effects into account.</span>
+
+<span class="sd">        The result is a mask-weighted cutout from the data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : array_like or `~astropy.units.Quantity`</span>
+<span class="sd">            The 2D array to multiply with the region mask.</span>
+
+<span class="sd">        fill_value : float, optional</span>
+<span class="sd">            The value is used to fill pixels where the region mask does</span>
+<span class="sd">            not overlap with the input ``data``.  The default is 0.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `~numpy.ndarray` or `None`</span>
+<span class="sd">            A 2D mask-weighted cutout from the input ``data``. If</span>
+<span class="sd">            there is a partial overlap of the region mask with the</span>
+<span class="sd">            input data, pixels outside of the data will be assigned to</span>
+<span class="sd">            ``fill_value`` before being multiplied with the mask. `None`</span>
+<span class="sd">            is returned if there is no overlap of the region with the</span>
+<span class="sd">            input ``data``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cutout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutout</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cutout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># ignore multiplication with non-finite data values</span>
+            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+                <span class="n">weighted_cutout</span> <span class="o">=</span> <span class="n">cutout</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+
+            <span class="c1"># fill values outside of the mask but within the bounding box</span>
+            <span class="n">weighted_cutout</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill_value</span>
+
+            <span class="k">return</span> <span class="n">weighted_cutout</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_overlap_cutouts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the aperture mask weights, pixel mask, and slice for the</span>
+<span class="sd">        overlap with the input shape.</span>
+
+<span class="sd">        If input, the ``mask`` is included in the output pixel mask</span>
+<span class="sd">        cutout.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        shape : tuple of int</span>
+<span class="sd">            The shape of data.</span>
+
+<span class="sd">        mask : array_like (bool), optional</span>
+<span class="sd">            A boolean mask with the same shape as ``shape`` where a</span>
+<span class="sd">            `True` value indicates a masked pixel.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        slices_large : tuple of slices or `None`</span>
+<span class="sd">            A tuple of slice objects for each axis of the large array</span>
+<span class="sd">            of given ``shape``, such that ``large_array[slices_large]``</span>
+<span class="sd">            extracts the region of the large array that overlaps with</span>
+<span class="sd">            the small array. `None` is returned if there is no overlap</span>
+<span class="sd">            of the bounding box with the given image shape.</span>
+
+<span class="sd">        aper_weights: 2D float `~numpy.ndarray`</span>
+<span class="sd">            The cutout aperture mask weights for the overlap.</span>
+
+<span class="sd">        pixel_mask: 2D bool `~numpy.ndarray`</span>
+<span class="sd">            The cutout pixel mask for the overlap.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This method is separate from ``get_values`` to facilitate</span>
+<span class="sd">        applying the same slices, aper_weights, and pixel_mask to</span>
+<span class="sd">        multiple associated arrays (e.g., data and error arrays). It is</span>
+<span class="sd">        used in this way by the `PixelAperture.do_photometry` method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;mask and data must have the same shape&#39;</span><span class="p">)</span>
+
+        <span class="n">slc_large</span><span class="p">,</span> <span class="n">slc_small</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_overlap_slices</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slc_large</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># no overlap</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">aper_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">slc_small</span><span class="p">]</span>
+        <span class="n">pixel_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">aper_weights</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># good pixels</span>
+
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pixel_mask</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">mask</span><span class="p">[</span><span class="n">slc_large</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">slc_large</span><span class="p">,</span> <span class="n">aper_weights</span><span class="p">,</span> <span class="n">pixel_mask</span>
+
+<div class="viewcode-block" id="RegionMask.get_values">
+<a class="viewcode-back" href="../../../api/regions.RegionMask.html#regions.RegionMask.get_values">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the mask-weighted pixel values from the data as a 1D array.</span>
+
+<span class="sd">        If the `~regions.RegionMask` was created with ``mode=&#39;center&#39;``,</span>
+<span class="sd">        (where the mask weights are only 1 or 0), then the returned</span>
+<span class="sd">        values will simply be pixel values extracted from the data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : array_like or `~astropy.units.Quantity`</span>
+<span class="sd">            The 2D array from which to get mask-weighted values.</span>
+
+<span class="sd">        mask : array_like (bool), optional</span>
+<span class="sd">            A boolean mask with the same shape as ``data`` where a</span>
+<span class="sd">            `True` value indicates the corresponding element of ``data``</span>
+<span class="sd">            is not returned in the result.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `~numpy.ndarray`</span>
+<span class="sd">            A 1D array of mask-weighted pixel values from the input</span>
+<span class="sd">            ``data``. If there is no overlap of the region with the</span>
+<span class="sd">            input ``data``, the result will be an empty array with shape</span>
+<span class="sd">            (0,).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">slc_large</span><span class="p">,</span> <span class="n">aper_weights</span><span class="p">,</span> <span class="n">pixel_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_overlap_cutouts</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">slc_large</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+        <span class="c1"># ignore multiplication with non-finite data values</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="c1"># pixel_mask is used so that pixels value where data = 0 and</span>
+            <span class="c1"># aper_weights != 0 are still returned</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">slc_large</span><span class="p">]</span> <span class="o">*</span> <span class="n">aper_weights</span><span class="p">)[</span><span class="n">pixel_mask</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

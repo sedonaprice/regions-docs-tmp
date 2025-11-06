@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Region Metadata &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Checking for Points Inside Regions" href="contains.html" />
+    <link rel="prev" title="Region Shapes" href="shapes.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="contains.html" title="Checking for Points Inside Regions">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="shapes.html" title="Region Shapes">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Region Metadata</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="region-metadata">
+<h1>Region Metadata<a class="headerlink" href="#region-metadata" title="Link to this heading">¶</a></h1>
+<p>A <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a> object has both <code class="docutils literal notranslate"><span class="pre">meta</span></code> and
+<code class="docutils literal notranslate"><span class="pre">visual</span></code> attributes that store the metadata of the region. The
+<a class="reference internal" href="api/regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMeta</span></code></a> and <a class="reference internal" href="api/regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionVisual</span></code></a> classes
+handle the general metadata and visual attributes, respectively. Both
+behave like Python dictionaries.</p>
+<section id="general-metadata">
+<h2>General Metadata<a class="headerlink" href="#general-metadata" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a> <code class="docutils literal notranslate"><span class="pre">meta</span></code> attribute stores additional
+metadata about the region such as labels, tags, comments, name, etc.
+that are used for non-display tasks. It can also store the spectral
+dimensions of the region.</p>
+<p>The valid keys in the <a class="reference internal" href="api/regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionMeta</span></code></a> object are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">label</span></code>:</p>
+<ul>
+<li><p>CRTF, DS9 (text label for a region)</p></li>
+<li><p>Ex: meta[‘label’] = ‘this is a circle’</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tag</span></code>:</p>
+<ul>
+<li><p>DS9 (All regions may have zero or more tags associated with it,
+which may be used for grouping and searching.)</p></li>
+<li><p>Ex: meta[‘tags’] = [‘{Group 1}’, ‘{Group 2}’]}</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include</span></code>:</p>
+<ul>
+<li><p>CRTF, DS9 (Region inclusion)</p></li>
+<li><p>Possible Values: True, False</p></li>
+<li><p>Ex: meta[‘include’] = True</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">frame</span></code>:</p>
+<ul>
+<li><p>CRTF (Frequency/Velocity Axis)</p></li>
+<li><p>Possible values: ‘REST’, ‘LSRK’, ‘LSRD’, ‘BARY’, ‘GEO’, ‘TOPO’,
+‘GALACTO’, ‘LGROUP’, ‘CMB’</p></li>
+<li><p>Default: image value</p></li>
+<li><p>Ex: meta[‘frame’] = ‘TOPO’</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">range</span></code>:</p>
+<ul>
+<li><p>CRTF (Frequency/Velocity Range)</p></li>
+<li><p>Possible units: GHz, MHz, kHz, km/s, Hz, channel, chan (=channel)</p></li>
+<li><p>Default: image range</p></li>
+<li><p>Format: [min, max]</p></li>
+<li><p>Ex: meta[‘range’] = [-320 * u.m/u.sec, -330 * u.m/u.s]</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">veltype</span></code>:</p>
+<ul>
+<li><p>CRTF (Velocity Calculation)</p></li>
+<li><p>Possible values: ‘RADIO’, ‘OPTICAL’, ‘Z’, ‘BETA’, ‘GAMMA’</p></li>
+<li><p>Default: image value</p></li>
+<li><p>Ex: meta[‘veltype’] = ‘RADIO’</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">restfreq</span></code>:</p>
+<ul>
+<li><p>CRTF (Rest Frequency)</p></li>
+<li><p>Possible values: <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a> object</p></li>
+<li><p>Default: image value</p></li>
+<li><p>Ex: meta[‘restfreq’] = Quantity(“1.42GHz”)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">corr</span></code>:</p>
+<ul>
+<li><p>CRTF (Correlational Axis)</p></li>
+<li><p>Possible values: ‘I’, ‘Q’, ‘U’, ‘V’, ‘RR’, ‘RL’, ‘LR’, ‘LL’,
+‘XX’, ‘XY’, ‘YX’, ‘YY’, ‘RX’, ‘RY’, ‘LX’, ‘LY’, ‘XR’, ‘XL’, ‘YR’,
+‘YL’, ‘PP’, ‘PQ’, ‘QP’, ‘QQ’, ‘RCircular’, ‘LCircular’, ‘Linear’,
+‘Ptotal’, ‘Plinear’, ‘PFtotal’, ‘PFlinear’, ‘Pangle’</p></li>
+<li><p>Default: all planes present in image</p></li>
+<li><p>Ex: meta[‘corr’] = [‘X’, ‘Y’]</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comment</span></code>:</p>
+<ul>
+<li><p>DS9, CRTF (Comment on the region)</p></li>
+<li><p>Ex: meta[‘comment’] = ‘Any comment for the region’</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">line</span></code>:</p>
+<ul>
+<li><p>DS9 (The line region may be rendered with arrows, one at each end.
+To indicate arrows, use the line property. A ‘1’ indicates an arrow,
+‘0’ indicates no arrow.)</p></li>
+<li><p>Ex: meta[‘line’] = [1, 1]</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">select</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">highlite</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fixed</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edit</span></code>:</p>
+<ul>
+<li><p>DS9 (The Edit property specifies if the user is allowed to edit the
+region via the GUI.)</p></li>
+<li><p>Ex: meta[‘edit’] = 1</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">move</span></code>:</p>
+<ul>
+<li><p>DS9 (The Move property specifies if the user is allowed to move the
+region via the GUI. )</p></li>
+<li><p>Ex: meta[‘move’] = 1</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rotate</span></code>:</p>
+<ul>
+<li><p>DS9 (The Rotate property specifies if the user is allowed to rotate
+the region via the GUI. )</p></li>
+<li><p>Ex: meta[‘rotate’] = 1</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete</span></code>:</p>
+<ul>
+<li><p>DS9 (The Delete property specifies if the user is allowed to delete
+the region via the GUI. )</p></li>
+<li><p>Ex: meta[‘delete’] = 1</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">background</span></code></p></li>
+</ul>
+</section>
+<section id="visual-metadata">
+<h2>Visual Metadata<a class="headerlink" href="#visual-metadata" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a> <code class="docutils literal notranslate"><span class="pre">visual</span></code> attribute stores visual
+properties for the region such as color, font style, font size, line
+width, line style, etc. The visual attributes are metadata meant to be
+used to visualize regions, especially used by plotting libraries such as
+<a class="reference external" href="https://matplotlib.org/">Matplotlib</a> .</p>
+<p>The valid keys in the <a class="reference internal" href="api/regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a> class are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">color</span></code>: CRTF, DS9 (Region, symbol and text color)</p>
+<ul>
+<li><p>Possible values: any color recognized by <a class="reference external" href="https://matplotlib.org/">Matplotlib</a>, including
+hex values</p></li>
+<li><p>Default: color=green</p></li>
+<li><p>Ex: visual[‘color’] = ‘blue’</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dash</span></code>: Render region using dashed lines using current dashlist
+value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">font</span></code>: Name of the font.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dashlist</span></code>: Sets dashed line parameters. This does not render the
+region in dashed lines.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">symsize</span></code>: Size of the symbol.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">symthick</span></code>: Thickness of the symbol.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fontsize</span></code>: Size of the font.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fontstyle</span></code>: Style of the font.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usetex</span></code>: Boolean value whether the label uses TeX.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labelpos</span></code>: Position of the label.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labeloff</span></code>: Label offset.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linewidth</span></code>: Width of the line.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linestyle</span></code>: Style of the line.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fill</span></code>: Boolean value whether the region is filled.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">line</span></code>: The line region may be rendered with arrows, one at each
+end. To indicate arrows, use the line property. A ‘1’ indicates an
+arrow, ‘0’ indicates no arrow.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">symbol</span></code>/<code class="docutils literal notranslate"><span class="pre">point</span></code>: CRTF, DS9 (Symbol for which a point region is
+described)</p>
+<ul>
+<li><p>Ex: meta[‘symbol’] = ‘point marker’</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Region Metadata</a><ul>
+<li><a class="reference internal" href="#general-metadata">General Metadata</a></li>
+<li><a class="reference internal" href="#visual-metadata">Visual Metadata</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/metadata.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

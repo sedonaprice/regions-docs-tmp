@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.core.bounding_box &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.core.bounding_box</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines a class for a rectangular bounding box.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io.fits.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">_is_int</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RegionBoundingBox&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="RegionBoundingBox">
+<a class="viewcode-back" href="../../../api/regions.RegionBoundingBox.html#regions.RegionBoundingBox">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RegionBoundingBox</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A rectangular bounding box in integer (not float) pixel indices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ixmin, ixmax, iymin, iymax : int</span>
+<span class="sd">        The bounding box pixel indices.  Note that the upper values</span>
+<span class="sd">        (``iymax`` and ``ixmax``) are exclusive as for normal slices in</span>
+<span class="sd">        Python.  The lower values (``ixmin`` and ``iymin``) must not be</span>
+<span class="sd">        greater than the respective upper values (``ixmax`` and</span>
+<span class="sd">        ``iymax``).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from regions import RegionBoundingBox</span>
+
+<span class="sd">    &gt;&gt;&gt; # constructing a RegionBoundingBox like this is cryptic:</span>
+<span class="sd">    &gt;&gt;&gt; bbox = RegionBoundingBox(1, 10, 2, 20)</span>
+
+<span class="sd">    &gt;&gt;&gt; # it&#39;s better to use keyword arguments for readability:</span>
+<span class="sd">    &gt;&gt;&gt; bbox = RegionBoundingBox(ixmin=1, ixmax=10, iymin=2, iymax=20)</span>
+<span class="sd">    &gt;&gt;&gt; bbox  # nice repr, useful for interactive work</span>
+<span class="sd">    RegionBoundingBox(ixmin=1, ixmax=10, iymin=2, iymax=20)</span>
+
+<span class="sd">    &gt;&gt;&gt; # sometimes it&#39;s useful to check if two bounding boxes are the same</span>
+<span class="sd">    &gt;&gt;&gt; bbox == RegionBoundingBox(ixmin=1, ixmax=10, iymin=2, iymax=20)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; bbox == RegionBoundingBox(ixmin=7, ixmax=10, iymin=2, iymax=20)</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; # &quot;center&quot; and &quot;shape&quot; can be useful when working with numpy arrays</span>
+<span class="sd">    &gt;&gt;&gt; bbox.center  # numpy order: (y, x)</span>
+<span class="sd">    (10.5, 5.0)</span>
+<span class="sd">    &gt;&gt;&gt; bbox.shape  # numpy order: (y, x)</span>
+<span class="sd">    (18, 9)</span>
+
+<span class="sd">    &gt;&gt;&gt; # &quot;extent&quot; is useful when plotting the RegionBoundingBox with</span>
+<span class="sd">    &gt;&gt;&gt; # matplotlib</span>
+<span class="sd">    &gt;&gt;&gt; bbox.extent  # matplotlib order: (x, y)</span>
+<span class="sd">    (0.5, 9.5, 1.5, 19.5)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ixmin</span><span class="p">,</span> <span class="n">ixmax</span><span class="p">,</span> <span class="n">iymin</span><span class="p">,</span> <span class="n">iymax</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_int</span><span class="p">(</span><span class="n">ixmin</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;ixmin must be an integer&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_int</span><span class="p">(</span><span class="n">ixmax</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;ixmax must be an integer&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_int</span><span class="p">(</span><span class="n">iymin</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;iymin must be an integer&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_int</span><span class="p">(</span><span class="n">iymax</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;iymax must be an integer&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ixmin</span> <span class="o">&gt;</span> <span class="n">ixmax</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ixmin must be &lt;= ixmax&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">iymin</span> <span class="o">&gt;</span> <span class="n">iymax</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;iymin must be &lt;= iymax&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ixmin</span> <span class="o">=</span> <span class="n">ixmin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ixmax</span> <span class="o">=</span> <span class="n">ixmax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iymin</span> <span class="o">=</span> <span class="n">iymin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iymax</span> <span class="o">=</span> <span class="n">iymax</span>
+
+<div class="viewcode-block" id="RegionBoundingBox.from_float">
+<a class="viewcode-back" href="../../../api/regions.RegionBoundingBox.html#regions.RegionBoundingBox.from_float">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_float</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the smallest bounding box that fully contains a given</span>
+<span class="sd">        rectangle defined by float coordinate values.</span>
+
+<span class="sd">        Following the pixel index convention, an integer index</span>
+<span class="sd">        corresponds to the center of a pixel and the pixel edges span</span>
+<span class="sd">        from (index - 0.5) to (index + 0.5).  For example, the pixel</span>
+<span class="sd">        edge spans of the following pixels are:</span>
+
+<span class="sd">        - pixel 0: from -0.5 to 0.5</span>
+<span class="sd">        - pixel 1: from 0.5 to 1.5</span>
+<span class="sd">        - pixel 2: from 1.5 to 2.5</span>
+
+<span class="sd">        In addition, because `RegionBoundingBox` upper limits are</span>
+<span class="sd">        exclusive (by definition), 1 is added to the upper pixel edges.</span>
+<span class="sd">        See examples below.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        xmin, xmax, ymin, ymax : float</span>
+<span class="sd">            Float coordinates defining a rectangle.  The lower values</span>
+<span class="sd">            (``xmin`` and ``ymin``) must not be greater than the</span>
+<span class="sd">            respective upper values (``xmax`` and ``ymax``).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bbox : `RegionBoundingBox` object</span>
+<span class="sd">            The minimal ``RegionBoundingBox`` object fully containing</span>
+<span class="sd">            the input rectangle coordinates.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from regions import RegionBoundingBox</span>
+<span class="sd">        &gt;&gt;&gt; RegionBoundingBox.from_float(xmin=1.0, xmax=10.0,</span>
+<span class="sd">        ...                              ymin=2.0, ymax=20.0)</span>
+<span class="sd">        RegionBoundingBox(ixmin=1, ixmax=11, iymin=2, iymax=21)</span>
+
+<span class="sd">        &gt;&gt;&gt; RegionBoundingBox.from_float(xmin=1.4, xmax=10.4,</span>
+<span class="sd">        ...                              ymin=1.6, ymax=10.6)</span>
+<span class="sd">        RegionBoundingBox(ixmin=1, ixmax=11, iymin=2, iymax=12)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ixmin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">xmin</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="n">ixmax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">xmax</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="n">iymin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">ymin</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="n">iymax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">ymax</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ixmin</span><span class="p">,</span> <span class="n">ixmax</span><span class="p">,</span> <span class="n">iymin</span><span class="p">,</span> <span class="n">iymax</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">RegionBoundingBox</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Can compare RegionBoundingBox only to another &#39;</span>
+                            <span class="s1">&#39;RegionBoundingBox.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmin</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">ixmin</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmax</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">ixmax</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iymin</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">iymin</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iymax</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">iymax</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(ixmin=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmin</span><span class="si">}</span><span class="s1">, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;ixmax=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmax</span><span class="si">}</span><span class="s1">, iymin=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">iymin</span><span class="si">}</span><span class="s1">, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;iymax=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">iymax</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The ``(y, x)`` center of the bounding box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iymax</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">iymin</span><span class="p">),</span>
+                <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmax</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ixmin</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The ``(ny, nx)`` shape of the bounding box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iymax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">iymin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ixmax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ixmin</span>
+
+<div class="viewcode-block" id="RegionBoundingBox.get_overlap_slices">
+<a class="viewcode-back" href="../../../api/regions.RegionBoundingBox.html#regions.RegionBoundingBox.get_overlap_slices">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_overlap_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get slices for the overlapping part of the bounding box and an</span>
+<span class="sd">        2D array.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        shape : 2-tuple of int</span>
+<span class="sd">            The shape of the 2D array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        slices_large : tuple of slices or `None`</span>
+<span class="sd">            A tuple of slice objects for each axis of the large array,</span>
+<span class="sd">            such that ``large_array[slices_large]`` extracts the region</span>
+<span class="sd">            of the large array that overlaps with the small array.</span>
+<span class="sd">            `None` is returned if there is no overlap of the bounding</span>
+<span class="sd">            box with the given image shape.</span>
+
+<span class="sd">        slices_small : tuple of slices or `None`</span>
+<span class="sd">            A tuple of slice objects for each axis of an array enclosed</span>
+<span class="sd">            by the bounding box such that ``small_array[slices_small]``</span>
+<span class="sd">            extracts the region that is inside the large array. `None`</span>
+<span class="sd">            is returned if there is no overlap of the bounding box with</span>
+<span class="sd">            the given image shape.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input shape must have 2 elements.&#39;</span><span class="p">)</span>
+
+        <span class="n">xmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ixmin</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ixmax</span>
+        <span class="n">ymin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iymin</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iymax</span>
+
+        <span class="k">if</span> <span class="n">xmin</span> <span class="o">&gt;=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">ymin</span> <span class="o">&gt;=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">xmax</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">ymax</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># no overlap of the bounding box with the input shape</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">slices_large</span> <span class="o">=</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">ymax</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span>
+                        <span class="nb">slice</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">xmax</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+        <span class="n">slices_small</span> <span class="o">=</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="o">-</span><span class="n">ymin</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                              <span class="nb">min</span><span class="p">(</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)),</span>
+                        <span class="nb">slice</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="o">-</span><span class="n">xmin</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                              <span class="nb">min</span><span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">slices_large</span><span class="p">,</span> <span class="n">slices_small</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The extent of the mask, defined as the ``(xmin, xmax, ymin,</span>
+<span class="sd">        ymax)`` bounding box from the bottom-left corner of the lower-</span>
+<span class="sd">        left pixel to the upper-right corner of the upper-right pixel.</span>
+
+<span class="sd">        The upper edges here are the actual pixel positions of the</span>
+<span class="sd">        edges, i.e., they are not &quot;exclusive&quot; indices used for python</span>
+<span class="sd">        indexing. This is useful for plotting the bounding box using</span>
+<span class="sd">        Matplotlib.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmin</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ixmax</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">iymin</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iymax</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RegionBoundingBox.as_artist">
+<a class="viewcode-back" href="../../../api/regions.RegionBoundingBox.html#regions.RegionBoundingBox.as_artist">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a `matplotlib.patches.Rectangle` that represents the</span>
+<span class="sd">        bounding box.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            Any keyword arguments accepted by</span>
+<span class="sd">            `matplotlib.patches.Patch`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `matplotlib.patches.Rectangle`</span>
+<span class="sd">            A matplotlib rectangular patch.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        .. plot::</span>
+<span class="sd">            :include-source:</span>
+
+<span class="sd">            import numpy as np</span>
+<span class="sd">            import matplotlib.pyplot as plt</span>
+<span class="sd">            from regions import RegionBoundingBox</span>
+<span class="sd">            bbox = RegionBoundingBox(2, 7, 3, 8)</span>
+<span class="sd">            fig = plt.figure()</span>
+<span class="sd">            ax = fig.add_subplot(1, 1, 1)</span>
+<span class="sd">            rng = np.random.default_rng(0)</span>
+<span class="sd">            ax.imshow(rng.random((10, 10)), interpolation=&#39;nearest&#39;,</span>
+<span class="sd">                      cmap=&#39;viridis&#39;)</span>
+<span class="sd">            ax.add_patch(bbox.as_artist(facecolor=&#39;none&#39;, edgecolor=&#39;white&#39;,</span>
+<span class="sd">                         lw=2.))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rectangle</span>
+
+        <span class="k">return</span> <span class="n">Rectangle</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                         <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RegionBoundingBox.to_region">
+<a class="viewcode-back" href="../../../api/regions.RegionBoundingBox.html#regions.RegionBoundingBox.to_region">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a `~regions.RectanglePixelRegion` that represents the</span>
+<span class="sd">        bounding box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.pixcoord</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">RectanglePixelRegion</span>
+
+        <span class="n">xypos</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">return</span> <span class="n">RectanglePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">xypos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RegionBoundingBox.plot">
+<a class="viewcode-back" href="../../../api/regions.RegionBoundingBox.html#regions.RegionBoundingBox.plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the `RegionBoundingBox` on a matplotlib</span>
+<span class="sd">        `~matplotlib.axes.Axes` instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        origin : array_like, optional</span>
+<span class="sd">            The ``(x, y)`` position of the origin of the displayed</span>
+<span class="sd">            image.</span>
+<span class="sd">        ax : `matplotlib.axes.Axes`, optional</span>
+<span class="sd">            If `None`, then the current `~matplotlib.axes.Axes` instance</span>
+<span class="sd">            is used.</span>
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            Any keyword arguments accepted by `matplotlib.patches.Patch`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        patch : `matplotlib.patches.Patch`</span>
+<span class="sd">            The matplotlib patch object for the plotted bounding box.</span>
+<span class="sd">            The patch can be used, for example, when adding a plot</span>
+<span class="sd">            legend.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_region</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">reg</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RegionBoundingBox.union">
+<a class="viewcode-back" href="../../../api/regions.RegionBoundingBox.html#regions.RegionBoundingBox.union">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a `RegionBoundingBox` representing the union of this</span>
+<span class="sd">        `RegionBoundingBox` with another `RegionBoundingBox`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `~regions.RegionBoundingBox`</span>
+<span class="sd">            The `RegionBoundingBox` to join with this one.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `~regions.RegionBoundingBox`</span>
+<span class="sd">            A `RegionBoundingBox` representing the union of the input</span>
+<span class="sd">            `RegionBoundingBox` with this one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">RegionBoundingBox</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;RegionBoundingBox can be joined only with &#39;</span>
+                            <span class="s1">&#39;another RegionBoundingBox.&#39;</span><span class="p">)</span>
+
+        <span class="n">ixmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmin</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">ixmin</span><span class="p">))</span>
+        <span class="n">ixmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmax</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">ixmax</span><span class="p">))</span>
+        <span class="n">iymin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">iymin</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">iymin</span><span class="p">))</span>
+        <span class="n">iymax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">iymax</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">iymax</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">RegionBoundingBox</span><span class="p">(</span><span class="n">ixmin</span><span class="o">=</span><span class="n">ixmin</span><span class="p">,</span> <span class="n">ixmax</span><span class="o">=</span><span class="n">ixmax</span><span class="p">,</span> <span class="n">iymin</span><span class="o">=</span><span class="n">iymin</span><span class="p">,</span>
+                                 <span class="n">iymax</span><span class="o">=</span><span class="n">iymax</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RegionBoundingBox.intersection">
+<a class="viewcode-back" href="../../../api/regions.RegionBoundingBox.html#regions.RegionBoundingBox.intersection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a `RegionBoundingBox` representing the intersection of</span>
+<span class="sd">        this `RegionBoundingBox` with another `RegionBoundingBox`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `~regions.RegionBoundingBox`</span>
+<span class="sd">            The `RegionBoundingBox` to intersect with this one.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `~regions.RegionBoundingBox`</span>
+<span class="sd">            A `RegionBoundingBox` representing the intersection of the</span>
+<span class="sd">            input `RegionBoundingBox` with this one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">RegionBoundingBox</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;RegionBoundingBox can be intersected only with &#39;</span>
+                            <span class="s1">&#39;another RegionBoundingBox.&#39;</span><span class="p">)</span>
+
+        <span class="n">ixmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmin</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">ixmin</span><span class="p">)</span>
+        <span class="n">ixmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ixmax</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">ixmax</span><span class="p">)</span>
+        <span class="n">iymin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iymin</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">iymin</span><span class="p">)</span>
+        <span class="n">iymax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iymax</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">iymax</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ixmax</span> <span class="o">&lt;</span> <span class="n">ixmin</span> <span class="ow">or</span> <span class="n">iymax</span> <span class="o">&lt;</span> <span class="n">iymin</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">RegionBoundingBox</span><span class="p">(</span><span class="n">ixmin</span><span class="o">=</span><span class="n">ixmin</span><span class="p">,</span> <span class="n">ixmax</span><span class="o">=</span><span class="n">ixmax</span><span class="p">,</span> <span class="n">iymin</span><span class="o">=</span><span class="n">iymin</span><span class="p">,</span>
+                                 <span class="n">iymax</span><span class="o">=</span><span class="n">iymax</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

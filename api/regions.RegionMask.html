@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>RegionMask &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="RegionMeta" href="regions.RegionMeta.html" />
+    <link rel="prev" title="RegionBoundingBox" href="regions.RegionBoundingBox.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.RegionMeta.html" title="RegionMeta">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.RegionBoundingBox.html" title="RegionBoundingBox">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>RegionMask</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="regionmask">
+<h1>RegionMask<a class="headerlink" href="#regionmask" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.RegionMask">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">RegionMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/mask.html#RegionMask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionMask" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class for a region mask.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>data</strong><span class="classifier">array_like</span></dt><dd><p>A 2D array representing the fractional overlap of a region
+on the pixel grid. This should be the full-sized (i.e., not
+truncated) array that is the direct output of one of the
+low-level “geometry” functions.</p>
+</dd>
+<dt><strong>bbox</strong><span class="classifier"><a class="reference internal" href="regions.RegionBoundingBox.html#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regions.RegionBoundingBox</span></code></a></span></dt><dd><p>The bounding box object defining the region minimal bounding
+box.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Usage examples are provided in the <a class="reference internal" href="../masks.html#overlap-masks"><span class="std std-ref">Computing Overlap Masks</span></a> section of
+the docs.</p>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionMask.shape" title="regions.RegionMask.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
+<td><p>The shape of the mask data array.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionMask.cutout" title="regions.RegionMask.cutout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cutout</span></code></a>(data[, fill_value, copy])</p></td>
+<td><p>Create a cutout from the input data over the mask bounding box, taking any edge effects into account.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegionMask.get_overlap_slices" title="regions.RegionMask.get_overlap_slices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_overlap_slices</span></code></a>(shape)</p></td>
+<td><p>Get slices for the overlapping part of the region mask and a 2D array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionMask.get_values" title="regions.RegionMask.get_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_values</span></code></a>(data[, mask])</p></td>
+<td><p>Get the mask-weighted pixel values from the data as a 1D array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegionMask.multiply" title="regions.RegionMask.multiply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">multiply</span></code></a>(data[, fill_value])</p></td>
+<td><p>Multiply the region mask with the input data, taking any edge effects into account.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionMask.to_image" title="regions.RegionMask.to_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_image</span></code></a>(shape[, dtype])</p></td>
+<td><p>Return an image of the mask in a 2D array of the given shape, taking any edge effects into account.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegionMask.shape">
+<span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#regions.RegionMask.shape" title="Link to this definition">¶</a></dt>
+<dd><p>The shape of the mask data array.</p>
+</dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionMask.cutout">
+<span class="sig-name descname"><span class="pre">cutout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/mask.html#RegionMask.cutout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionMask.cutout" title="Link to this definition">¶</a></dt>
+<dd><p>Create a cutout from the input data over the mask bounding box,
+taking any edge effects into account.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">array_like</span></dt><dd><p>A 2D array on which to apply the region mask.</p>
+</dd>
+<dt><strong>fill_value</strong><span class="classifier">float, optional</span></dt><dd><p>The value used to fill pixels where the region mask does not
+overlap with the input <code class="docutils literal notranslate"><span class="pre">data</span></code>.  The default is 0.</p>
+</dd>
+<dt><strong>copy</strong><span class="classifier">bool, optional</span></dt><dd><p>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> then the returned cutout array will always be hold
+a copy of the input <code class="docutils literal notranslate"><span class="pre">data</span></code>.  If <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a> and the mask is
+fully within the input <code class="docutils literal notranslate"><span class="pre">data</span></code>, then the returned cutout
+array will be a view into the input <code class="docutils literal notranslate"><span class="pre">data</span></code>.  In cases
+where the mask partially overlaps or has no overlap with the
+input <code class="docutils literal notranslate"><span class="pre">data</span></code>, the returned cutout array will always hold a
+copy of the input <code class="docutils literal notranslate"><span class="pre">data</span></code> (i.e., this keyword has no
+effect).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>result</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></dt><dd><p>A 2D array cut out from the input <code class="docutils literal notranslate"><span class="pre">data</span></code> representing the
+same cutout region as the region mask.  If there is a
+partial overlap of the region mask with the input data,
+pixels outside of the data will be assigned to
+<code class="docutils literal notranslate"><span class="pre">fill_value</span></code>.  <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> is returned if there is no overlap
+of the region with the input <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionMask.get_overlap_slices">
+<span class="sig-name descname"><span class="pre">get_overlap_slices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/mask.html#RegionMask.get_overlap_slices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionMask.get_overlap_slices" title="Link to this definition">¶</a></dt>
+<dd><p>Get slices for the overlapping part of the region mask and a 2D
+array.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">2-tuple of int</span></dt><dd><p>The shape of the 2D array.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>slices_large</strong><span class="classifier">tuple of slices or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></dt><dd><p>A tuple of slice objects for each axis of the large array,
+such that <code class="docutils literal notranslate"><span class="pre">large_array[slices_large]</span></code> extracts the region
+of the large array that overlaps with the small array.
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> is returned if there is no overlap of the bounding
+box with the given image shape.</p>
+</dd>
+<dt><strong>slices_small</strong><span class="classifier">tuple of slices or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></dt><dd><p>A tuple of slice objects for each axis of the region mask
+array such that <code class="docutils literal notranslate"><span class="pre">small_array[slices_small]</span></code> extracts the
+region that is inside the large array. <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> is returned if
+there is no overlap of the bounding box with the given image
+shape.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionMask.get_values">
+<span class="sig-name descname"><span class="pre">get_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/mask.html#RegionMask.get_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionMask.get_values" title="Link to this definition">¶</a></dt>
+<dd><p>Get the mask-weighted pixel values from the data as a 1D array.</p>
+<p>If the <a class="reference internal" href="#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMask</span></code></a> was created with <code class="docutils literal notranslate"><span class="pre">mode='center'</span></code>,
+(where the mask weights are only 1 or 0), then the returned
+values will simply be pixel values extracted from the data.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>data</strong><span class="classifier">array_like or <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a></span></dt><dd><p>The 2D array from which to get mask-weighted values.</p>
+</dd>
+<dt><strong>mask</strong><span class="classifier">array_like (bool), optional</span></dt><dd><p>A boolean mask with the same shape as <code class="docutils literal notranslate"><span class="pre">data</span></code> where a
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> value indicates the corresponding element of <code class="docutils literal notranslate"><span class="pre">data</span></code>
+is not returned in the result.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>result</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></dt><dd><p>A 1D array of mask-weighted pixel values from the input
+<code class="docutils literal notranslate"><span class="pre">data</span></code>. If there is no overlap of the region with the
+input <code class="docutils literal notranslate"><span class="pre">data</span></code>, the result will be an empty array with shape
+(0,).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionMask.multiply">
+<span class="sig-name descname"><span class="pre">multiply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/mask.html#RegionMask.multiply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionMask.multiply" title="Link to this definition">¶</a></dt>
+<dd><p>Multiply the region mask with the input data, taking any edge
+effects into account.</p>
+<p>The result is a mask-weighted cutout from the data.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>data</strong><span class="classifier">array_like or <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a></span></dt><dd><p>The 2D array to multiply with the region mask.</p>
+</dd>
+<dt><strong>fill_value</strong><span class="classifier">float, optional</span></dt><dd><p>The value is used to fill pixels where the region mask does
+not overlap with the input <code class="docutils literal notranslate"><span class="pre">data</span></code>.  The default is 0.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>result</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></dt><dd><p>A 2D mask-weighted cutout from the input <code class="docutils literal notranslate"><span class="pre">data</span></code>. If
+there is a partial overlap of the region mask with the
+input data, pixels outside of the data will be assigned to
+<code class="docutils literal notranslate"><span class="pre">fill_value</span></code> before being multiplied with the mask. <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>
+is returned if there is no overlap of the region with the
+input <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionMask.to_image">
+<span class="sig-name descname"><span class="pre">to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'float'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/mask.html#RegionMask.to_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionMask.to_image" title="Link to this definition">¶</a></dt>
+<dd><p>Return an image of the mask in a 2D array of the given shape,
+taking any edge effects into account.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">tuple of int</span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">(ny,</span> <span class="pre">nx)</span></code> shape of the output array.</p>
+</dd>
+<dt><strong>dtype</strong><span class="classifier">data-type, optional</span></dt><dd><p>The desired data type for the array. This should be a
+floating data type if the <a class="reference internal" href="#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMask</span></code></a> was created with the
+“exact” or “subpixel” mode, otherwise the fractional mask
+weights will be altered. A integer data type may be used if
+the <a class="reference internal" href="#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMask</span></code></a> was created with the “center” mode.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>result</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></dt><dd><p>A 2D array of the mask.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">RegionMask</a><ul>
+<li><a class="reference internal" href="#regions.RegionMask"><code class="docutils literal notranslate"><span class="pre">RegionMask</span></code></a><ul>
+<li><a class="reference internal" href="#regions.RegionMask.shape"><code class="docutils literal notranslate"><span class="pre">RegionMask.shape</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionMask.cutout"><code class="docutils literal notranslate"><span class="pre">RegionMask.cutout()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionMask.get_overlap_slices"><code class="docutils literal notranslate"><span class="pre">RegionMask.get_overlap_slices()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionMask.get_values"><code class="docutils literal notranslate"><span class="pre">RegionMask.get_values()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionMask.multiply"><code class="docutils literal notranslate"><span class="pre">RegionMask.multiply()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionMask.to_image"><code class="docutils literal notranslate"><span class="pre">RegionMask.to_image()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.RegionMask.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>LinePixelRegion &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LineSkyRegion" href="regions.LineSkyRegion.html" />
+    <link rel="prev" title="EllipseSkyRegion" href="regions.EllipseSkyRegion.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.LineSkyRegion.html" title="LineSkyRegion">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.EllipseSkyRegion.html" title="EllipseSkyRegion">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>LinePixelRegion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="linepixelregion">
+<h1>LinePixelRegion<a class="headerlink" href="#linepixelregion" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.LinePixelRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">LinePixelRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/line.html#LinePixelRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.LinePixelRegion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regions.PixelRegion.html#regions.PixelRegion" title="regions.core.core.PixelRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">PixelRegion</span></code></a></p>
+<p>A line in pixel coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>start</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The start position.</p>
+</dd>
+<dt><strong>end</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The end position.</p>
+</dd>
+<dt><strong>meta</strong><span class="classifier"><a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the meta attributes of the region.</p>
+</dd>
+<dt><strong>visual</strong><span class="classifier"><a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the visual meta attributes of the
+region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span><span class="p">,</span> <span class="n">LinePixelRegion</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">reg</span> <span class="o">=</span> <span class="n">LinePixelRegion</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+<span class="n">patch</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Line&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="p">(</span><span class="n">patch</span><span class="p">,),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/a73472b7df0abe2b48055533cea6fb2c/regions-LinePixelRegion-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/7f5e2744f82b250286119b4440ed47a5/regions-LinePixelRegion-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/9e37da631024f7ee88a9a238c3be3ed1/regions-LinePixelRegion-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/a530c138f7429156f011177e2f24db8d/regions-LinePixelRegion-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="../_downloads/0aa309010e58f0b2275af7f410904f8d/regions-LinePixelRegion-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/regions-LinePixelRegion-1.png" class="plot-directive" src="../_images/regions-LinePixelRegion-1.png" />
+</figure>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.LinePixelRegion.area" title="regions.LinePixelRegion.area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">area</span></code></a></p></td>
+<td><p>The exact analytical area of the region shape.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.LinePixelRegion.bounding_box" title="regions.LinePixelRegion.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a></p></td>
+<td><p>The minimal bounding box (in integer pixel coordinates) that contains the region.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.LinePixelRegion.end" title="regions.LinePixelRegion.end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end</span></code></a></p></td>
+<td><p>The end pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.LinePixelRegion.meta" title="regions.LinePixelRegion.meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta</span></code></a></p></td>
+<td><p>The meta attributes as a <a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.LinePixelRegion.start" title="regions.LinePixelRegion.start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start</span></code></a></p></td>
+<td><p>The start pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.LinePixelRegion.visual" title="regions.LinePixelRegion.visual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visual</span></code></a></p></td>
+<td><p>The visual attributes as a <a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.LinePixelRegion.as_artist" title="regions.LinePixelRegion.as_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_artist</span></code></a>([origin])</p></td>
+<td><p>Return a matplotlib patch object for this region (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Arrow.html#matplotlib.patches.Arrow" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.Arrow</span></code></a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.LinePixelRegion.contains" title="regions.LinePixelRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code></a>(pixcoord)</p></td>
+<td><p>Check whether a position or positions fall inside the region.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.LinePixelRegion.rotate" title="regions.LinePixelRegion.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(center, angle)</p></td>
+<td><p>Rotate the region.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.LinePixelRegion.to_mask" title="regions.LinePixelRegion.to_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_mask</span></code></a>([mode, subpixels])</p></td>
+<td><p>Return a mask for the region.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.LinePixelRegion.to_sky" title="regions.LinePixelRegion.to_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_sky</span></code></a>(wcs)</p></td>
+<td><p>Return a region defined in sky coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.LinePixelRegion.to_spherical_sky" title="regions.LinePixelRegion.to_spherical_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_spherical_sky</span></code></a>([wcs, ...])</p></td>
+<td><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> instance.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.area">
+<span class="sig-name descname"><span class="pre">area</span></span><a class="headerlink" href="#regions.LinePixelRegion.area" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.bounding_box">
+<span class="sig-name descname"><span class="pre">bounding_box</span></span><a class="headerlink" href="#regions.LinePixelRegion.bounding_box" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.end">
+<span class="sig-name descname"><span class="pre">end</span></span><a class="headerlink" href="#regions.LinePixelRegion.end" title="Link to this definition">¶</a></dt>
+<dd><p>The end pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.meta">
+<span class="sig-name descname"><span class="pre">meta</span></span><a class="headerlink" href="#regions.LinePixelRegion.meta" title="Link to this definition">¶</a></dt>
+<dd><p>The meta attributes as a <a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.start">
+<span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#regions.LinePixelRegion.start" title="Link to this definition">¶</a></dt>
+<dd><p>The start pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.visual">
+<span class="sig-name descname"><span class="pre">visual</span></span><a class="headerlink" href="#regions.LinePixelRegion.visual" title="Link to this definition">¶</a></dt>
+<dd><p>The visual attributes as a <a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>.</p>
+</dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.as_artist">
+<span class="sig-name descname"><span class="pre">as_artist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/line.html#LinePixelRegion.as_artist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.LinePixelRegion.as_artist" title="Link to this definition">¶</a></dt>
+<dd><p>Return a matplotlib patch object for this region
+(<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Arrow.html#matplotlib.patches.Arrow" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.Arrow</span></code></a>).</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>origin</strong><span class="classifier">array_like, optional</span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> pixel position of the origin of the displayed
+image.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Any keyword arguments accepted by
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Arrow.html#matplotlib.patches.Arrow" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Arrow</span></code></a>. These keywords will override
+any visual meta attributes of this region.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>artist</strong><span class="classifier"><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Arrow.html#matplotlib.patches.Arrow" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Arrow</span></code></a></span></dt><dd><p>A matplotlib line patch.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixcoord</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/line.html#LinePixelRegion.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.LinePixelRegion.contains" title="Link to this definition">¶</a></dt>
+<dd><p>Check whether a position or positions fall inside the region.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>pixcoord</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The position or positions to check.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.rotate">
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/line.html#LinePixelRegion.rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.LinePixelRegion.rotate" title="Link to this definition">¶</a></dt>
+<dd><p>Rotate the region.</p>
+<p>Positive <code class="docutils literal notranslate"><span class="pre">angle</span></code> corresponds to counter-clockwise rotation.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>center</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The rotation center point.</p>
+</dd>
+<dt><strong>angle</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html#astropy.coordinates.Angle" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle</span></code></a></span></dt><dd><p>The rotation angle.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>region</strong><span class="classifier"><a class="reference internal" href="#regions.LinePixelRegion" title="regions.LinePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinePixelRegion</span></code></a></span></dt><dd><p>The rotated region (which is an independent copy).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.to_mask">
+<span class="sig-name descname"><span class="pre">to_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'center'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subpixels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/line.html#LinePixelRegion.to_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.LinePixelRegion.to_mask" title="Link to this definition">¶</a></dt>
+<dd><p>Return a mask for the region.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>mode</strong><span class="classifier">{‘center’, ‘exact’, ‘subpixels’}, optional</span></dt><dd><p>The method used to determine the overlap of the region on
+the pixel grid. Not all options are available for all region
+types. Note that the more precise methods are generally
+slower. The following methods are available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'center'</span></code>:
+A pixel is considered to be entirely in or out of the
+region depending on whether its center is in or out of
+the region. The returned mask will contain values only
+of 0 (out) and 1 (in).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'exact'</span></code> (default):
+The exact fractional overlap of the region and each
+pixel is calculated. The returned mask will contain
+values between 0 and 1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'subpixel'</span></code>:
+A pixel is divided into subpixels (see the
+<code class="docutils literal notranslate"><span class="pre">subpixels</span></code> keyword), each of which are considered
+to be entirely in or out of the region depending
+on whether its center is in or out of the region.
+If <code class="docutils literal notranslate"><span class="pre">subpixels=1</span></code>, this method is equivalent to
+<code class="docutils literal notranslate"><span class="pre">'center'</span></code>. The returned mask will contain values
+between 0 and 1.</p></li>
+</ul>
+</div></blockquote>
+</dd>
+<dt><strong>subpixels</strong><span class="classifier">int, optional</span></dt><dd><p>For the <code class="docutils literal notranslate"><span class="pre">'subpixel'</span></code> mode, resample pixels by this factor
+in each dimension. That is, each pixel is divided into
+<code class="docutils literal notranslate"><span class="pre">subpixels</span> <span class="pre">**</span> <span class="pre">2</span></code> subpixels.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>mask</strong><span class="classifier"><a class="reference internal" href="regions.RegionMask.html#regions.RegionMask" title="regions.RegionMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMask</span></code></a></span></dt><dd><p>A mask for the region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.to_sky">
+<span class="sig-name descname"><span class="pre">to_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/line.html#LinePixelRegion.to_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.LinePixelRegion.to_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region defined in sky coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a></span></dt><dd><p>The world coordinate system transformation to use to convert
+from pixels to sky coordinates.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a></span></dt><dd><p>The sky region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.LinePixelRegion.to_spherical_sky">
+<span class="sig-name descname"><span class="pre">to_spherical_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_boundary_distortions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discretize_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/line.html#LinePixelRegion.to_spherical_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.LinePixelRegion.to_spherical_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a>
+instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a> instance, optional</span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates. Required if transforming
+with boundary distortions (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).
+Ignored if boundary distortions not included.</p>
+</dd>
+<dt><strong>include_boundary_distortions</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, accounts for boundary boundary distortions in spherical to planar
+conversions, by discretizing the boundary and converting the boundary polygon.
+Default is False, which converts to an equivalent idealized shape.</p>
+</dd>
+<dt><strong>discretize_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Optional keyword arguments to pass to discretize_boundary() method
+if including boundary distortions.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>spherical_sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a></span></dt><dd><p>A spherical sky region, with an equivalent shape (if
+<code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is False), or a discretized polygon of
+the boundary (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">LinePixelRegion</a><ul>
+<li><a class="reference internal" href="#regions.LinePixelRegion"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion</span></code></a><ul>
+<li><a class="reference internal" href="#regions.LinePixelRegion.area"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.area</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.bounding_box"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.bounding_box</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.end"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.end</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.meta"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.meta</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.start"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.start</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.visual"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.visual</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.as_artist"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.as_artist()</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.contains"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.contains()</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.rotate"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.rotate()</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.to_mask"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.to_mask()</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.to_sky"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.to_sky()</span></code></a></li>
+<li><a class="reference internal" href="#regions.LinePixelRegion.to_spherical_sky"><code class="docutils literal notranslate"><span class="pre">LinePixelRegion.to_spherical_sky()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.LinePixelRegion.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

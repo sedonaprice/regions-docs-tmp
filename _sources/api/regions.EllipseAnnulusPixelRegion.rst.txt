@@ -1,0 +1,39 @@
+EllipseAnnulusPixelRegion
+=========================
+
+.. currentmodule:: regions
+
+.. autoclass:: EllipseAnnulusPixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~EllipseAnnulusPixelRegion.angle
+      ~EllipseAnnulusPixelRegion.center
+      ~EllipseAnnulusPixelRegion.inner_height
+      ~EllipseAnnulusPixelRegion.inner_width
+      ~EllipseAnnulusPixelRegion.outer_height
+      ~EllipseAnnulusPixelRegion.outer_width
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~EllipseAnnulusPixelRegion.to_sky
+      ~EllipseAnnulusPixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: angle
+   .. autoattribute:: center
+   .. autoattribute:: inner_height
+   .. autoattribute:: inner_width
+   .. autoattribute:: outer_height
+   .. autoattribute:: outer_width
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

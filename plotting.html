@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Plotting Regions with Matplotlib &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reading/Writing Region Files" href="region_io.html" />
+    <link rel="prev" title="Bounding Regions for On-Sky Spatial Searches" href="spherical_bounding_regions.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="region_io.html" title="Reading/Writing Region Files">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="spherical_bounding_regions.html" title="Bounding Regions for On-Sky Spatial Searches">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Plotting Regions with Matplotlib</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="plotting-regions-with-matplotlib">
+<h1>Plotting Regions with Matplotlib<a class="headerlink" href="#plotting-regions-with-matplotlib" title="Link to this heading">¶</a></h1>
+<section id="plotting-pixel-regions">
+<h2>Plotting Pixel Regions<a class="headerlink" href="#plotting-pixel-regions" title="Link to this heading">¶</a></h2>
+<p>Some <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a> objects have an <code class="docutils literal notranslate"><span class="pre">as_artist()</span></code>
+method that returns an equivalent <a class="reference external" href="https://matplotlib.org/stable/api/patches_api.html#module-matplotlib.patches" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches</span></code></a> object.
+For example <a class="reference internal" href="api/regions.CirclePixelRegion.html#regions.CirclePixelRegion.as_artist" title="regions.CirclePixelRegion.as_artist"><code class="xref py py-meth docutils literal notranslate"><span class="pre">regions.CirclePixelRegion.as_artist()</span></code></a> returns a
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Circle.html#matplotlib.patches.Circle" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.Circle</span></code></a> object.</p>
+<p>To draw a matplotlib patch object, add it to an <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>
+object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span><span class="p">,</span> <span class="n">CirclePixelRegion</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">region</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span><span class="p">(</span><span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.42</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">artist</span> <span class="o">=</span> <span class="n">region</span><span class="o">.</span><span class="n">as_artist</span><span class="p">()</span>
+
+<span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">artist</span><span class="p">)</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/4d7b7c6832e212535f10429c7edafa15/plotting-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/a2481d73ec85a17c5ce878425cdf2e26/plotting-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/79cc6ac1a35c6b0362c0f2a1be0e4c39/plotting-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/fb790919c9e06e8c03ab0ea2cf0a05c3/plotting-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/d37c8650c64909616c0d78322cf93324/plotting-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/plotting-1.png" class="plot-directive" src="_images/plotting-1.png" />
+</figure>
+<p>The default keyword arguments for the matplotlib artist depend on the
+value of the <code class="docutils literal notranslate"><span class="pre">default_style</span></code> keyword in the <a class="reference internal" href="api/regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>
+dictionary. This keyword is currently set (to a value of ‘ds9’) only
+when reading from DS9 region files. If this keyword is not set or set
+to ‘mpl’ or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, then the matplotlib defaults will be used, with the
+exception that fill is turned off for <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Patch.html#matplotlib.patches.Patch" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Patch</span></code></a> and
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Line2D</span></code></a> artists.</p>
+<p>The <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion.plot" title="regions.PixelRegion.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">regions.PixelRegion.plot()</span></code></a> method is a convenience method that
+combines these two steps (creating a matplotlib patch artist and adding
+it to an axis). If no axis is passed then it calls <code class="docutils literal notranslate"><span class="pre">plt.gca()</span></code>.</p>
+<p>You can shift the origin of the region while plotting by supplying the
+<code class="docutils literal notranslate"><span class="pre">origin</span></code> pixel coordinates to either <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion.plot" title="regions.PixelRegion.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a>
+or <a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion.as_artist" title="regions.PixelRegion.as_artist"><code class="xref py py-meth docutils literal notranslate"><span class="pre">as_artist()</span></code></a>. The
+<a class="reference internal" href="api/regions.PixelRegion.html#regions.PixelRegion.plot" title="regions.PixelRegion.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a> method also takes any keyword argument
+that the <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Patch.html#matplotlib.patches.Patch" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Patch</span></code></a> object accepts for those regions
+represented as patches, or arguments <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Line2D</span></code></a> accepts
+for point regions. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span><span class="p">,</span> <span class="n">CirclePixelRegion</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">region</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">region</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/ed6686a405ed1e9367474986d931c15f/plotting-2.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/2fb850afcb2d0c6629bdb59a2d81104d/plotting-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/f955de964060642bfd37b1a5592b371a/plotting-2.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/84d234a21a4b7665003e92fa0d8ba026/plotting-2.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/b0d1b1b7f3677a905c92699480d3ee1c/plotting-2.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/plotting-2.png" class="plot-directive" src="_images/plotting-2.png" />
+</figure>
+<p>The documentation for <a class="reference internal" href="api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion" title="regions.RectanglePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectanglePixelRegion</span></code></a> and
+<a class="reference internal" href="api/regions.EllipsePixelRegion.html#regions.EllipsePixelRegion" title="regions.EllipsePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EllipsePixelRegion</span></code></a> also shows plotting examples.</p>
+</section>
+<section id="plotting-sky-regions">
+<h2>Plotting Sky Regions<a class="headerlink" href="#plotting-sky-regions" title="Link to this heading">¶</a></h2>
+<p>Note that <a class="reference internal" href="api/regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a> objects do not have an <code class="docutils literal notranslate"><span class="pre">as_artist()</span></code> or
+<code class="docutils literal notranslate"><span class="pre">plot()</span></code> method. To plot a <a class="reference internal" href="api/regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a> object, you will need
+to convert it to a pixel region (using a WCS object):</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSkyRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sky_center</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sky_radius</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sky_region</span> <span class="o">=</span> <span class="n">CircleSkyRegion</span><span class="p">(</span><span class="n">sky_center</span><span class="p">,</span> <span class="n">sky_radius</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixel_region</span> <span class="o">=</span> <span class="n">sky_region</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixel_region</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="plotting-spherical-sky-regions">
+<h2>Plotting Spherical Sky Regions<a class="headerlink" href="#plotting-spherical-sky-regions" title="Link to this heading">¶</a></h2>
+<p>Similarlly, <a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> objects do not have an
+<code class="docutils literal notranslate"><span class="pre">as_artist()</span></code> or <code class="docutils literal notranslate"><span class="pre">plot()</span></code> method. To plot a <a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a>
+object, you will need to convert it to a pixel region (using a WCS object).
+Boundary distortions effects can also be included in this conversion (by
+setting the <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> keyword), to capture
+the effects of projecting from spherical to a planar geometry.
+(See the second example in <a class="reference internal" href="index.html#index-examples"><span class="std std-ref">Examples</span></a>.)</p>
+<p>It is also possible to use the coordinates of a discretized
+<a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> to show the region’s boundary in a figure.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">,</span> <span class="n">make_example_dataset</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">make_example_dataset</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;simulated&#39;</span><span class="p">)</span>
+<span class="n">wcs</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">wcs</span>
+
+<span class="n">sph_sky_center</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;galactic&#39;</span><span class="p">)</span>
+<span class="n">sph_sky_radius</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="n">sph_sky_region</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="n">sph_sky_center</span><span class="p">,</span> <span class="n">sph_sky_radius</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">wcs</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Galactic $\ell$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Galactic $b$&quot;</span><span class="p">)</span>
+
+<span class="n">sph_sky_region</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span>
+   <span class="n">wcs</span><span class="o">=</span><span class="n">wcs</span><span class="p">,</span>
+   <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+   <span class="n">discretize_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_points&quot;</span><span class="p">:</span><span class="mi">1000</span><span class="p">}</span>
+<span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">sph_sky_center2</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;galactic&#39;</span><span class="p">)</span>
+<span class="n">sph_sky_radius2</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="n">sph_sky_region2</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="n">sph_sky_center2</span><span class="p">,</span> <span class="n">sph_sky_radius2</span><span class="p">)</span>
+<span class="n">poly_sph_sky2</span> <span class="o">=</span> <span class="n">sph_sky_region2</span><span class="o">.</span><span class="n">discretize_boundary</span><span class="p">(</span><span class="n">n_points</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">poly_sph_sky2</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">l</span><span class="p">,</span>
+    <span class="n">poly_sph_sky2</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
+    <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:blue&quot;</span><span class="p">,</span>
+    <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">get_transform</span><span class="p">(</span><span class="s1">&#39;galactic&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/3fd623dea7e68f4eb58027d3e79a1d4e/plotting-3.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/a5f7851875d957e2e9e5665268ddd899/plotting-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/c93c916f0c6ffb672b41147208306b97/plotting-3.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/a4189325f8b8ff5658a59f9cfcfd77e3/plotting-3.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/13a32528d4d5c006a02ebccf5b463e9c/plotting-3.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/plotting-3.png" class="plot-directive" src="_images/plotting-3.png" />
+</figure>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Plotting Regions with Matplotlib</a><ul>
+<li><a class="reference internal" href="#plotting-pixel-regions">Plotting Pixel Regions</a></li>
+<li><a class="reference internal" href="#plotting-sky-regions">Plotting Sky Regions</a></li>
+<li><a class="reference internal" href="#plotting-spherical-sky-regions">Plotting Spherical Sky Regions</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/plotting.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

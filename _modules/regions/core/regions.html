@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.core.regions &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.core.regions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides a Regions class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Region</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionsRegistry</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Regions&#39;</span><span class="p">]</span>
+<span class="n">__doctest_skip__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Regions.read&#39;</span><span class="p">,</span> <span class="s1">&#39;Regions.write&#39;</span><span class="p">,</span> <span class="s1">&#39;Regions.parse&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;Regions.serialize&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Regions">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Regions</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to hold a list of `~regions.Region` objects.</span>
+
+<span class="sd">    This class provides a unified I/O interface that supports reading,</span>
+<span class="sd">    writing, parsing, and serializing many region data formats.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    regions : list of `~regions.Region`</span>
+<span class="sd">        The list of region objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">(),</span> <span class="o">/</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">regions</span> <span class="o">==</span> <span class="p">():</span>
+            <span class="n">regions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Region</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input regions must be a list of Region &#39;</span>
+                                <span class="s1">&#39;objects&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="n">regions</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">newregions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newregions</span><span class="p">,</span> <span class="n">Region</span><span class="p">):</span>  <span class="c1"># one item</span>
+            <span class="k">return</span> <span class="n">newregions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">newcls</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+            <span class="n">newcls</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="n">newregions</span>
+            <span class="k">return</span> <span class="n">newcls</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cls_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">cls_name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">)</span><span class="si">}</span><span class="s1">)&gt;&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Regions.append">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.append">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append the region to the end of the list of regions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        region : `~regions.Region`</span>
+<span class="sd">            The region to append.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">Region</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input region must be a Region object&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">region</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Regions.extend">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.extend">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regions</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extend the list of regions by appending elements from the input</span>
+<span class="sd">        regions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        regions : `~regions.Regions` or list of `~regions.Region`</span>
+<span class="sd">            A `~regions.Regions` object or a list of regions to include.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">Regions</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">regions</span><span class="o">.</span><span class="n">regions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Region</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input regions must be a list of Region &#39;</span>
+                                    <span class="s1">&#39;objects&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Regions.insert">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.insert">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Insert the region before index.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int</span>
+<span class="sd">            The list index.</span>
+<span class="sd">        region : `~regions.Region`</span>
+<span class="sd">            The region to insert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">region</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Regions.reverse">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.reverse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reverse the list of regions in place.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Regions.pop">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.pop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove and return the region at index.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int, optional</span>
+<span class="sd">            The index of the region to remove.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `~regions.Region`</span>
+<span class="sd">            The removed region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Regions.copy">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.copy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a shallow copy of this object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newcls</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+        <span class="n">newcls</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">newcls</span></div>
+
+
+<div class="viewcode-block" id="Regions.get_formats">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.get_formats">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_formats</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the registered I/O formats as a Table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">RegionsRegistry</span><span class="o">.</span><span class="n">get_formats</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Regions.read">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.read">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read and parse a region file and return as a Regions object.</span>
+
+<span class="sd">        This method allows reading a file in many supported data</span>
+<span class="sd">        formats, e.g.,::</span>
+
+<span class="sd">            &gt;&gt;&gt; from regions import Regions</span>
+<span class="sd">            &gt;&gt;&gt; reg1 = Regions.read(&#39;regions.reg&#39;, format=&#39;ds9&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg2 = Regions.read(&#39;regions.crtf&#39;, format=&#39;crtf&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg3 = Regions.read(&#39;regions.fits&#39;, format=&#39;fits&#39;)</span>
+
+<span class="sd">        A list of the available formats for `~regions.Regions` is</span>
+<span class="sd">        available using::</span>
+
+<span class="sd">            &gt;&gt;&gt; Regions.get_formats()</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            The filename or URL of the file to read.</span>
+
+<span class="sd">        format : str, optional</span>
+<span class="sd">            The file format specifier.</span>
+
+<span class="sd">        cache : bool or &#39;update&#39;, optional</span>
+<span class="sd">            Whether to cache the contents of remote URLs. If &#39;update&#39;,</span>
+<span class="sd">            check the remote URL for a new version but store the result</span>
+<span class="sd">            in the cache.</span>
+
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to the data reader.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `~regions.Regions`</span>
+<span class="sd">            A `~regions.Regions` object containing the file contents.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">RegionsRegistry</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
+                                    <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Regions.parse">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.parse">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse a region string or table and return as a Regions object.</span>
+
+<span class="sd">        This method allows parsing region data in many supported data</span>
+<span class="sd">        formats, e.g.,::</span>
+
+<span class="sd">            &gt;&gt;&gt; from regions import Regions</span>
+<span class="sd">            &gt;&gt;&gt; reg1 = Regions.parse(regions_str, format=&#39;ds9&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg2 = Regions.parse(regions_str, format=&#39;crtf&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg3 = Regions.parse(regions_tbl, format=&#39;fits&#39;)</span>
+
+<span class="sd">        A list of the available formats for `~regions.Regions` is</span>
+<span class="sd">        available using::</span>
+
+<span class="sd">            &gt;&gt;&gt; Regions.get_formats()</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : str or `~astropy.table.Table`</span>
+<span class="sd">            The region data to parse.</span>
+
+<span class="sd">        format : str, optional</span>
+<span class="sd">            The file format specifier.</span>
+
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to the data parser.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : `~regions.Regions`</span>
+<span class="sd">            A `~regions.Regions` object containing the data contents.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">RegionsRegistry</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Regions.write">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.write">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the regions to a region file in the specified format.</span>
+
+<span class="sd">        This method allows writing a file in many supported data</span>
+<span class="sd">        formats, e.g.,::</span>
+
+<span class="sd">            &gt;&gt;&gt; from regions import Regions</span>
+<span class="sd">            &gt;&gt;&gt; reg = Regions.read(&#39;regions.reg&#39;, format=&#39;ds9&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg.write(&#39;new_regions.reg&#39;, format=&#39;ds9&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg.write(&#39;new_regions.crtf&#39;, format=&#39;crtf&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg.write(&#39;new_regions.fits&#39;, format=&#39;fits&#39;)</span>
+
+<span class="sd">        A list of the available formats for `~regions.Regions` is</span>
+<span class="sd">        available using::</span>
+
+<span class="sd">            &gt;&gt;&gt; Regions.get_formats()</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            The filename or URL of the file to write.</span>
+
+<span class="sd">        format : str, optional</span>
+<span class="sd">            The file format specifier.</span>
+
+<span class="sd">        overwrite : bool, optional</span>
+<span class="sd">            If True, overwrite the output file if it exists. Raises an</span>
+<span class="sd">            `OSError` if False and the output file exists. Default is</span>
+<span class="sd">            False.</span>
+
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to the data writer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">RegionsRegistry</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
+                                     <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Regions.serialize">
+<a class="viewcode-back" href="../../../api/regions.Regions.html#regions.Regions.serialize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Serialize the regions to a region string or table.</span>
+
+<span class="sd">        This method allows serializing regions in many supported data</span>
+<span class="sd">        formats, e.g.,::</span>
+
+<span class="sd">            &gt;&gt;&gt; from regions import Regions</span>
+<span class="sd">            &gt;&gt;&gt; reg = Regions.read(&#39;regions.reg&#39;, format=&#39;ds9&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg1_str = reg.serialize(format=&#39;ds9&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg2_str = reg.serialize(format=&#39;crtf&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg3_tbl = reg.serialize(format=&#39;fits&#39;)</span>
+
+<span class="sd">        A list of the available formats for `~regions.Regions` is</span>
+<span class="sd">        available using::</span>
+
+<span class="sd">            &gt;&gt;&gt; Regions.get_formats()</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        format : str, optional</span>
+<span class="sd">            The file format specifier.</span>
+
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to the data serializer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">RegionsRegistry</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                         <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

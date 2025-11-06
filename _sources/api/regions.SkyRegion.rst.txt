@@ -1,0 +1,27 @@
+SkyRegion
+=========
+
+.. currentmodule:: regions
+
+.. autoclass:: SkyRegion
+   :show-inheritance:
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~SkyRegion.contains
+      ~SkyRegion.intersection
+      ~SkyRegion.symmetric_difference
+      ~SkyRegion.to_pixel
+      ~SkyRegion.to_spherical_sky
+      ~SkyRegion.union
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
+   .. automethod:: intersection
+   .. automethod:: symmetric_difference
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky
+   .. automethod:: union

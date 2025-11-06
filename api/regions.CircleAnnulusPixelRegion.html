@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>CircleAnnulusPixelRegion &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CircleAnnulusSkyRegion" href="regions.CircleAnnulusSkyRegion.html" />
+    <link rel="prev" title="CRTFRegionParserWarning" href="regions.CRTFRegionParserWarning.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.CircleAnnulusSkyRegion.html" title="CircleAnnulusSkyRegion">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.CRTFRegionParserWarning.html" title="CRTFRegionParserWarning">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>CircleAnnulusPixelRegion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="circleannuluspixelregion">
+<h1>CircleAnnulusPixelRegion<a class="headerlink" href="#circleannuluspixelregion" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.CircleAnnulusPixelRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">CircleAnnulusPixelRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outer_radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#CircleAnnulusPixelRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.CircleAnnulusPixelRegion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regions.AnnulusPixelRegion.html#regions.AnnulusPixelRegion" title="regions.shapes.annulus.AnnulusPixelRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnulusPixelRegion</span></code></a></p>
+<p>A circular annulus in pixel coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>center</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The position of the center of the annulus.</p>
+</dd>
+<dt><strong>inner_radius</strong><span class="classifier">float</span></dt><dd><p>The inner radius of the annulus in pixels.</p>
+</dd>
+<dt><strong>outer_radius</strong><span class="classifier">float</span></dt><dd><p>The outer radius of the annulus in pixels.</p>
+</dd>
+<dt><strong>meta</strong><span class="classifier"><a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the meta attributes of the region.</p>
+</dd>
+<dt><strong>visual</strong><span class="classifier"><a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the visual meta attributes of the
+region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span><span class="p">,</span> <span class="n">CircleAnnulusPixelRegion</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">reg</span> <span class="o">=</span> <span class="n">CircleAnnulusPixelRegion</span><span class="p">(</span><span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">6</span><span class="p">),</span>
+                               <span class="n">inner_radius</span><span class="o">=</span><span class="mf">5.5</span><span class="p">,</span>
+                               <span class="n">outer_radius</span><span class="o">=</span><span class="mf">8.0</span><span class="p">)</span>
+<span class="n">patch</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Circle Annulus&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="p">(</span><span class="n">patch</span><span class="p">,),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/ce66eafd10b4ad2e3b8a9c9e6cfa2e51/regions-CircleAnnulusPixelRegion-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/550f1a7f0922828c1ee9d2935d56993e/regions-CircleAnnulusPixelRegion-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/8e0690e93bc7b7d9085c2af4d95304c2/regions-CircleAnnulusPixelRegion-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/98a8b6ae31226c313185ffb56d6e20d4/regions-CircleAnnulusPixelRegion-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="../_downloads/096a84e0e10abb9df09470787095f76d/regions-CircleAnnulusPixelRegion-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/regions-CircleAnnulusPixelRegion-1.png" class="plot-directive" src="../_images/regions-CircleAnnulusPixelRegion-1.png" />
+</figure>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.center" title="regions.CircleAnnulusPixelRegion.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
+<td><p>The center pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.inner_radius" title="regions.CircleAnnulusPixelRegion.inner_radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner_radius</span></code></a></p></td>
+<td><p>The inner radius in pixels as a float.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.meta" title="regions.CircleAnnulusPixelRegion.meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta</span></code></a></p></td>
+<td><p>The meta attributes as a <a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.outer_radius" title="regions.CircleAnnulusPixelRegion.outer_radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer_radius</span></code></a></p></td>
+<td><p>The outer radius in pixels as a float.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.visual" title="regions.CircleAnnulusPixelRegion.visual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visual</span></code></a></p></td>
+<td><p>The visual attributes as a <a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.to_sky" title="regions.CircleAnnulusPixelRegion.to_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_sky</span></code></a>(wcs)</p></td>
+<td><p>Return a region defined in sky coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.to_spherical_sky" title="regions.CircleAnnulusPixelRegion.to_spherical_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_spherical_sky</span></code></a>([wcs, ...])</p></td>
+<td><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> instance.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.CircleAnnulusPixelRegion.center">
+<span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#regions.CircleAnnulusPixelRegion.center" title="Link to this definition">¶</a></dt>
+<dd><p>The center pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.CircleAnnulusPixelRegion.inner_radius">
+<span class="sig-name descname"><span class="pre">inner_radius</span></span><a class="headerlink" href="#regions.CircleAnnulusPixelRegion.inner_radius" title="Link to this definition">¶</a></dt>
+<dd><p>The inner radius in pixels as a float.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.CircleAnnulusPixelRegion.meta">
+<span class="sig-name descname"><span class="pre">meta</span></span><a class="headerlink" href="#regions.CircleAnnulusPixelRegion.meta" title="Link to this definition">¶</a></dt>
+<dd><p>The meta attributes as a <a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.CircleAnnulusPixelRegion.outer_radius">
+<span class="sig-name descname"><span class="pre">outer_radius</span></span><a class="headerlink" href="#regions.CircleAnnulusPixelRegion.outer_radius" title="Link to this definition">¶</a></dt>
+<dd><p>The outer radius in pixels as a float.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.CircleAnnulusPixelRegion.visual">
+<span class="sig-name descname"><span class="pre">visual</span></span><a class="headerlink" href="#regions.CircleAnnulusPixelRegion.visual" title="Link to this definition">¶</a></dt>
+<dd><p>The visual attributes as a <a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>.</p>
+</dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.CircleAnnulusPixelRegion.to_sky">
+<span class="sig-name descname"><span class="pre">to_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#CircleAnnulusPixelRegion.to_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.CircleAnnulusPixelRegion.to_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region defined in sky coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a></span></dt><dd><p>The world coordinate system transformation to use to convert
+from pixels to sky coordinates.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a></span></dt><dd><p>The sky region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.CircleAnnulusPixelRegion.to_spherical_sky">
+<span class="sig-name descname"><span class="pre">to_spherical_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_boundary_distortions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discretize_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#CircleAnnulusPixelRegion.to_spherical_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.CircleAnnulusPixelRegion.to_spherical_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a>
+instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a> instance, optional</span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates. Required if transforming
+with boundary distortions (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).
+Ignored if boundary distortions not included.</p>
+</dd>
+<dt><strong>include_boundary_distortions</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, accounts for boundary boundary distortions in spherical to planar
+conversions, by discretizing the boundary and converting the boundary polygon.
+Default is False, which converts to an equivalent idealized shape.</p>
+</dd>
+<dt><strong>discretize_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Optional keyword arguments to pass to discretize_boundary() method
+if including boundary distortions.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>spherical_sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a></span></dt><dd><p>A spherical sky region, with an equivalent shape (if
+<code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is False), or a discretized polygon of
+the boundary (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">CircleAnnulusPixelRegion</a><ul>
+<li><a class="reference internal" href="#regions.CircleAnnulusPixelRegion"><code class="docutils literal notranslate"><span class="pre">CircleAnnulusPixelRegion</span></code></a><ul>
+<li><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.center"><code class="docutils literal notranslate"><span class="pre">CircleAnnulusPixelRegion.center</span></code></a></li>
+<li><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.inner_radius"><code class="docutils literal notranslate"><span class="pre">CircleAnnulusPixelRegion.inner_radius</span></code></a></li>
+<li><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.meta"><code class="docutils literal notranslate"><span class="pre">CircleAnnulusPixelRegion.meta</span></code></a></li>
+<li><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.outer_radius"><code class="docutils literal notranslate"><span class="pre">CircleAnnulusPixelRegion.outer_radius</span></code></a></li>
+<li><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.visual"><code class="docutils literal notranslate"><span class="pre">CircleAnnulusPixelRegion.visual</span></code></a></li>
+<li><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.to_sky"><code class="docutils literal notranslate"><span class="pre">CircleAnnulusPixelRegion.to_sky()</span></code></a></li>
+<li><a class="reference internal" href="#regions.CircleAnnulusPixelRegion.to_spherical_sky"><code class="docutils literal notranslate"><span class="pre">CircleAnnulusPixelRegion.to_spherical_sky()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.CircleAnnulusPixelRegion.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

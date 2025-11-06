@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.shapes.text &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.shapes.text</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines text regions in both pixel and sky coordinates.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._utils.wcs_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pixel_scale_angle_at_skycoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">RegionMetaDescr</span><span class="p">,</span> <span class="n">RegionVisualDescr</span><span class="p">,</span>
+                                     <span class="n">ScalarPixCoord</span><span class="p">,</span> <span class="n">ScalarSkyCoord</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.point</span><span class="w"> </span><span class="kn">import</span> <span class="n">PointPixelRegion</span><span class="p">,</span> <span class="n">PointSkyRegion</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TextSkyRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;TextPixelRegion&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="TextPixelRegion">
+<a class="viewcode-back" href="../../../api/regions.TextPixelRegion.html#regions.TextPixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TextPixelRegion</span><span class="p">(</span><span class="n">PointPixelRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A text string in pixel coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~regions.PixCoord`</span>
+<span class="sd">        The leftmost point of the text string before rotation.</span>
+<span class="sd">    text : str</span>
+<span class="sd">        The text string.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        from regions import PixCoord, TextPixelRegion, RegionVisual</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+
+<span class="sd">        fig, ax = plt.subplots(1, 1)</span>
+
+<span class="sd">        center = PixCoord(x=15, y=10)</span>
+<span class="sd">        visual = RegionVisual({&#39;textangle&#39;: 30})</span>
+<span class="sd">        reg = TextPixelRegion(center=center, text=&quot;Hello World!&quot;,</span>
+<span class="sd">                              visual=visual)</span>
+<span class="sd">        reg.plot(ax=ax)</span>
+
+<span class="sd">        ax.set_xlim(10, 30)</span>
+<span class="sd">        ax.set_ylim(2.5, 20)</span>
+<span class="sd">        ax.set_aspect(&#39;equal&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">)</span>
+    <span class="n">_mpl_artist</span> <span class="o">=</span> <span class="s1">&#39;Text&#39;</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarPixCoord</span><span class="p">(</span><span class="s1">&#39;The leftmost pixel position (before rotation) &#39;</span>
+                            <span class="s1">&#39;as a |PixCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">visual</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+
+<div class="viewcode-block" id="TextPixelRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.TextPixelRegion.html#regions.TextPixelRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># rotation value is relative to the coordinate system axes;</span>
+        <span class="c1"># convert from counterclockwise angle from the positive x axis</span>
+        <span class="c1"># to angle relative to WCS longitude axis</span>
+        <span class="n">visual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+        <span class="k">if</span> <span class="s1">&#39;rotation&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">pixel_scale_angle_at_skycoord</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+            <span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">visual</span><span class="p">[</span><span class="s1">&#39;rotation&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">angle</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="mf">90.</span>
+
+        <span class="k">return</span> <span class="n">TextSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                             <span class="n">visual</span><span class="o">=</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="TextPixelRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.TextPixelRegion.html#regions.TextPixelRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="TextPixelRegion.as_artist">
+<a class="viewcode-back" href="../../../api/regions.TextPixelRegion.html#regions.TextPixelRegion.as_artist">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a matplotlib Text object for this region</span>
+<span class="sd">        (`matplotlib.text.Text`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        origin : array_like, optional</span>
+<span class="sd">            The ``(x, y)`` pixel position of the origin of the displayed</span>
+<span class="sd">            image.</span>
+
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            Any keyword arguments accepted by `~matplotlib.text.Text`.</span>
+<span class="sd">            These keywords will override any visual meta attributes of</span>
+<span class="sd">            this region.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        artist : `~matplotlib.text.Text`</span>
+<span class="sd">            A matplotlib Text object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">Text</span>
+
+        <span class="n">mpl_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">define_mpl_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mpl_artist</span><span class="p">)</span>
+        <span class="n">mpl_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">mpl_kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TextSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.TextSkyRegion.html#regions.TextSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TextSkyRegion</span><span class="p">(</span><span class="n">PointSkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A text string in sky coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The leftmost position of the text string before rotation.</span>
+<span class="sd">    text : str</span>
+<span class="sd">        The text string.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">)</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarSkyCoord</span><span class="p">(</span><span class="s1">&#39;The leftmost position (before rotation) as a &#39;</span>
+                            <span class="s1">&#39;|SkyCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">visual</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+
+<div class="viewcode-block" id="TextSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.TextSkyRegion.html#regions.TextSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">center</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">pixel_scale_angle_at_skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+
+        <span class="c1"># rotation value is relative to the WCS longitude axis;</span>
+        <span class="c1"># convert to counterclockwise angle from the positive x axis</span>
+        <span class="n">visual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+        <span class="k">if</span> <span class="s1">&#39;rotation&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">:</span>
+            <span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">visual</span><span class="p">[</span><span class="s1">&#39;rotation&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">angle</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="mf">90.</span>
+
+        <span class="k">return</span> <span class="n">TextPixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                               <span class="n">visual</span><span class="o">=</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="TextSkyRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.TextSkyRegion.html#regions.TextSkyRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

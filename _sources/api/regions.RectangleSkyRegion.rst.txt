@@ -1,0 +1,39 @@
+RectangleSkyRegion
+==================
+
+.. currentmodule:: regions
+
+.. autoclass:: RectangleSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~RectangleSkyRegion.angle
+      ~RectangleSkyRegion.center
+      ~RectangleSkyRegion.height
+      ~RectangleSkyRegion.meta
+      ~RectangleSkyRegion.visual
+      ~RectangleSkyRegion.width
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~RectangleSkyRegion.to_pixel
+      ~RectangleSkyRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: angle
+   .. autoattribute:: center
+   .. autoattribute:: height
+   .. autoattribute:: meta
+   .. autoattribute:: visual
+   .. autoattribute:: width
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky

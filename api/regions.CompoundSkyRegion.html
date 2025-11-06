@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>CompoundSkyRegion &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CompoundSphericalSkyRegion" href="regions.CompoundSphericalSkyRegion.html" />
+    <link rel="prev" title="CompoundPixelRegion" href="regions.CompoundPixelRegion.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.CompoundSphericalSkyRegion.html" title="CompoundSphericalSkyRegion">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.CompoundPixelRegion.html" title="CompoundPixelRegion">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>CompoundSkyRegion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="compoundskyregion">
+<h1>CompoundSkyRegion<a class="headerlink" href="#compoundskyregion" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.CompoundSkyRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">CompoundSkyRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/compound.html#CompoundSkyRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.CompoundSkyRegion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regions.SkyRegion.html#regions.SkyRegion" title="regions.core.core.SkyRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">SkyRegion</span></code></a></p>
+<p>A class that represents the logical combination of two regions in
+sky coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>region1</strong><span class="classifier"><a class="reference internal" href="regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a></span></dt><dd><p>The inner sky region.</p>
+</dd>
+<dt><strong>region2</strong><span class="classifier"><a class="reference internal" href="regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a></span></dt><dd><p>The outer sky region.</p>
+</dd>
+<dt><strong>operator</strong><span class="classifier">callable</span></dt><dd><p>A callable binary operator.</p>
+</dd>
+<dt><strong>meta</strong><span class="classifier"><a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the meta attributes of this region.</p>
+</dd>
+<dt><strong>visual</strong><span class="classifier"><a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the visual meta attributes of this
+region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.CompoundSkyRegion.operator" title="regions.CompoundSkyRegion.operator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operator</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.CompoundSkyRegion.region1" title="regions.CompoundSkyRegion.region1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region1</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.CompoundSkyRegion.region2" title="regions.CompoundSkyRegion.region2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region2</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.CompoundSkyRegion.as_artist" title="regions.CompoundSkyRegion.as_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_artist</span></code></a>(ax, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.CompoundSkyRegion.contains" title="regions.CompoundSkyRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code></a>(skycoord, wcs)</p></td>
+<td><p>Check whether a sky coordinate falls inside the region.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.CompoundSkyRegion.to_pixel" title="regions.CompoundSkyRegion.to_pixel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pixel</span></code></a>(wcs)</p></td>
+<td><p>Return the equivalent region defined in pixel coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.CompoundSkyRegion.to_spherical_sky" title="regions.CompoundSkyRegion.to_spherical_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_spherical_sky</span></code></a>([wcs, ...])</p></td>
+<td><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> instance.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.CompoundSkyRegion.operator">
+<span class="sig-name descname"><span class="pre">operator</span></span><a class="headerlink" href="#regions.CompoundSkyRegion.operator" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.CompoundSkyRegion.region1">
+<span class="sig-name descname"><span class="pre">region1</span></span><a class="headerlink" href="#regions.CompoundSkyRegion.region1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.CompoundSkyRegion.region2">
+<span class="sig-name descname"><span class="pre">region2</span></span><a class="headerlink" href="#regions.CompoundSkyRegion.region2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.CompoundSkyRegion.as_artist">
+<span class="sig-name descname"><span class="pre">as_artist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/compound.html#CompoundSkyRegion.as_artist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.CompoundSkyRegion.as_artist" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.CompoundSkyRegion.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skycoord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/compound.html#CompoundSkyRegion.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.CompoundSkyRegion.contains" title="Link to this definition">¶</a></dt>
+<dd><p>Check whether a sky coordinate falls inside the region.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>skycoord</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a></span></dt><dd><p>The position or positions to check.</p>
+</dd>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a></span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.CompoundSkyRegion.to_pixel">
+<span class="sig-name descname"><span class="pre">to_pixel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/compound.html#CompoundSkyRegion.to_pixel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.CompoundSkyRegion.to_pixel" title="Link to this definition">¶</a></dt>
+<dd><p>Return the equivalent region defined in pixel coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a></span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>pixel_region</strong><span class="classifier"><a class="reference internal" href="regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a></span></dt><dd><p>A pixel region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.CompoundSkyRegion.to_spherical_sky">
+<span class="sig-name descname"><span class="pre">to_spherical_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_boundary_distortions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discretize_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/compound.html#CompoundSkyRegion.to_spherical_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.CompoundSkyRegion.to_spherical_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a>
+instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a> instance, optional</span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates. Required if transforming
+with boundary distortions (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).
+Ignored if boundary distortions not included.</p>
+</dd>
+<dt><strong>include_boundary_distortions</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, accounts for boundary boundary distortions in spherical to planar
+conversions, by discretizing the boundary and converting the boundary polygon.
+Default is False, which converts to an equivalent idealized shape.</p>
+</dd>
+<dt><strong>discretize_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Optional keyword arguments to pass to discretize_boundary() method
+if including boundary distortions.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>spherical_sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a></span></dt><dd><p>A spherical sky region, with an equivalent shape (if
+<code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is False), or a discretized polygon of
+the boundary (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">CompoundSkyRegion</a><ul>
+<li><a class="reference internal" href="#regions.CompoundSkyRegion"><code class="docutils literal notranslate"><span class="pre">CompoundSkyRegion</span></code></a><ul>
+<li><a class="reference internal" href="#regions.CompoundSkyRegion.operator"><code class="docutils literal notranslate"><span class="pre">CompoundSkyRegion.operator</span></code></a></li>
+<li><a class="reference internal" href="#regions.CompoundSkyRegion.region1"><code class="docutils literal notranslate"><span class="pre">CompoundSkyRegion.region1</span></code></a></li>
+<li><a class="reference internal" href="#regions.CompoundSkyRegion.region2"><code class="docutils literal notranslate"><span class="pre">CompoundSkyRegion.region2</span></code></a></li>
+<li><a class="reference internal" href="#regions.CompoundSkyRegion.as_artist"><code class="docutils literal notranslate"><span class="pre">CompoundSkyRegion.as_artist()</span></code></a></li>
+<li><a class="reference internal" href="#regions.CompoundSkyRegion.contains"><code class="docutils literal notranslate"><span class="pre">CompoundSkyRegion.contains()</span></code></a></li>
+<li><a class="reference internal" href="#regions.CompoundSkyRegion.to_pixel"><code class="docutils literal notranslate"><span class="pre">CompoundSkyRegion.to_pixel()</span></code></a></li>
+<li><a class="reference internal" href="#regions.CompoundSkyRegion.to_spherical_sky"><code class="docutils literal notranslate"><span class="pre">CompoundSkyRegion.to_spherical_sky()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.CompoundSkyRegion.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

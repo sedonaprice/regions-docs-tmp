@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.shapes.rectangle &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.shapes.rectangle</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines rectangular regions in both pixel and sky</span>
+<span class="sd">coordinates.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangular_overlap_grid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._utils.wcs_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pixel_scale_angle_at_skycoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">PositiveScalar</span><span class="p">,</span> <span class="n">PositiveScalarAngle</span><span class="p">,</span>
+                                     <span class="n">RegionMetaDescr</span><span class="p">,</span> <span class="n">RegionVisualDescr</span><span class="p">,</span>
+                                     <span class="n">ScalarAngle</span><span class="p">,</span> <span class="n">ScalarPixCoord</span><span class="p">,</span>
+                                     <span class="n">ScalarSkyCoord</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.bounding_box</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionBoundingBox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixelRegion</span><span class="p">,</span> <span class="n">SkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.mask</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionMask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionMeta</span><span class="p">,</span> <span class="n">RegionVisual</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.pixcoord</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.polygon</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolygonPixelRegion</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RectanglePixelRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;RectangleSkyRegion&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="RectanglePixelRegion">
+<a class="viewcode-back" href="../../../api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RectanglePixelRegion</span><span class="p">(</span><span class="n">PixelRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A rectangle in pixel coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~regions.PixCoord`</span>
+<span class="sd">        The position of the center of the rectangle.</span>
+<span class="sd">    width : float</span>
+<span class="sd">        The width of the rectangle (before rotation) in pixels.</span>
+<span class="sd">    height : float</span>
+<span class="sd">        The height of the rectangle (before rotation) in pixels.</span>
+<span class="sd">    angle : `~astropy.units.Quantity`, optional</span>
+<span class="sd">        The rotation angle of the rectangle, measured anti-clockwise. If</span>
+<span class="sd">        set to zero (the default), the width axis is lined up with the x</span>
+<span class="sd">        axis.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        from astropy.coordinates import Angle</span>
+<span class="sd">        from regions import PixCoord, RectanglePixelRegion</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+
+<span class="sd">        fig, ax = plt.subplots(1, 1)</span>
+
+<span class="sd">        reg = RectanglePixelRegion(PixCoord(x=15, y=10), width=8,</span>
+<span class="sd">                                   height=5, angle=Angle(30, &#39;deg&#39;))</span>
+<span class="sd">        patch = reg.plot(ax=ax, facecolor=&#39;none&#39;, edgecolor=&#39;red&#39;, lw=2,</span>
+<span class="sd">                         label=&#39;Rectangle&#39;)</span>
+
+<span class="sd">        ax.legend(handles=(patch,), loc=&#39;upper center&#39;)</span>
+<span class="sd">        ax.set_xlim(0, 30)</span>
+<span class="sd">        ax.set_ylim(0, 20)</span>
+<span class="sd">        ax.set_aspect(&#39;equal&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">)</span>
+    <span class="n">_mpl_artist</span> <span class="o">=</span> <span class="s1">&#39;Patch&#39;</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarPixCoord</span><span class="p">(</span><span class="s1">&#39;The center pixel position as a |PixCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The width of the rectangle (before rotation) in &#39;</span>
+                           <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The height of the rectangle (before rotation) &#39;</span>
+                            <span class="s1">&#39;in pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">ScalarAngle</span><span class="p">(</span><span class="s1">&#39;The rotation angle measured anti-clockwise as a &#39;</span>
+                        <span class="s1">&#39;|Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+
+<div class="viewcode-block" id="RectanglePixelRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion.contains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixcoord</span><span class="p">):</span>
+        <span class="n">cos_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">sin_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">pixcoord</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">pixcoord</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">dx_rot</span> <span class="o">=</span> <span class="n">cos_angle</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">sin_angle</span> <span class="o">*</span> <span class="n">dy</span>
+        <span class="n">dy_rot</span> <span class="o">=</span> <span class="n">sin_angle</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">-</span> <span class="n">cos_angle</span> <span class="o">*</span> <span class="n">dy</span>
+        <span class="n">in_rect</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dx_rot</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+                   <span class="o">&amp;</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dy_rot</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;include&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">in_rect</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">in_rect</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RectanglePixelRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pixscale</span><span class="p">,</span> <span class="n">north_angle</span> <span class="o">=</span> <span class="n">pixel_scale_angle_at_skycoord</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pix</span> <span class="o">*</span> <span class="n">pixscale</span><span class="p">,</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pix</span> <span class="o">*</span> <span class="n">pixscale</span><span class="p">,</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)</span>
+        <span class="c1"># region sky angles are defined relative to the WCS longitude axis;</span>
+        <span class="c1"># photutils aperture sky angles are defined as the PA of the</span>
+        <span class="c1"># semimajor axis (i.e., relative to the WCS latitude axis)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">-</span> <span class="p">(</span><span class="n">north_angle</span> <span class="o">-</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RectangleSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span>
+                                  <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                  <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="RectanglePixelRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">w2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="n">h2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="n">cos_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>  <span class="c1"># self.angle is a Quantity</span>
+        <span class="n">sin_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>  <span class="c1"># self.angle is a Quantity</span>
+        <span class="n">dx1</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">w2</span> <span class="o">*</span> <span class="n">cos_angle</span> <span class="o">-</span> <span class="n">h2</span> <span class="o">*</span> <span class="n">sin_angle</span><span class="p">)</span>
+        <span class="n">dy1</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">w2</span> <span class="o">*</span> <span class="n">sin_angle</span> <span class="o">+</span> <span class="n">h2</span> <span class="o">*</span> <span class="n">cos_angle</span><span class="p">)</span>
+        <span class="n">dx2</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">w2</span> <span class="o">*</span> <span class="n">cos_angle</span> <span class="o">+</span> <span class="n">h2</span> <span class="o">*</span> <span class="n">sin_angle</span><span class="p">)</span>
+        <span class="n">dy2</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">w2</span> <span class="o">*</span> <span class="n">sin_angle</span> <span class="o">-</span> <span class="n">h2</span> <span class="o">*</span> <span class="n">cos_angle</span><span class="p">)</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dx1</span><span class="p">,</span> <span class="n">dx2</span><span class="p">)</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dy1</span><span class="p">,</span> <span class="n">dy2</span><span class="p">)</span>
+
+        <span class="n">xmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">dx</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">dx</span>
+        <span class="n">ymin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">dy</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">dy</span>
+
+        <span class="k">return</span> <span class="n">RegionBoundingBox</span><span class="o">.</span><span class="n">from_float</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RectanglePixelRegion.to_mask">
+<a class="viewcode-back" href="../../../api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion.to_mask">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">subpixels</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="c1"># NOTE: assumes this class represents a single rectangle</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">subpixels</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;subpixels&#39;</span>
+            <span class="n">subpixels</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># Find bounding box and mask size</span>
+        <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span>
+        <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="c1"># Find position of pixel edges and recenter so that circle is at</span>
+        <span class="c1"># origin</span>
+        <span class="n">xmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">ixmin</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">ixmax</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">ymin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">iymin</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">iymax</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="n">use_exact</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;subpixels&#39;</span> <span class="k">else</span> <span class="mi">1</span>
+
+        <span class="n">fraction</span> <span class="o">=</span> <span class="n">rectangular_overlap_grid</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                            <span class="n">use_exact</span><span class="p">,</span> <span class="n">subpixels</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">RegionMask</span><span class="p">(</span><span class="n">fraction</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="n">bbox</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RectanglePixelRegion.as_artist">
+<a class="viewcode-back" href="../../../api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion.as_artist">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a matplotlib patch object for this region</span>
+<span class="sd">        (`matplotlib.patches.Rectangle`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        origin : array_like, optional</span>
+<span class="sd">            The ``(x, y)`` pixel position of the origin of the displayed</span>
+<span class="sd">            image.</span>
+
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            Any keyword arguments accepted by</span>
+<span class="sd">            `~matplotlib.patches.Rectangle`. These keywords will</span>
+<span class="sd">            override any visual meta attributes of this region.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        artist : `~matplotlib.patches.Rectangle`</span>
+<span class="sd">            A matplotlib rectangle patch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rectangle</span>
+
+        <span class="n">xy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_left_xy</span><span class="p">()</span>
+        <span class="n">xy</span> <span class="o">=</span> <span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+        <span class="c1"># matplotlib expects rotation in degrees (anti-clockwise)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="n">mpl_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">define_mpl_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mpl_artist</span><span class="p">)</span>
+        <span class="n">mpl_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Rectangle</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+                         <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span> <span class="o">**</span><span class="n">mpl_kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_from_mpl_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector</span><span class="o">.</span><span class="n">extents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">xmin</span> <span class="o">+</span> <span class="n">xmax</span><span class="p">),</span>
+                               <span class="n">y</span><span class="o">=</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">ymin</span> <span class="o">+</span> <span class="n">ymax</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="p">(</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="mf">0.</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RectanglePixelRegion.as_mpl_selector">
+<a class="viewcode-back" href="../../../api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion.as_mpl_selector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_mpl_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">drag_from_anywhere</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a matplotlib editable widget for the region</span>
+<span class="sd">        (`matplotlib.widgets.RectangleSelector`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax : `~matplotlib.axes.Axes`</span>
+<span class="sd">            The matplotlib axes to add the selector to.</span>
+<span class="sd">        active : bool, optional</span>
+<span class="sd">            Whether the selector should be active by default.</span>
+<span class="sd">        sync : bool, optional</span>
+<span class="sd">            If `True` (the default), the region will be kept in</span>
+<span class="sd">            sync with the selector. Otherwise, the selector will be</span>
+<span class="sd">            initialized with the values from the region but the two will</span>
+<span class="sd">            then be disconnected.</span>
+<span class="sd">        callback : callable, optional</span>
+<span class="sd">            If specified, this function will be called every time the</span>
+<span class="sd">            region is updated. This only has an effect if ``sync`` is</span>
+<span class="sd">            `True`. If a callback is set, it is called for the first</span>
+<span class="sd">            time once the selector has been created.</span>
+<span class="sd">        drag_from_anywhere : bool, optional</span>
+<span class="sd">            If `True`, the selector can be moved by clicking anywhere within</span>
+<span class="sd">            its bounds, else only at the central anchor</span>
+<span class="sd">            (only available with matplotlib 3.5 upwards; default: `False`).</span>
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            Additional keyword arguments are passed to</span>
+<span class="sd">            `matplotlib.widgets.RectangleSelector`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        selector : `matplotlib.widgets.RectangleSelector`</span>
+<span class="sd">            The matplotlib selector.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Once a selector has been created, you will need to keep a</span>
+<span class="sd">        reference to it until you no longer need it. In addition,</span>
+<span class="sd">        you can enable/disable the selector at any point by calling</span>
+<span class="sd">        ``selector.set_active(True)`` or ``selector.set_active(False)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">RectangleSelector</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_mpl_selector&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Cannot attach more than one selector to a region.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Cannot create matplotlib selector for &#39;</span>
+                                      <span class="s1">&#39;rotated rectangle.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sync</span><span class="p">:</span>
+            <span class="n">sync_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_from_mpl_selector</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">sync_callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">pass</span>
+
+        <span class="n">rectprops</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;edgecolor&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">),</span>
+                     <span class="s1">&#39;facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;linewidth&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;linewidth&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                     <span class="s1">&#39;linestyle&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;linestyle&#39;</span><span class="p">,</span> <span class="s1">&#39;solid&#39;</span><span class="p">)}</span>
+        <span class="n">rectprops</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;props&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">()))</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;props&#39;</span><span class="p">:</span> <span class="n">rectprops</span><span class="p">})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector</span> <span class="o">=</span> <span class="n">RectangleSelector</span><span class="p">(</span>
+            <span class="n">ax</span><span class="p">,</span> <span class="n">sync_callback</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">drag_from_anywhere</span><span class="o">=</span><span class="n">drag_from_anywhere</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="n">active</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector_callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+        <span class="k">if</span> <span class="n">sync</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_selector</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">corners</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the x, y coordinate pairs that define the corners.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">corners</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+                   <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+                   <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+                   <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+                   <span class="p">]</span>
+        <span class="n">rotmat</span> <span class="o">=</span> <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)],</span>
+                  <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)]]</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">corners</span><span class="p">,</span> <span class="n">rotmat</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span><span class="p">])</span>
+
+<div class="viewcode-block" id="RectanglePixelRegion.to_polygon">
+<a class="viewcode-back" href="../../../api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion.to_polygon">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_polygon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a 4-sided polygon equivalent to this rectangle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corners</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PolygonPixelRegion</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                  <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_lower_left_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute lower left ``xy`` pixel position.</span>
+
+<span class="sd">        This is used for the conversion to matplotlib in ``as_artist``.</span>
+
+<span class="sd">        Taken from</span>
+<span class="sd">        http://photutils.readthedocs.io/en/latest/_modules/photutils/ape</span>
+<span class="sd">        rture/rectangle.html#RectangularAperture.plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="n">hh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mf">2.</span>
+        <span class="n">sint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">hh</span> <span class="o">*</span> <span class="n">sint</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">hw</span> <span class="o">*</span> <span class="n">cost</span><span class="p">)</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">hh</span> <span class="o">*</span> <span class="n">cost</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">hw</span> <span class="o">*</span> <span class="n">sint</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">dx</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">dy</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+<div class="viewcode-block" id="RectanglePixelRegion.rotate">
+<a class="viewcode-back" href="../../../api/regions.RectanglePixelRegion.html#regions.RectanglePixelRegion.rotate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rotate the region.</span>
+
+<span class="sd">        Positive ``angle`` corresponds to counter-clockwise rotation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        center : `~regions.PixCoord`</span>
+<span class="sd">            The rotation center point.</span>
+<span class="sd">        angle : `~astropy.coordinates.Angle`</span>
+<span class="sd">            The rotation angle.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        region : `RectanglePixelRegion`</span>
+<span class="sd">            The rotated region (which is an independent copy).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">+</span> <span class="n">angle</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RectangleSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.RectangleSkyRegion.html#regions.RectangleSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RectangleSkyRegion</span><span class="p">(</span><span class="n">SkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A rectangle in sky coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The position of the center of the rectangle.</span>
+<span class="sd">    width : `~astropy.units.Quantity`</span>
+<span class="sd">        The width of the rectangle (before rotation) as an angle.</span>
+<span class="sd">    height : `~astropy.units.Quantity`</span>
+<span class="sd">        The height of the rectangle (before rotation) as an angle.</span>
+<span class="sd">    angle : `~astropy.units.Quantity`, optional</span>
+<span class="sd">        The rotation angle of the rectangle, measured anti-clockwise. If</span>
+<span class="sd">        set to zero (the default), the width axis is lined up with the</span>
+<span class="sd">        longitude axis of the celestial coordinates.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">)</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarSkyCoord</span><span class="p">(</span><span class="s1">&#39;The center position as a |SkyCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The width of the rectangle (before rotation) &#39;</span>
+                                <span class="s1">&#39;as a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">PositiveScalarAngle</span><span class="p">(</span><span class="s1">&#39;The height of the rectangle (before &#39;</span>
+                                 <span class="s1">&#39;rotation) as a |Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">ScalarAngle</span><span class="p">(</span><span class="s1">&#39;The rotation angle measured anti-clockwise as a &#39;</span>
+                        <span class="s1">&#39;|Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+<div class="viewcode-block" id="RectangleSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.RectangleSkyRegion.html#regions.RectangleSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">center</span><span class="p">,</span> <span class="n">pixscale</span><span class="p">,</span> <span class="n">north_angle</span> <span class="o">=</span> <span class="n">pixel_scale_angle_at_skycoord</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">pix</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="n">pixscale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">pix</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="c1"># region sky angles are defined relative to the WCS longitude axis;</span>
+        <span class="c1"># photutils aperture sky angles are defined as the PA of the</span>
+        <span class="c1"># semimajor axis (i.e., relative to the WCS latitude axis)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">+</span> <span class="p">(</span><span class="n">north_angle</span> <span class="o">-</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RectanglePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span>
+                                    <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                    <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="RectangleSkyRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.RectangleSkyRegion.html#regions.RectangleSkyRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

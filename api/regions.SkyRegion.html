@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>SkyRegion &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SphericalSkyRegion" href="regions.SphericalSkyRegion.html" />
+    <link rel="prev" title="RegularPolygonPixelRegion" href="regions.RegularPolygonPixelRegion.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.SphericalSkyRegion.html" title="SphericalSkyRegion">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.RegularPolygonPixelRegion.html" title="RegularPolygonPixelRegion">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>SkyRegion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="skyregion">
+<h1>SkyRegion<a class="headerlink" href="#skyregion" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.SkyRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">SkyRegion</span></span><a class="reference internal" href="../_modules/regions/core/core.html#SkyRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.SkyRegion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regions.Region.html#regions.Region" title="regions.core.core.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a></p>
+<p>Base class for all regions defined in celestial coordinates.</p>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.SkyRegion.contains" title="regions.SkyRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code></a>(skycoord, wcs)</p></td>
+<td><p>Check whether a sky coordinate falls inside the region.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.SkyRegion.intersection" title="regions.SkyRegion.intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code></a>(other)</p></td>
+<td><p>Return a region representing the intersection of this region with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.SkyRegion.symmetric_difference" title="regions.SkyRegion.symmetric_difference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symmetric_difference</span></code></a>(other)</p></td>
+<td><p>Return the union of the two regions minus any areas contained in the intersection of the two regions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.SkyRegion.to_pixel" title="regions.SkyRegion.to_pixel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pixel</span></code></a>(wcs)</p></td>
+<td><p>Return the equivalent region defined in pixel coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.SkyRegion.to_spherical_sky" title="regions.SkyRegion.to_spherical_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_spherical_sky</span></code></a>([wcs, ...])</p></td>
+<td><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.SkyRegion.union" title="regions.SkyRegion.union"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union</span></code></a>(other)</p></td>
+<td><p>Return a region representing the union of this region with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.SkyRegion.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skycoord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#SkyRegion.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.SkyRegion.contains" title="Link to this definition">¶</a></dt>
+<dd><p>Check whether a sky coordinate falls inside the region.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>skycoord</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a></span></dt><dd><p>The position or positions to check.</p>
+</dd>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a></span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.SkyRegion.intersection">
+<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#SkyRegion.intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.SkyRegion.intersection" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region representing the intersection of this region
+with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a></span></dt><dd><p>The other region to use for the intersection.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.SkyRegion.symmetric_difference">
+<span class="sig-name descname"><span class="pre">symmetric_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#SkyRegion.symmetric_difference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.SkyRegion.symmetric_difference" title="Link to this definition">¶</a></dt>
+<dd><p>Return the union of the two regions minus any areas contained in
+the intersection of the two regions.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a></span></dt><dd><p>The other region to use for the symmetric difference.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.SkyRegion.to_pixel">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_pixel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#SkyRegion.to_pixel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.SkyRegion.to_pixel" title="Link to this definition">¶</a></dt>
+<dd><p>Return the equivalent region defined in pixel coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a></span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>pixel_region</strong><span class="classifier"><a class="reference internal" href="regions.PixelRegion.html#regions.PixelRegion" title="regions.PixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixelRegion</span></code></a></span></dt><dd><p>A pixel region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.SkyRegion.to_spherical_sky">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_spherical_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_boundary_distortions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discretize_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#SkyRegion.to_spherical_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.SkyRegion.to_spherical_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a>
+instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a> instance, optional</span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates. Required if transforming
+with boundary distortions (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).
+Ignored if boundary distortions not included.</p>
+</dd>
+<dt><strong>include_boundary_distortions</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, accounts for boundary boundary distortions in spherical to planar
+conversions, by discretizing the boundary and converting the boundary polygon.
+Default is False, which converts to an equivalent idealized shape.</p>
+</dd>
+<dt><strong>discretize_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Optional keyword arguments to pass to discretize_boundary() method
+if including boundary distortions.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>spherical_sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a></span></dt><dd><p>A spherical sky region, with an equivalent shape (if
+<code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is False), or a discretized polygon of
+the boundary (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.SkyRegion.union">
+<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/core.html#SkyRegion.union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.SkyRegion.union" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region representing the union of this region with
+<code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a></span></dt><dd><p>The other region to use for the union.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">SkyRegion</a><ul>
+<li><a class="reference internal" href="#regions.SkyRegion"><code class="docutils literal notranslate"><span class="pre">SkyRegion</span></code></a><ul>
+<li><a class="reference internal" href="#regions.SkyRegion.contains"><code class="docutils literal notranslate"><span class="pre">SkyRegion.contains()</span></code></a></li>
+<li><a class="reference internal" href="#regions.SkyRegion.intersection"><code class="docutils literal notranslate"><span class="pre">SkyRegion.intersection()</span></code></a></li>
+<li><a class="reference internal" href="#regions.SkyRegion.symmetric_difference"><code class="docutils literal notranslate"><span class="pre">SkyRegion.symmetric_difference()</span></code></a></li>
+<li><a class="reference internal" href="#regions.SkyRegion.to_pixel"><code class="docutils literal notranslate"><span class="pre">SkyRegion.to_pixel()</span></code></a></li>
+<li><a class="reference internal" href="#regions.SkyRegion.to_spherical_sky"><code class="docutils literal notranslate"><span class="pre">SkyRegion.to_spherical_sky()</span></code></a></li>
+<li><a class="reference internal" href="#regions.SkyRegion.union"><code class="docutils literal notranslate"><span class="pre">SkyRegion.union()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.SkyRegion.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

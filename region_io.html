@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Reading/Writing Region Files &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="DS9 Region File Format Limitations" href="ds9_io.html" />
+    <link rel="prev" title="Plotting Regions with Matplotlib" href="plotting.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="ds9_io.html" title="DS9 Region File Format Limitations">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="plotting.html" title="Plotting Regions with Matplotlib">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Reading/Writing Region Files</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="reading-writing-region-files">
+<span id="regions-io"></span><h1>Reading/Writing Region Files<a class="headerlink" href="#reading-writing-region-files" title="Link to this heading">¶</a></h1>
+<p>The regions package provides a unified interface for reading, writing,
+parsing, and serializing regions data in different standard formats.</p>
+<section id="regions-i-o">
+<h2>Regions I/O<a class="headerlink" href="#regions-i-o" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="api/regions.Regions.html#regions.Regions" title="regions.Regions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Regions</span></code></a> class (which represents a list
+of <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Region</span></code></a> objects) includes four methods,
+<a class="reference internal" href="api/regions.Regions.html#regions.Regions.read" title="regions.Regions.read"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code></a>, <a class="reference internal" href="api/regions.Regions.html#regions.Regions.write" title="regions.Regions.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code></a>,
+<a class="reference internal" href="api/regions.Regions.html#regions.Regions.parse" title="regions.Regions.parse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parse()</span></code></a>, and <a class="reference internal" href="api/regions.Regions.html#regions.Regions.serialize" title="regions.Regions.serialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">serialize()</span></code></a>,
+that make it possible to read, write, parse, and serialize region files
+or region data.</p>
+<p>The <a class="reference internal" href="api/regions.Regions.html#regions.Regions" title="regions.Regions"><code class="xref py py-class docutils literal notranslate"><span class="pre">Regions</span></code></a> class has built-in support for various
+input and output formats. A full list of the supported formats and is
+shown in the table below. The <code class="docutils literal notranslate"><span class="pre">Suffix</span></code> column indicates the standard
+filename suffix for a particular format.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Format</p></th>
+<th class="head"><p>Suffix</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>crtf</p></td>
+<td><p>.crtf</p></td>
+<td><p><a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/image_analysis.html#Region-File-Format">CASA Region Text Format</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>ds9</p></td>
+<td><p>.reg, .ds9</p></td>
+<td><p><a class="reference external" href="http://ds9.si.edu/doc/ref/region.html">DS9 Region Format</a></p></td>
+</tr>
+<tr class="row-even"><td><p>fits</p></td>
+<td><p>.fits</p></td>
+<td><p><a class="reference external" href="https://fits.gsfc.nasa.gov/registry/region.html">FITS Region Binary Table</a></p></td>
+</tr>
+</tbody>
+</table>
+<p>Use the <a class="reference internal" href="api/regions.Regions.html#regions.Regions.get_formats" title="regions.Regions.get_formats"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_formats()</span></code></a> method to get the
+registered I/O formats as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.table.Table.html#astropy.table.Table" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Regions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Regions</span><span class="o">.</span><span class="n">get_formats</span><span class="p">())</span>
+<span class="go">Format Parse Serialize Read Write Auto-identify</span>
+<span class="go">------ ----- --------- ---- ----- -------------</span>
+<span class="go">  crtf   Yes       Yes  Yes   Yes           Yes</span>
+<span class="go">   ds9   Yes       Yes  Yes   Yes           Yes</span>
+<span class="go">  fits   Yes       Yes  Yes   Yes           Yes</span>
+</pre></div>
+</div>
+<section id="read">
+<h3>Read<a class="headerlink" href="#read" title="Link to this heading">¶</a></h3>
+<p>To read in a region file, first import the <a class="reference internal" href="api/regions.Regions.html#regions.Regions" title="regions.Regions"><code class="xref py py-class docutils literal notranslate"><span class="pre">Regions</span></code></a>
+class, then call the <a class="reference internal" href="api/regions.Regions.html#regions.Regions.read" title="regions.Regions.read"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code></a> method with the name
+of the file and the file format, e.g.:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Regions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">regions</span> <span class="o">=</span> <span class="n">Regions</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;my_regions.reg&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ds9&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is also possible to load regions directly from the internet using
+URLs, e.g.:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">regions</span> <span class="o">=</span> <span class="n">Regions</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;https://some.domain.edu/my_regions.reg&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ds9&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the <code class="docutils literal notranslate"><span class="pre">format</span></code> keyword is not set, the <a class="reference internal" href="api/regions.Regions.html#regions.Regions.read" title="regions.Regions.read"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code></a>
+method will attempt to automatically determine the file format from the
+filename extension or the file contents:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">regions</span> <span class="o">=</span> <span class="n">Regions</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;my_regions.reg&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The underlying file handler will also automatically
+detect various compressed data formats and transparently
+uncompress them if supported by the Python installation (see
+<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.utils.data.get_readable_fileobj.html#astropy.utils.data.get_readable_fileobj" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_readable_fileobj</span></code></a>):</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">regions</span> <span class="o">=</span> <span class="n">Regions</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;my_regions.reg.gz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="write">
+<h3>Write<a class="headerlink" href="#write" title="Link to this heading">¶</a></h3>
+<p>Use the <a class="reference internal" href="api/regions.Regions.html#regions.Regions.write" title="regions.Regions.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code></a> method to write regions to
+a region file. Like the <a class="reference internal" href="api/regions.Regions.html#regions.Regions.read" title="regions.Regions.read"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code></a> method, the
+filename extension will be used to automatically define the format if
+unspecified.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">regions</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;my_regions.crtf&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;crtf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">regions</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;my_regions.reg&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the file already exists and you want to overwrite it, then set the
+<code class="docutils literal notranslate"><span class="pre">overwrite</span></code> keyword to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">regions</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;my_regions.reg&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="parse">
+<h3>Parse<a class="headerlink" href="#parse" title="Link to this heading">¶</a></h3>
+<p>Region data in the form of a string or table may also be
+parsed into a <a class="reference internal" href="api/regions.Regions.html#regions.Regions" title="regions.Regions"><code class="xref py py-class docutils literal notranslate"><span class="pre">Regions</span></code></a> object by using the
+<a class="reference internal" href="api/regions.Regions.html#regions.Regions.parse" title="regions.Regions.parse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parse()</span></code></a> method. The <code class="docutils literal notranslate"><span class="pre">format</span></code> keyword must be
+specified when parsing region data. A region string can be parsed for
+the <code class="docutils literal notranslate"><span class="pre">crtf</span></code> and <code class="docutils literal notranslate"><span class="pre">ds9</span></code> formats, while a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.table.Table.html#astropy.table.Table" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table</span></code></a> can be
+parsed for the <code class="docutils literal notranslate"><span class="pre">fits</span></code> format:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Regions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">regions_str</span> <span class="o">=</span> <span class="s1">&#39;# Region file format: DS9</span><span class="se">\n</span><span class="s1">image</span><span class="se">\n</span><span class="s1">circle(147.10,254.17,3.1) # color=green</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">regions</span> <span class="o">=</span> <span class="n">Regions</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">regions_str</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ds9&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span>
+<span class="go">[&lt;CirclePixelRegion(center=PixCoord(x=146.1, y=253.17), radius=3.1)&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+<span class="go">{&#39;default_style&#39;: &#39;ds9&#39;, &#39;facecolor&#39;: &#39;green&#39;, &#39;edgecolor&#39;: &#39;green&#39;}</span>
+</pre></div>
+</div>
+</section>
+<section id="serialize">
+<h3>Serialize<a class="headerlink" href="#serialize" title="Link to this heading">¶</a></h3>
+<p>Regions can be serialized to a string or table by using the
+<a class="reference internal" href="api/regions.Regions.html#regions.Regions.serialize" title="regions.Regions.serialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">serialize()</span></code></a> method. The <code class="docutils literal notranslate"><span class="pre">format</span></code> keyword must
+be specified when serializing region data. Serializing regions to the
+<code class="docutils literal notranslate"><span class="pre">crtf</span></code> or <code class="docutils literal notranslate"><span class="pre">ds9</span></code> format will produce a region string, while the
+<code class="docutils literal notranslate"><span class="pre">fits</span></code> format will produce a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.table.Table.html#astropy.table.Table" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table</span></code></a>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">regions_str</span> <span class="o">=</span> <span class="n">regions</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ds9&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="region-classes-i-o">
+<h2>Region Classes I/O<a class="headerlink" href="#region-classes-i-o" title="Link to this heading">¶</a></h2>
+<p>Additionally, all of the Region classes (i.e., <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a>
+subclasses) support the <a class="reference internal" href="api/regions.Regions.html#regions.Regions.write" title="regions.Regions.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code></a> and
+<a class="reference internal" href="api/regions.Regions.html#regions.Regions.serialize" title="regions.Regions.serialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">serialize()</span></code></a> methods.</p>
+<p>As an example, let’s create a <a class="reference internal" href="api/regions.CircleSkyRegion.html#regions.CircleSkyRegion" title="regions.CircleSkyRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">CircleSkyRegion</span></code></a> object:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSkyRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mf">202.469575</span><span class="p">,</span> <span class="mf">47.19525833</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;fk5&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span> <span class="o">=</span> <span class="n">CircleSkyRegion</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.01</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span>
+<span class="go">&lt;CircleSkyRegion(center=&lt;SkyCoord (FK5: equinox=J2000.000): (ra, dec) in deg</span>
+<span class="go">(202.469575, 47.19525833)&gt;, radius=0.01 deg)&gt;</span>
+</pre></div>
+</div>
+<p>To serialize the region:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">region</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ds9&#39;</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="go">&#39;# Region file format: DS9 astropy/regions\nj2000\ncircle(202.46957500,47.19525833,0.01000000)\n&#39;</span>
+</pre></div>
+</div>
+<p>To write the region to a region file:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">region</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;my_region.ds9&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ds9&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use the <a class="reference internal" href="api/regions.Region.html#regions.Region.get_formats" title="regions.Region.get_formats"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_formats()</span></code></a> method to list all available
+formats and methods for the <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a> subclasses:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">get_formats</span><span class="p">())</span>
+<span class="go">Format Parse Serialize Read Write Auto-identify</span>
+<span class="go">------ ----- --------- ---- ----- -------------</span>
+<span class="go">  crtf    No       Yes   No   Yes           Yes</span>
+<span class="go">   ds9    No       Yes   No   Yes           Yes</span>
+<span class="go">  fits    No       Yes   No   Yes           Yes</span>
+</pre></div>
+</div>
+</section>
+<section id="region-file-format-limitations">
+<h2>Region File Format Limitations<a class="headerlink" href="#region-file-format-limitations" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ds9_io.html">DS9 Region File Format Limitations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fits_io.html">FITS Region File Format Limitations</a></li>
+</ul>
+</div>
+</section>
+<section id="spherical-regions-limitations">
+<h2>Spherical Regions Limitations<a class="headerlink" href="#spherical-regions-limitations" title="Link to this heading">¶</a></h2>
+<p>Reading/writing and serializing <a class="reference internal" href="api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> objects
+is not currently implemented.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Reading/Writing Region Files</a><ul>
+<li><a class="reference internal" href="#regions-i-o">Regions I/O</a><ul>
+<li><a class="reference internal" href="#read">Read</a></li>
+<li><a class="reference internal" href="#write">Write</a></li>
+<li><a class="reference internal" href="#parse">Parse</a></li>
+<li><a class="reference internal" href="#serialize">Serialize</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#region-classes-i-o">Region Classes I/O</a></li>
+<li><a class="reference internal" href="#region-file-format-limitations">Region File Format Limitations</a></li>
+<li><a class="reference internal" href="#spherical-regions-limitations">Spherical Regions Limitations</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/region_io.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

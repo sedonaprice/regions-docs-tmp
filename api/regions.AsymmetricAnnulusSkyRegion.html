@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>AsymmetricAnnulusSkyRegion &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CRTFRegionParserError" href="regions.CRTFRegionParserError.html" />
+    <link rel="prev" title="AsymmetricAnnulusPixelRegion" href="regions.AsymmetricAnnulusPixelRegion.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.CRTFRegionParserError.html" title="CRTFRegionParserError">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.AsymmetricAnnulusPixelRegion.html" title="AsymmetricAnnulusPixelRegion">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>AsymmetricAnnulusSkyRegion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="asymmetricannulusskyregion">
+<h1>AsymmetricAnnulusSkyRegion<a class="headerlink" href="#asymmetricannulusskyregion" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">AsymmetricAnnulusSkyRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outer_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outer_height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle=&lt;Quantity</span> <span class="pre">0.</span> <span class="pre">deg&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visual=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#AsymmetricAnnulusSkyRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regions.SkyRegion.html#regions.SkyRegion" title="regions.core.core.SkyRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">SkyRegion</span></code></a></p>
+<p>Helper class for asymmetric annuli sky regions.</p>
+<p>Used for ellipse and rectangle sky annulus regions.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>center</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a></span></dt><dd><p>The position of the center of the annulus.</p>
+</dd>
+<dt><strong>inner_width</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a></span></dt><dd><p>The inner width of the annulus (before rotation) as an angle.</p>
+</dd>
+<dt><strong>outer_width</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a></span></dt><dd><p>The outer width of the annulus (before rotation) as an angle.</p>
+</dd>
+<dt><strong>inner_height</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a></span></dt><dd><p>The inner height of the annulus (before rotation) as an angle.</p>
+</dd>
+<dt><strong>outer_height</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a></span></dt><dd><p>The outer height of the annulus (before rotation) as an angle.</p>
+</dd>
+<dt><strong>angle</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a>, optional</span></dt><dd><p>The rotation angle of the annulus, measured anti-clockwise. If
+set to zero (the default), the width axis is lined up with the
+longitude axis of the celestial coordinates.</p>
+</dd>
+<dt><strong>meta</strong><span class="classifier"><a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the meta attributes of the region.</p>
+</dd>
+<dt><strong>visual</strong><span class="classifier"><a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the visual meta attributes of the
+region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.angle" title="regions.AsymmetricAnnulusSkyRegion.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a></p></td>
+<td><p>The rotation angle measured anti-clockwise as a|Quantity| angle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.center" title="regions.AsymmetricAnnulusSkyRegion.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
+<td><p>The center position as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.inner_height" title="regions.AsymmetricAnnulusSkyRegion.inner_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner_height</span></code></a></p></td>
+<td><p>The inner height (before rotation) as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.inner_width" title="regions.AsymmetricAnnulusSkyRegion.inner_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner_width</span></code></a></p></td>
+<td><p>The inner width (before rotation) as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.meta" title="regions.AsymmetricAnnulusSkyRegion.meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta</span></code></a></p></td>
+<td><p>The meta attributes as a <a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.outer_height" title="regions.AsymmetricAnnulusSkyRegion.outer_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer_height</span></code></a></p></td>
+<td><p>The outer height (before rotation) as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.outer_width" title="regions.AsymmetricAnnulusSkyRegion.outer_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer_width</span></code></a></p></td>
+<td><p>The outer width (before rotation) as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.visual" title="regions.AsymmetricAnnulusSkyRegion.visual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visual</span></code></a></p></td>
+<td><p>The visual attributes as a <a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.to_pixel_args" title="regions.AsymmetricAnnulusSkyRegion.to_pixel_args"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pixel_args</span></code></a>(wcs)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion.angle">
+<span class="sig-name descname"><span class="pre">angle</span></span><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion.angle" title="Link to this definition">¶</a></dt>
+<dd><p>The rotation angle measured anti-clockwise as a|Quantity| angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion.center">
+<span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion.center" title="Link to this definition">¶</a></dt>
+<dd><p>The center position as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion.inner_height">
+<span class="sig-name descname"><span class="pre">inner_height</span></span><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion.inner_height" title="Link to this definition">¶</a></dt>
+<dd><p>The inner height (before rotation) as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion.inner_width">
+<span class="sig-name descname"><span class="pre">inner_width</span></span><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion.inner_width" title="Link to this definition">¶</a></dt>
+<dd><p>The inner width (before rotation) as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion.meta">
+<span class="sig-name descname"><span class="pre">meta</span></span><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion.meta" title="Link to this definition">¶</a></dt>
+<dd><p>The meta attributes as a <a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion.outer_height">
+<span class="sig-name descname"><span class="pre">outer_height</span></span><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion.outer_height" title="Link to this definition">¶</a></dt>
+<dd><p>The outer height (before rotation) as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion.outer_width">
+<span class="sig-name descname"><span class="pre">outer_width</span></span><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion.outer_width" title="Link to this definition">¶</a></dt>
+<dd><p>The outer width (before rotation) as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion.visual">
+<span class="sig-name descname"><span class="pre">visual</span></span><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion.visual" title="Link to this definition">¶</a></dt>
+<dd><p>The visual attributes as a <a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a>.</p>
+</dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.AsymmetricAnnulusSkyRegion.to_pixel_args">
+<span class="sig-name descname"><span class="pre">to_pixel_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#AsymmetricAnnulusSkyRegion.to_pixel_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.AsymmetricAnnulusSkyRegion.to_pixel_args" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">AsymmetricAnnulusSkyRegion</a><ul>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion</span></code></a><ul>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.angle"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion.angle</span></code></a></li>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.center"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion.center</span></code></a></li>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.inner_height"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion.inner_height</span></code></a></li>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.inner_width"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion.inner_width</span></code></a></li>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.meta"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion.meta</span></code></a></li>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.outer_height"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion.outer_height</span></code></a></li>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.outer_width"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion.outer_width</span></code></a></li>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.visual"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion.visual</span></code></a></li>
+<li><a class="reference internal" href="#regions.AsymmetricAnnulusSkyRegion.to_pixel_args"><code class="docutils literal notranslate"><span class="pre">AsymmetricAnnulusSkyRegion.to_pixel_args()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.AsymmetricAnnulusSkyRegion.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

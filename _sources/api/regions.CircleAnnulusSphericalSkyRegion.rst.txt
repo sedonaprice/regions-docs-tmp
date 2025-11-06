@@ -1,0 +1,41 @@
+CircleAnnulusSphericalSkyRegion
+===============================
+
+.. currentmodule:: regions
+
+.. autoclass:: CircleAnnulusSphericalSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~CircleAnnulusSphericalSkyRegion.center
+      ~CircleAnnulusSphericalSkyRegion.inner_radius
+      ~CircleAnnulusSphericalSkyRegion.meta
+      ~CircleAnnulusSphericalSkyRegion.outer_radius
+      ~CircleAnnulusSphericalSkyRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~CircleAnnulusSphericalSkyRegion.discretize_boundary
+      ~CircleAnnulusSphericalSkyRegion.to_pixel
+      ~CircleAnnulusSphericalSkyRegion.to_sky
+      ~CircleAnnulusSphericalSkyRegion.transform_to
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: center
+   .. autoattribute:: inner_radius
+   .. autoattribute:: meta
+   .. autoattribute:: outer_radius
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: discretize_boundary
+   .. automethod:: to_pixel
+   .. automethod:: to_sky
+   .. automethod:: transform_to

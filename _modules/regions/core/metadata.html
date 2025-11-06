@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.core.metadata &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.core.metadata</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module proves classes to handle region metadata.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Meta&#39;</span><span class="p">,</span> <span class="s1">&#39;RegionMeta&#39;</span><span class="p">,</span> <span class="s1">&#39;RegionVisual&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Meta">
+<a class="viewcode-back" href="../../../api/regions.Meta.html#regions.Meta">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for region metadata.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    seq : dict-like, optional</span>
+<span class="sd">        A dictionary or other mapping object to initialize the metadata.</span>
+
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments to initialize the metadata.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">valid_keys</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">key_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">seq</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">seq</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_keys</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> is not a valid key for this class.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Meta.update">
+<a class="viewcode-back" href="../../../api/regions.Meta.html#regions.Meta.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the metadata with the input dictionary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args : dict-like</span>
+<span class="sd">            A dictionary or other mapping object to update the metadata.</span>
+
+<span class="sd">        **kwargs : dict-like</span>
+<span class="sd">            Additional keyword arguments to update the metadata.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only one argument can be input&#39;</span><span class="p">)</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="Meta.setdefault">
+<a class="viewcode-back" href="../../../api/regions.Meta.html#regions.Meta.setdefault">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Meta.copy">
+<a class="viewcode-back" href="../../../api/regions.Meta.html#regions.Meta.copy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a deep copy of this object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RegionMeta">
+<a class="viewcode-back" href="../../../api/regions.RegionMeta.html#regions.RegionMeta">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RegionMeta</span><span class="p">(</span><span class="n">Meta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A dictionary subclass that holds the meta attributes of the region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">valid_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">,</span> <span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="s1">&#39;component&#39;</span><span class="p">,</span> <span class="s1">&#39;composite&#39;</span><span class="p">,</span> <span class="s1">&#39;corr&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;edit&#39;</span><span class="p">,</span> <span class="s1">&#39;fixed&#39;</span><span class="p">,</span> <span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;highlite&#39;</span><span class="p">,</span> <span class="s1">&#39;include&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;move&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="s1">&#39;restfreq&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;rotate&#39;</span><span class="p">,</span> <span class="s1">&#39;select&#39;</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;textrotate&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;veltype&#39;</span><span class="p">]</span>
+
+    <span class="n">key_mapping</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+
+<div class="viewcode-block" id="RegionVisual">
+<a class="viewcode-back" href="../../../api/regions.RegionVisual.html#regions.RegionVisual">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RegionVisual</span><span class="p">(</span><span class="n">Meta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A dictionary subclass which holds the visual attributes of the</span>
+<span class="sd">    region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">valid_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;dash&#39;</span><span class="p">,</span> <span class="s1">&#39;dashlist&#39;</span><span class="p">,</span> <span class="s1">&#39;fill&#39;</span><span class="p">,</span> <span class="s1">&#39;font&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;fontname&#39;</span><span class="p">,</span> <span class="s1">&#39;fontsize&#39;</span><span class="p">,</span> <span class="s1">&#39;fontstyle&#39;</span><span class="p">,</span> <span class="s1">&#39;fontweight&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;labeloff&#39;</span><span class="p">,</span> <span class="s1">&#39;labelpos&#39;</span><span class="p">,</span> <span class="s1">&#39;labelcolor&#39;</span><span class="p">,</span> <span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;linestyle&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;linewidth&#39;</span><span class="p">,</span> <span class="s1">&#39;marker&#39;</span><span class="p">,</span> <span class="s1">&#39;markersize&#39;</span><span class="p">,</span> <span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;symsize&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;symthick&#39;</span><span class="p">,</span> <span class="s1">&#39;textangle&#39;</span><span class="p">,</span> <span class="s1">&#39;textrotate&#39;</span><span class="p">,</span> <span class="s1">&#39;usetex&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;default_style&#39;</span><span class="p">,</span> <span class="s1">&#39;dashes&#39;</span><span class="p">,</span> <span class="s1">&#39;markeredgewidth&#39;</span><span class="p">,</span> <span class="s1">&#39;rotation&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;facecolor&#39;</span><span class="p">,</span> <span class="s1">&#39;edgecolor&#39;</span><span class="p">]</span>
+
+    <span class="n">key_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;point&#39;</span><span class="p">:</span> <span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="s1">&#39;linewidth&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_define_default_mpl_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Define the default matplotlib kwargs for the specified artist.</span>
+
+<span class="sd">        The kwargs depend on the value of self.visual[&#39;default_style&#39;],</span>
+<span class="sd">        which can be set when reading region files. If this keywords is</span>
+<span class="sd">        not set or set to &#39;mpl&#39; or `None`, then the matplotlib defaults</span>
+<span class="sd">        will be used, with the exception fill is turned off for Patch</span>
+<span class="sd">        and Line2D objects.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        artist : {&#39;Text&#39;, &#39;Line2D&#39;, &#39;Patch&#39;}</span>
+<span class="sd">            The matplotlib artist type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : dict</span>
+<span class="sd">            A dictionary of matplotlib keyword arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">default_style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default_style&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">default_style</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">default_style</span> <span class="o">==</span> <span class="s1">&#39;mpl&#39;</span><span class="p">:</span>
+            <span class="c1"># do not fill by default, which is the only change from</span>
+            <span class="c1"># matplotlib defaults</span>
+            <span class="k">if</span> <span class="n">artist</span> <span class="o">==</span> <span class="s1">&#39;Patch&#39;</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fill&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">artist</span> <span class="o">==</span> <span class="s1">&#39;Line2D&#39;</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fillstyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
+            <span class="k">return</span> <span class="n">kwargs</span>
+
+        <span class="c1"># &#39;ds9&#39; style is set when reading from ds9 region files</span>
+        <span class="k">elif</span> <span class="n">default_style</span> <span class="o">==</span> <span class="s1">&#39;ds9&#39;</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#00ff00&#39;</span>  <span class="c1"># green</span>
+            <span class="k">if</span> <span class="n">artist</span> <span class="o">==</span> <span class="s1">&#39;Text&#39;</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span>  <span class="c1"># text horizontal alignment</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;va&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span>  <span class="c1"># text vertical alignment</span>
+            <span class="k">elif</span> <span class="n">artist</span> <span class="o">==</span> <span class="s1">&#39;Line2D&#39;</span><span class="p">:</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">regions.io.ds9.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ds9_valid_symbols</span>
+
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds9_valid_symbols</span><span class="p">[</span><span class="s1">&#39;boxcircle&#39;</span><span class="p">]</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;markersize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">11</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;markeredgecolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fillstyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+            <span class="k">elif</span> <span class="n">artist</span> <span class="o">==</span> <span class="s1">&#39;Patch&#39;</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;edgecolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fill&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid visual[&quot;default&quot;] value&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_mpl_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the visual metadata to a dictionary of matplotlib</span>
+<span class="sd">        keyword arguments for the given artist.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        artist : {&#39;Text&#39;, &#39;Line2D&#39;, &#39;Patch&#39;}</span>
+<span class="sd">            The matplotlib artist type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : dict</span>
+<span class="sd">            A dictionary of matplotlib keyword arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">artist</span> <span class="o">==</span> <span class="s1">&#39;Text&#39;</span><span class="p">:</span>
+            <span class="n">keymap</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;font&#39;</span><span class="p">:</span> <span class="s1">&#39;family&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;fontstyle&#39;</span><span class="p">:</span> <span class="s1">&#39;style&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;fontweight&#39;</span><span class="p">:</span> <span class="s1">&#39;weight&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;fontsize&#39;</span><span class="p">:</span> <span class="s1">&#39;size&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;textangle&#39;</span><span class="p">:</span> <span class="s1">&#39;rotation&#39;</span><span class="p">}</span>
+
+        <span class="k">elif</span> <span class="n">artist</span> <span class="o">==</span> <span class="s1">&#39;Line2D&#39;</span><span class="p">:</span>
+            <span class="n">keymap</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;symsize&#39;</span><span class="p">:</span> <span class="s1">&#39;markersize&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;markeredgecolor&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;linewidth&#39;</span><span class="p">:</span> <span class="s1">&#39;markeredgewidth&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;fill&#39;</span><span class="p">:</span> <span class="s1">&#39;fillstyle&#39;</span><span class="p">}</span>
+
+        <span class="k">elif</span> <span class="n">artist</span> <span class="o">==</span> <span class="s1">&#39;Patch&#39;</span><span class="p">:</span>
+            <span class="n">keymap</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;edgecolor&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;fill&#39;</span><span class="p">:</span> <span class="s1">&#39;fill&#39;</span><span class="p">}</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid artist type&#39;</span><span class="p">)</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">keymap</span><span class="p">:</span>
+                <span class="c1"># NOTE: this will override existing mpl kwargs</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">keymap</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="n">default_style</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;default_style&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">default_style</span> <span class="o">==</span> <span class="s1">&#39;ds9&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s1">&#39;green&#39;</span><span class="p">:</span>
+                    <span class="c1"># X11/mpl green is #008000, ds9 uses #00ff00</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#00ff00&#39;</span>
+
+        <span class="k">return</span> <span class="n">kwargs</span>
+
+<div class="viewcode-block" id="RegionVisual.define_mpl_kwargs">
+<a class="viewcode-back" href="../../../api/regions.RegionVisual.html#regions.RegionVisual.define_mpl_kwargs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">define_mpl_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Define a dictionary of matplotlib keywords for the input</span>
+<span class="sd">        ``artist`` from the region&#39;s ``visual`` properties.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        artist : {&#39;Text&#39;, &#39;Line2D&#39;, &#39;Patch&#39;}</span>
+<span class="sd">            The matplotlib artist type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : dict</span>
+<span class="sd">            A dictionary of matplotlib keyword arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">artist</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Patch&#39;</span><span class="p">,</span> <span class="s1">&#39;Line2D&#39;</span><span class="p">,</span> <span class="s1">&#39;Text&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;artist &quot;</span><span class="si">{</span><span class="n">artist</span><span class="si">}</span><span class="s1">&quot; is not supported&#39;</span><span class="p">)</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_default_mpl_kwargs</span><span class="p">(</span><span class="n">artist</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_mpl_kwargs</span><span class="p">(</span><span class="n">artist</span><span class="p">))</span>
+
+        <span class="n">remove_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">artist</span> <span class="o">!=</span> <span class="s1">&#39;Text&#39;</span><span class="p">:</span>
+            <span class="n">remove_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;fontname&#39;</span><span class="p">,</span> <span class="s1">&#39;fontsize&#39;</span><span class="p">,</span> <span class="s1">&#39;fontweight&#39;</span><span class="p">,</span>
+                                <span class="s1">&#39;fontstyle&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">remove_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;linewidth&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">remove_keys</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;fontstyle&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fontstyle&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;roman&#39;</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">kwargs</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

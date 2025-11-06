@@ -1,0 +1,37 @@
+CircleAnnulusPixelRegion
+========================
+
+.. currentmodule:: regions
+
+.. autoclass:: CircleAnnulusPixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~CircleAnnulusPixelRegion.center
+      ~CircleAnnulusPixelRegion.inner_radius
+      ~CircleAnnulusPixelRegion.meta
+      ~CircleAnnulusPixelRegion.outer_radius
+      ~CircleAnnulusPixelRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~CircleAnnulusPixelRegion.to_sky
+      ~CircleAnnulusPixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: center
+   .. autoattribute:: inner_radius
+   .. autoattribute:: meta
+   .. autoattribute:: outer_radius
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

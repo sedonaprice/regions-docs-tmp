@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.shapes.lune &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.shapes.lune</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines a lune (a &quot;wedge&quot; bounded by two great circles)</span>
+<span class="sd">spherical sky region.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkyCoord</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._utils.spherical_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cross_product_skycoord2skycoord</span><span class="p">,</span> <span class="n">cross_product_sum_skycoord2skycoord</span><span class="p">,</span>
+    <span class="n">discretize_all_edge_boundaries</span><span class="p">,</span> <span class="n">get_edge_raw_lonlat_bounds_circ_edges</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">RegionMetaDescr</span><span class="p">,</span> <span class="n">RegionVisualDescr</span><span class="p">,</span>
+                                     <span class="n">ScalarSkyCoord</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundSphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionMeta</span><span class="p">,</span> <span class="n">RegionVisual</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.shapes.polygon</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolygonSphericalSkyRegion</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LuneSphericalSkyRegion&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="LuneSphericalSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.LuneSphericalSkyRegion.html#regions.LuneSphericalSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LuneSphericalSkyRegion</span><span class="p">(</span><span class="n">SphericalSkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for a spherical &quot;lune&quot;, the intersection between to great</span>
+<span class="sd">    circles in spherical geometry.</span>
+
+<span class="sd">    Composed of two CircleSphericalSkyRegions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center_gc1 : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The center position of the first great circle.</span>
+<span class="sd">    center_gc2 : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The center position of the second great circle.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center_gc1&#39;</span><span class="p">,</span> <span class="s1">&#39;center_gc2&#39;</span><span class="p">)</span>
+    <span class="n">center_gc1</span> <span class="o">=</span> <span class="n">ScalarSkyCoord</span><span class="p">(</span><span class="s1">&#39;The center position of the first great circle as a |SkyCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">center_gc2</span> <span class="o">=</span> <span class="n">ScalarSkyCoord</span><span class="p">(</span><span class="s1">&#39;The center position of the second great circle as a |SkyCoord|.&#39;</span><span class="p">)</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center_gc1</span><span class="p">,</span> <span class="n">center_gc2</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center_gc1</span> <span class="o">=</span> <span class="n">center_gc1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center_gc2</span> <span class="o">=</span> <span class="n">center_gc2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_circle_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">center_gc1</span><span class="p">,</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_circle_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">center_gc2</span><span class="p">,</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_edge_circs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get list of the great circles defining the lune boundaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_circle_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circle_2</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compound_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circle_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circle_2</span><span class="p">,</span>
+                                          <span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_gc1</span><span class="o">.</span><span class="n">frame</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Region centroid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Cross product to get poles:</span>
+        <span class="n">c_pole</span> <span class="o">=</span> <span class="n">cross_product_skycoord2skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center_gc2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_gc1</span><span class="p">)</span>
+        <span class="n">c_pole_a</span> <span class="o">=</span> <span class="n">cross_product_skycoord2skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center_gc1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_gc2</span><span class="p">)</span>
+
+        <span class="c1"># Use centers + poles to get centroid from cross products of vertices</span>
+        <span class="c1"># with cartesian representation</span>
+        <span class="c1"># Assume CW order is gc1, c_pole, gc2, c_pole_a</span>
+
+        <span class="n">c_gc1_sph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_gc1</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+        <span class="n">c_gc2_sph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_gc2</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+        <span class="n">c_p_sph</span> <span class="o">=</span> <span class="n">c_pole</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+        <span class="n">c_p_a_sph</span> <span class="o">=</span> <span class="n">c_pole_a</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+
+        <span class="n">verts</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">c_gc2_sph</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span>
+                <span class="n">c_p_a_sph</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span>
+                <span class="n">c_gc1_sph</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span>
+                <span class="n">c_p_sph</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="p">[</span>
+                <span class="n">c_gc2_sph</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span>
+                <span class="n">c_p_a_sph</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span>
+                <span class="n">c_gc1_sph</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span>
+                <span class="n">c_p_sph</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">cross_product_sum_skycoord2skycoord</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Region vertices.</span>
+
+<span class="sd">        For a lune, these are the intersections of the two bounding</span>
+<span class="sd">        great circles, and are antipodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Cross product to get poles:</span>
+        <span class="n">c_pole</span> <span class="o">=</span> <span class="n">cross_product_skycoord2skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center_gc2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_gc1</span><span class="p">)</span>
+        <span class="n">c_pole_a</span> <span class="o">=</span> <span class="n">cross_product_skycoord2skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center_gc1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_gc2</span><span class="p">)</span>
+
+        <span class="n">c_p_sph</span> <span class="o">=</span> <span class="n">c_pole</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+        <span class="n">c_p_a_sph</span> <span class="o">=</span> <span class="n">c_pole_a</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+
+        <span class="n">verts</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">c_p_sph</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span>
+                <span class="n">c_p_a_sph</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="p">[</span>
+                <span class="n">c_p_sph</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span>
+                <span class="n">c_p_a_sph</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">verts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_lonlat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span> <span class="o">=</span> <span class="n">get_edge_raw_lonlat_bounds_circ_edges</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_circs</span>
+        <span class="p">)</span>
+
+        <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_lonlat_bounds</span><span class="p">(</span><span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span>
+
+<div class="viewcode-block" id="LuneSphericalSkyRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.LuneSphericalSkyRegion.html#regions.LuneSphericalSkyRegion.contains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coord</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compound_region</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LuneSphericalSkyRegion.transform_to">
+<a class="viewcode-back" href="../../../api/regions.LuneSphericalSkyRegion.html#regions.LuneSphericalSkyRegion.transform_to">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="n">center_gc1_transf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_gc1</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="n">merge_attributes</span><span class="p">)</span>
+        <span class="n">center_gc2_transf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_gc2</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="n">merge_attributes</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">LuneSphericalSkyRegion</span><span class="p">(</span>
+            <span class="n">center_gc1_transf</span><span class="p">,</span>
+            <span class="n">center_gc2_transf</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LuneSphericalSkyRegion.discretize_boundary">
+<a class="viewcode-back" href="../../../api/regions.LuneSphericalSkyRegion.html#regions.LuneSphericalSkyRegion.discretize_boundary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">discretize_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">bound_verts</span> <span class="o">=</span> <span class="n">discretize_all_edge_boundaries</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_circs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">n_points</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">PolygonSphericalSkyRegion</span><span class="p">(</span><span class="n">bound_verts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LuneSphericalSkyRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.LuneSphericalSkyRegion.html#regions.LuneSphericalSkyRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No analogous planar sky region.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LuneSphericalSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.LuneSphericalSkyRegion.html#regions.LuneSphericalSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No analogous pixel region.&#39;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.core.core &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.core.core</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates.sky_coordinate_parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">_get_frame_class</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._utils.spherical_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">bounding_lonlat_poles_processing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionMeta</span><span class="p">,</span> <span class="n">RegionVisual</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.pixcoord</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionsRegistry</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="s1">&#39;PixelRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;SkyRegion&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SphericalSkyRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;ComplexSphericalSkyRegion&#39;</span><span class="p">]</span>
+<span class="n">__doctest_skip__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Region.serialize&#39;</span><span class="p">,</span> <span class="s1">&#39;Region.write&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Region">
+<a class="viewcode-back" href="../../../api/regions.Region.html#regions.Region">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Region</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all regions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="Region.copy">
+<a class="viewcode-back" href="../../../api/regions.Region.html#regions.Region.copy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">changes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make an independent (deep) copy.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **changes : dict</span>
+<span class="sd">            Changes to make to the region parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="s1">&#39;visual&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">changes</span><span class="p">:</span>
+                <span class="n">changes</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">changes</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">cls_info</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">param</span> <span class="o">==</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span>
+                    <span class="c1"># place quotes around text value</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="si">!r}</span><span class="s1">&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">cls_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyval</span><span class="p">)</span>
+        <span class="n">cls_info</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cls_info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">cls_info</span><span class="si">}</span><span class="s1">)&gt;&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cls_info</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">param</span> <span class="o">==</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span>
+                    <span class="c1"># place quotes around text value</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">))</span>
+                <span class="n">cls_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyval</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cls_info</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Equality operator for Region.</span>
+
+<span class="sd">        All Region properties are compared for strict equality except</span>
+<span class="sd">        for Quantity parameters, which allow for different units if they</span>
+<span class="sd">        are directly convertible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">meta_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="s1">&#39;visual&#39;</span><span class="p">]</span>
+        <span class="n">self_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span> <span class="o">+</span> <span class="n">meta_params</span>
+        <span class="n">other_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span> <span class="o">+</span> <span class="n">meta_params</span>
+
+        <span class="c1"># check that both have identical parameters</span>
+        <span class="k">if</span> <span class="n">self_params</span> <span class="o">!=</span> <span class="n">other_params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># now check the parameter values</span>
+        <span class="c1"># Note that Quantity comparisons allow for different units</span>
+        <span class="c1"># if they directly convertible (e.g., 1. * u.deg == 60. * u.arcmin)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">self_params</span><span class="p">:</span>
+                <span class="c1"># np.any is used for SkyCoord array comparisons</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">param</span><span class="p">)):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="c1"># TypeError is raised from SkyCoord comparison when they do</span>
+            <span class="c1"># not have equivalent frames. Here return False instead of</span>
+            <span class="c1"># the TypeError.</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inequality operator for Region.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region that will be compared.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Region.intersection">
+<a class="viewcode-back" href="../../../api/regions.Region.html#regions.Region.intersection">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a region representing the intersection of this region</span>
+<span class="sd">        with ``other``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region to use for the intersection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="Region.symmetric_difference">
+<a class="viewcode-back" href="../../../api/regions.Region.html#regions.Region.symmetric_difference">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">symmetric_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the union of the two regions minus any areas contained in</span>
+<span class="sd">        the intersection of the two regions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region to use for the symmetric difference.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="Region.union">
+<a class="viewcode-back" href="../../../api/regions.Region.html#regions.Region.union">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a region representing the union of this region with</span>
+<span class="sd">        ``other``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region to use for the union.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Region.get_formats">
+<a class="viewcode-back" href="../../../api/regions.Region.html#regions.Region.get_formats">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_formats</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the registered I/O formats as a Table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">RegionsRegistry</span><span class="o">.</span><span class="n">get_formats</span><span class="p">(</span><span class="n">Region</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Region.write">
+<a class="viewcode-back" href="../../../api/regions.Region.html#regions.Region.write">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the region to a region file in the specified format.</span>
+
+<span class="sd">        This method allows writing a file in many supported data</span>
+<span class="sd">        formats, e.g.,::</span>
+
+<span class="sd">            &gt;&gt;&gt; reg.write(&#39;new_regions.reg&#39;, format=&#39;ds9&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg.write(&#39;new_regions.crtf&#39;, format=&#39;crtf&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg.write(&#39;new_regions.fits&#39;, format=&#39;fits&#39;)</span>
+
+<span class="sd">        A list of the available formats for `~regions.Region` is</span>
+<span class="sd">        available using::</span>
+
+<span class="sd">            &gt;&gt;&gt; from regions import Region</span>
+<span class="sd">            &gt;&gt;&gt; Region.get_formats()</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            The filename or URL of the file to write.</span>
+
+<span class="sd">        format : str, optional</span>
+<span class="sd">            The file format specifier.</span>
+
+<span class="sd">        overwrite : bool, optional</span>
+<span class="sd">            If True, overwrite the output file if it exists. Raises an</span>
+<span class="sd">            `OSError` if False and the output file exists. Default is</span>
+<span class="sd">            False.</span>
+
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to the data writer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">RegionsRegistry</span><span class="o">.</span><span class="n">write</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="n">filename</span><span class="p">,</span>
+                                     <span class="n">Region</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
+                                     <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Region.serialize">
+<a class="viewcode-back" href="../../../api/regions.Region.html#regions.Region.serialize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Serialize the region to a region string or table.</span>
+
+<span class="sd">        This method allows serializing regions in many supported data</span>
+<span class="sd">        formats, e.g.,::</span>
+
+<span class="sd">            &gt;&gt;&gt; reg1_str = reg.serialize(format=&#39;ds9&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg2_str = reg.serialize(format=&#39;crtf&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; reg3_tbl = reg.serialize(format=&#39;fits&#39;)</span>
+
+<span class="sd">        A list of the available formats for `~regions.Region` is</span>
+<span class="sd">        available using::</span>
+
+<span class="sd">            &gt;&gt;&gt; from regions import Region</span>
+<span class="sd">            &gt;&gt;&gt; Region.get_formats()</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        format : str, optional</span>
+<span class="sd">            The file format specifier.</span>
+
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to the data serializer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">RegionsRegistry</span><span class="o">.</span><span class="n">serialize</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="n">Region</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
+                                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PixelRegion">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PixelRegion</span><span class="p">(</span><span class="n">Region</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all regions defined in pixel coordinates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMeta</span><span class="p">()</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+<div class="viewcode-block" id="PixelRegion.intersection">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion.intersection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a region representing the intersection of this region</span>
+<span class="sd">        with ``other``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region to use for the intersection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundPixelRegion</span>
+        <span class="k">return</span> <span class="n">CompoundPixelRegion</span><span class="p">(</span><span class="n">region1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">region2</span><span class="o">=</span><span class="n">other</span><span class="p">,</span>
+                                   <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PixelRegion.symmetric_difference">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion.symmetric_difference">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">symmetric_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the union of the two regions minus any areas contained in</span>
+<span class="sd">        the intersection of the two regions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region to use for the symmetric difference.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundPixelRegion</span>
+        <span class="k">return</span> <span class="n">CompoundPixelRegion</span><span class="p">(</span><span class="n">region1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">region2</span><span class="o">=</span><span class="n">other</span><span class="p">,</span>
+                                   <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PixelRegion.union">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion.union">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a region representing the union of this region with</span>
+<span class="sd">        ``other``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region to use for the union.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundPixelRegion</span>
+        <span class="k">return</span> <span class="n">CompoundPixelRegion</span><span class="p">(</span><span class="n">region1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">region2</span><span class="o">=</span><span class="n">other</span><span class="p">,</span>
+                                   <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PixelRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion.contains">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixcoord</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check whether a position or positions fall inside the region.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pixcoord : `~regions.PixCoord`</span>
+<span class="sd">            The position or positions to check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coord</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">coord</span><span class="o">.</span><span class="n">isscalar</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;coord must be scalar. coord=</span><span class="si">{</span><span class="n">coord</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PixelRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion.to_sky">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a region defined in sky coordinates.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wcs : `~astropy.wcs.WCS`</span>
+<span class="sd">            The world coordinate system transformation to use to convert</span>
+<span class="sd">            from pixels to sky coordinates.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sky_region : `~regions.SkyRegion`</span>
+<span class="sd">            The sky region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="PixelRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion.to_spherical_sky">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert to an equivalent spherical `~regions.SphericalSkyRegion`</span>
+<span class="sd">        instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wcs : `~astropy.wcs.WCS` instance, optional</span>
+<span class="sd">            The world coordinate system transformation to use to convert</span>
+<span class="sd">            between sky and pixel coordinates. Required if transforming</span>
+<span class="sd">            with boundary distortions (if ``include_boundary_distortions`` is True).</span>
+<span class="sd">            Ignored if boundary distortions not included.</span>
+
+<span class="sd">        include_boundary_distortions : bool, optional</span>
+<span class="sd">            If True, accounts for boundary boundary distortions in spherical to planar</span>
+<span class="sd">            conversions, by discretizing the boundary and converting the boundary polygon.</span>
+<span class="sd">            Default is False, which converts to an equivalent idealized shape.</span>
+
+<span class="sd">        discretize_kwargs : dict, optional</span>
+<span class="sd">            Optional keyword arguments to pass to discretize_boundary() method</span>
+<span class="sd">            if including boundary distortions.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        spherical_sky_region : `~regions.SphericalSkyRegion`</span>
+<span class="sd">            A spherical sky region, with an equivalent shape (if</span>
+<span class="sd">            ``include_boundary_distortions`` is False), or a discretized polygon of</span>
+<span class="sd">            the boundary (if ``include_boundary_distortions`` is True).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The exact analytical area of the region shape.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The minimal bounding box (in integer pixel coordinates) that</span>
+<span class="sd">        contains the region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="PixelRegion.to_mask">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion.to_mask">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">subpixels</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a mask for the region.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mode : {&#39;center&#39;, &#39;exact&#39;, &#39;subpixels&#39;}, optional</span>
+<span class="sd">            The method used to determine the overlap of the region on</span>
+<span class="sd">            the pixel grid. Not all options are available for all region</span>
+<span class="sd">            types. Note that the more precise methods are generally</span>
+<span class="sd">            slower. The following methods are available:</span>
+
+<span class="sd">                * ``&#39;center&#39;``:</span>
+<span class="sd">                  A pixel is considered to be entirely in or out of the</span>
+<span class="sd">                  region depending on whether its center is in or out of</span>
+<span class="sd">                  the region. The returned mask will contain values only</span>
+<span class="sd">                  of 0 (out) and 1 (in).</span>
+
+<span class="sd">                * ``&#39;exact&#39;`` (default):</span>
+<span class="sd">                  The exact fractional overlap of the region and each</span>
+<span class="sd">                  pixel is calculated. The returned mask will contain</span>
+<span class="sd">                  values between 0 and 1.</span>
+
+<span class="sd">                * ``&#39;subpixel&#39;``:</span>
+<span class="sd">                  A pixel is divided into subpixels (see the</span>
+<span class="sd">                  ``subpixels`` keyword), each of which are considered</span>
+<span class="sd">                  to be entirely in or out of the region depending</span>
+<span class="sd">                  on whether its center is in or out of the region.</span>
+<span class="sd">                  If ``subpixels=1``, this method is equivalent to</span>
+<span class="sd">                  ``&#39;center&#39;``. The returned mask will contain values</span>
+<span class="sd">                  between 0 and 1.</span>
+
+<span class="sd">        subpixels : int, optional</span>
+<span class="sd">            For the ``&#39;subpixel&#39;`` mode, resample pixels by this factor</span>
+<span class="sd">            in each dimension. That is, each pixel is divided into</span>
+<span class="sd">            ``subpixels ** 2`` subpixels.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mask : `~regions.RegionMask`</span>
+<span class="sd">            A mask for the region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">subpixels</span><span class="p">):</span>
+        <span class="n">valid_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;exact&#39;</span><span class="p">,</span> <span class="s1">&#39;subpixels&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_modes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid mask mode: </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s1"> (should be one &#39;</span>
+                             <span class="sa">f</span><span class="s1">&#39;of </span><span class="si">{</span><span class="n">valid_modes</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;subpixels&#39;</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">subpixels</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">subpixels</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid subpixels value: </span><span class="si">{</span><span class="n">subpixels</span><span class="si">}</span><span class="s1"> &#39;</span>
+                             <span class="s1">&#39;(should be a strictly positive integer)&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PixelRegion.as_artist">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion.as_artist">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert to matplotlib patch object for this region.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        origin : array_like, optional</span>
+<span class="sd">            The ``(x, y)`` pixel position of the origin of the displayed</span>
+<span class="sd">            image.</span>
+
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            Any keyword arguments accepted by</span>
+<span class="sd">            `~matplotlib.patches.Patch`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        patch : `~matplotlib.patches.Patch`</span>
+<span class="sd">            A matplotlib patch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="PixelRegion.plot">
+<a class="viewcode-back" href="../../../api/regions.PixelRegion.html#regions.PixelRegion.plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the region on a matplotlib `~matplotlib.axes.Axes`</span>
+<span class="sd">        instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        origin : array_like, optional</span>
+<span class="sd">            The ``(x, y)`` pixel position of the origin of the displayed</span>
+<span class="sd">            image.</span>
+
+<span class="sd">        ax : `~matplotlib.axes.Axes` or `None`, optional</span>
+<span class="sd">            The matplotlib axes on which to plot.  If `None`, then the</span>
+<span class="sd">            current `~matplotlib.axes.Axes` instance is used.</span>
+
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            Any keyword arguments accepted by</span>
+<span class="sd">            `~matplotlib.patches.Patch`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        artist : `matplotlib.artist.Artist`</span>
+<span class="sd">            The matplotlib artist (typically a `~matplotlib.patches.Patch`</span>
+<span class="sd">            object) for the plotted region. The artist can be used, for</span>
+<span class="sd">            example, when adding a plot legend.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
+        <span class="n">artist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_artist</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">artist</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">artist</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SkyRegion">
+<a class="viewcode-back" href="../../../api/regions.SkyRegion.html#regions.SkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SkyRegion</span><span class="p">(</span><span class="n">Region</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all regions defined in celestial coordinates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SkyRegion.intersection">
+<a class="viewcode-back" href="../../../api/regions.SkyRegion.html#regions.SkyRegion.intersection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a region representing the intersection of this region</span>
+<span class="sd">        with ``other``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region to use for the intersection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundSkyRegion</span>
+        <span class="k">return</span> <span class="n">CompoundSkyRegion</span><span class="p">(</span><span class="n">region1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">region2</span><span class="o">=</span><span class="n">other</span><span class="p">,</span>
+                                 <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SkyRegion.symmetric_difference">
+<a class="viewcode-back" href="../../../api/regions.SkyRegion.html#regions.SkyRegion.symmetric_difference">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">symmetric_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the union of the two regions minus any areas contained in</span>
+<span class="sd">        the intersection of the two regions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region to use for the symmetric difference.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundSkyRegion</span>
+        <span class="k">return</span> <span class="n">CompoundSkyRegion</span><span class="p">(</span><span class="n">region1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">region2</span><span class="o">=</span><span class="n">other</span><span class="p">,</span>
+                                 <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SkyRegion.union">
+<a class="viewcode-back" href="../../../api/regions.SkyRegion.html#regions.SkyRegion.union">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a region representing the union of this region with</span>
+<span class="sd">        ``other``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `Region`</span>
+<span class="sd">            The other region to use for the union.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundSkyRegion</span>
+        <span class="k">return</span> <span class="n">CompoundSkyRegion</span><span class="p">(</span><span class="n">region1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">region2</span><span class="o">=</span><span class="n">other</span><span class="p">,</span>
+                                 <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SkyRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.SkyRegion.html#regions.SkyRegion.contains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skycoord</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check whether a sky coordinate falls inside the region.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        skycoord : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">            The position or positions to check.</span>
+<span class="sd">        wcs : `~astropy.wcs.WCS`</span>
+<span class="sd">            The world coordinate system transformation to use to convert</span>
+<span class="sd">            between sky and pixel coordinates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pixel_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span>
+        <span class="n">pixcoord</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="o">.</span><span class="n">from_sky</span><span class="p">(</span><span class="n">skycoord</span><span class="p">,</span> <span class="n">wcs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pixel_region</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pixcoord</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.SkyRegion.html#regions.SkyRegion.to_pixel">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the equivalent region defined in pixel coordinates.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wcs : `~astropy.wcs.WCS`</span>
+<span class="sd">            The world coordinate system transformation to use to convert</span>
+<span class="sd">            between sky and pixel coordinates.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pixel_region : `~regions.PixelRegion`</span>
+<span class="sd">            A pixel region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="SkyRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.SkyRegion.html#regions.SkyRegion.to_spherical_sky">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert to an equivalent spherical `~regions.SphericalSkyRegion`</span>
+<span class="sd">        instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wcs : `~astropy.wcs.WCS` instance, optional</span>
+<span class="sd">            The world coordinate system transformation to use to convert</span>
+<span class="sd">            between sky and pixel coordinates. Required if transforming</span>
+<span class="sd">            with boundary distortions (if ``include_boundary_distortions`` is True).</span>
+<span class="sd">            Ignored if boundary distortions not included.</span>
+
+<span class="sd">        include_boundary_distortions : bool, optional</span>
+<span class="sd">            If True, accounts for boundary boundary distortions in spherical to planar</span>
+<span class="sd">            conversions, by discretizing the boundary and converting the boundary polygon.</span>
+<span class="sd">            Default is False, which converts to an equivalent idealized shape.</span>
+
+<span class="sd">        discretize_kwargs : dict, optional</span>
+<span class="sd">            Optional keyword arguments to pass to discretize_boundary() method</span>
+<span class="sd">            if including boundary distortions.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        spherical_sky_region : `~regions.SphericalSkyRegion`</span>
+<span class="sd">            A spherical sky region, with an equivalent shape (if</span>
+<span class="sd">            ``include_boundary_distortions`` is False), or a discretized polygon of</span>
+<span class="sd">            the boundary (if ``include_boundary_distortions`` is True).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SphericalSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SphericalSkyRegion</span><span class="p">(</span><span class="n">Region</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all spherical sky regions (compared to the implicitly</span>
+<span class="sd">    planar SkyRegions).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SphericalSkyRegion.intersection">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.intersection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a region representing the intersection of this region</span>
+<span class="sd">        with ``other``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `~regions.SphericalSkyRegion`</span>
+<span class="sd">            The other region to use for the intersection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundSphericalSkyRegion</span>
+
+        <span class="k">return</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">(</span>
+            <span class="n">region1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">region2</span><span class="o">=</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">and_</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SphericalSkyRegion.symmetric_difference">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.symmetric_difference">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">symmetric_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the union of the two regions minus any areas contained in</span>
+<span class="sd">        the intersection of the two regions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `~regions.SphericalSkyRegion`</span>
+<span class="sd">            The other region to use for the symmetric difference.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundSphericalSkyRegion</span>
+
+        <span class="k">return</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">(</span>
+            <span class="n">region1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">region2</span><span class="o">=</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">xor</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SphericalSkyRegion.union">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.union">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a region representing the union of this region with</span>
+<span class="sd">        ``other``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : `~regions.SphericalSkyRegion`</span>
+<span class="sd">            The other region to use for the union.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundSphericalSkyRegion</span>
+
+        <span class="k">return</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">(</span>
+            <span class="n">region1</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">region2</span><span class="o">=</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">or_</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+        <span class="c1"># TODO: handle offset origin transformations</span>
+
+        <span class="n">frame</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_get_frame_class</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">frame</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">frame</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Coordinate frame of the region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;center&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">frame</span>
+        <span class="k">elif</span> <span class="s1">&#39;vertices&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">frame</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;Either &#39;center&#39; or &#39;vertices&#39; must be an attribute/property &quot;</span>
+                <span class="s1">&#39;of the SphericalSkyRegion.&#39;</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bounding circle for the spherical sky region.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        circle_sph_sky_region: `~regions.CircleSphericalSkyRegion`</span>
+<span class="sd">            A circle spherical sky region object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_lonlat_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span><span class="p">,</span> <span class="n">inner_region</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># Check if shape covers either pole &amp; modify lats arr accordingly:</span>
+        <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span> <span class="o">=</span> <span class="n">bounding_lonlat_poles_processing</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span><span class="p">,</span> <span class="n">inner_region</span><span class="o">=</span><span class="n">inner_region</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_lonlat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bounding longitude and latitude of the spherical sky region, in</span>
+<span class="sd">        the region&#39;s frame.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        lons_arr : list of `~astropy.coordinates.Longitude`</span>
+<span class="sd">            List of lower, upper boundary longitude values.</span>
+
+<span class="sd">        lons_arr : list of `~astropy.coordinates.Latitude`</span>
+<span class="sd">            List of lower, upper boundary latitude values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="SphericalSkyRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.contains">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coord</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check whether a sky coordinate falls inside the spherical sky</span>
+<span class="sd">        region.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coord : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">            The position or positions to check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="SphericalSkyRegion.transform_to">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.transform_to">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform the `SphericalSkyRegion` instance into another</span>
+<span class="sd">        instance with a different coordinate reference frame.</span>
+
+<span class="sd">        The precise frame transformed to depends on ``merge_attributes``.</span>
+<span class="sd">        If `False`, the destination frame is used exactly as passed in.</span>
+<span class="sd">        But this is often not quite what one wants.  E.g., suppose one wants to</span>
+<span class="sd">        transform an ICRS coordinate that has an obstime attribute to FK4; in</span>
+<span class="sd">        this case, one likely would want to use this information. Thus, the</span>
+<span class="sd">        default for ``merge_attributes`` is `True`, in which the precedence is</span>
+<span class="sd">        as follows: (1) explicitly set (i.e., non-default) values in the</span>
+<span class="sd">        destination frame; (2) explicitly set values in the source; (3) default</span>
+<span class="sd">        value in the destination frame.</span>
+
+<span class="sd">        Note that in either case, any explicitly set attributes on the source</span>
+<span class="sd">        |SkyCoord| that are not part of the destination frame&#39;s definition are</span>
+<span class="sd">        kept (stored on the resulting |SkyCoord|), and thus one can round-trip</span>
+<span class="sd">        (e.g., from FK4 to ICRS to FK4 without losing obstime).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frame : str, or `~astropy.coordinates.BaseCoordinateFrame` class or instance</span>
+<span class="sd">            The frame to transform this coordinate into.</span>
+<span class="sd">        merge_attributes : bool, optional</span>
+<span class="sd">            Whether the default attributes in the destination frame are allowed</span>
+<span class="sd">            to be overridden by explicitly set attributes in the source</span>
+<span class="sd">            (see note above; default: `True`).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sph_sky_region : `~regions.SphericalSkyRegion`</span>
+<span class="sd">            A new spherical sky region represented in the ``frame`` frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="SphericalSkyRegion.discretize_boundary">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.discretize_boundary">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">discretize_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Discretize the boundary into a PolygonSphericalSkyRegion, as an</span>
+<span class="sd">        approximation where all sides follow great circles.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_points : int, optional</span>
+<span class="sd">            Number of points along the region&#39;s boundary.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        poly_sky_region: `~regions.PolygonSphericalSkyRegion`</span>
+<span class="sd">            Spherical sky polygon object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="SphericalSkyRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.to_sky">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert to a planar `~regions.SkyRegion` instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wcs : `~astropy.wcs.WCS` instance, optional</span>
+<span class="sd">            The world coordinate system transformation to use to convert</span>
+<span class="sd">            between sky and pixel coordinates. Required if transforming</span>
+<span class="sd">            with boundary distortions (if ``include_boundary_distortions`` is True).</span>
+<span class="sd">            Ignored if boundary distortions not included.</span>
+
+<span class="sd">        include_boundary_distortions : bool, optional</span>
+<span class="sd">            If True, accounts for boundary boundary distortions in spherical to planar</span>
+<span class="sd">            conversions, by discretizing the boundary and converting the boundary polygon.</span>
+<span class="sd">            Default is False, which converts to an equivalent idealized shape.</span>
+
+<span class="sd">        discretize_kwargs : dict, optional</span>
+<span class="sd">            Optional keyword arguments to pass to discretize_boundary() method</span>
+<span class="sd">            if including boundary distortions.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sky_region : `~regions.SkyRegion`</span>
+<span class="sd">            A planar sky region, with an equivalent shape (if</span>
+<span class="sd">            ``include_boundary_distortions`` is False), or a discretized polygon of</span>
+<span class="sd">            the boundary (if ``include_boundary_distortions`` is True).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="SphericalSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.to_pixel">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert to a planar `~regions.PixelRegion` instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wcs : `~astropy.wcs.WCS` instance, optional</span>
+<span class="sd">            The world coordinate system transformation to use to convert</span>
+<span class="sd">            between sky and pixel coordinates. Required if transforming</span>
+<span class="sd">            with boundary distortions (if ``include_boundary_distortions`` is True).</span>
+<span class="sd">            Ignored if boundary distortions not included.</span>
+
+<span class="sd">        include_boundary_distortions : bool, optional</span>
+<span class="sd">            If True, accounts for boundary boundary distortions in spherical to planar</span>
+<span class="sd">            conversions, by discretizing the boundary and converting the boundary polygon.</span>
+<span class="sd">            Default is False, which converts to an equivalent idealized shape.</span>
+
+<span class="sd">        discretize_kwargs : dict, optional</span>
+<span class="sd">            Optional keyword arguments to pass to discretize_boundary() method</span>
+<span class="sd">            if including boundary distortions.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pixel_region : `~regions.PixelRegion`</span>
+<span class="sd">            A pixel region, with an equivalent shape (if</span>
+<span class="sd">            ``include_boundary_distortions`` is False), or a discretized polygon of</span>
+<span class="sd">            the boundary (if ``include_boundary_distortions`` is True).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="SphericalSkyRegion.write">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.write">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Note explicitly that this is not yet implemented.</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="SphericalSkyRegion.serialize">
+<a class="viewcode-back" href="../../../api/regions.SphericalSkyRegion.html#regions.SphericalSkyRegion.serialize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Note explicitly that this is not yet implemented.</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ComplexSphericalSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.ComplexSphericalSkyRegion.html#regions.ComplexSphericalSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ComplexSphericalSkyRegion</span><span class="p">(</span><span class="n">SphericalSkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for complex cases, where the definitional parameters do</span>
+<span class="sd">    not / cannot transform between coordinate frames (including</span>
+<span class="sd">    RangeSphericalSkyRegion).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Because the parameters don&#39;t transform,</span>
+    <span class="c1"># these object cannot be defined simply as &quot;compound regions&quot;</span>
+
+    <span class="c1"># So some repr and str methods are changed.</span>
+
+    <span class="c1"># (For now, this is just RangeSphericalSkyRegion,</span>
+    <span class="c1"># but breaking out these methods/properties to streamline).</span>
+
+    <span class="c1"># Instead, a variable set _boundaries is used, containing the</span>
+    <span class="c1"># subclass boundary properties. These boundary properties are, in order of preference,</span>
+    <span class="c1"># (a) accessed from `_[boundname]`, for transformed instances of subclass shapes that</span>
+    <span class="c1">#     don&#39;t simply map in parameterization from frame to frame (eg, Range)</span>
+    <span class="c1"># (b) derived on-the-fly</span>
+
+    <span class="n">_boundaries</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">cls_info</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">_do_params_info</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;frame&#39;</span><span class="p">)):</span>
+            <span class="c1"># Only do param-based repr if params other than &quot;frame&quot; are set</span>
+            <span class="c1"># If only param is &quot;frame&quot;, make repr with boundary info</span>
+            <span class="n">_do_params_info</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">_do_params_info</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">param</span> <span class="o">==</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span>
+                    <span class="c1"># place quotes around text value</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="si">!r}</span><span class="s1">&#39;</span>
+                <span class="k">elif</span> <span class="n">param</span> <span class="o">==</span> <span class="s1">&#39;frame&#39;</span><span class="p">:</span>
+                    <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">repr</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">cls_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyval</span><span class="p">)</span>
+
+            <span class="n">cls_info</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cls_info</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">(</span><span class="se">\n</span><span class="si">{</span><span class="n">cls_info</span><span class="si">}</span><span class="se">\n</span><span class="s1">)&gt;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># First check if &quot;frame&quot; in self._params:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;frame&#39;</span><span class="p">:</span>
+                <span class="n">param</span> <span class="o">=</span> <span class="s1">&#39;frame&#39;</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                <span class="n">keyval</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">repr</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">cls_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyval</span><span class="p">)</span>
+
+            <span class="c1"># If &quot;params&quot; is None, eg for a &quot;transformed&quot;</span>
+            <span class="c1"># complex shape which is no longer described by the &quot;high-level&quot;</span>
+            <span class="c1"># region parameters, instead give information on the regions</span>
+            <span class="c1"># contained within _boundaries info:</span>
+            <span class="k">for</span> <span class="n">bound</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span><span class="p">:</span>
+                <span class="n">keyval</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bound</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">bound</span><span class="p">))</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">cls_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyval</span><span class="p">)</span>
+
+            <span class="n">cls_info</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cls_info</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">(</span><span class="se">\n</span><span class="si">{</span><span class="n">cls_info</span><span class="si">}</span><span class="se">\n</span><span class="s1">)&gt;&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cls_info</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)]</span>
+
+        <span class="n">_do_params_info</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;frame&#39;</span><span class="p">)):</span>
+            <span class="c1"># Only do param-based str if params other than &quot;frame&quot; are set.</span>
+            <span class="c1"># If only param is &quot;frame&quot;, make str with boundary info</span>
+            <span class="n">_do_params_info</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">_do_params_info</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]:</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)))</span>
+
+                <span class="k">elif</span> <span class="n">param</span> <span class="o">==</span> <span class="s1">&#39;frame&#39;</span><span class="p">:</span>
+                    <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">attr</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">keyval</span> <span class="o">=</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">))</span>
+                <span class="n">cls_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyval</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cls_info</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># First check if &quot;frame&quot; in self._params:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;frame&#39;</span><span class="p">):</span>
+                <span class="n">param</span> <span class="o">=</span> <span class="s1">&#39;frame&#39;</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                <span class="n">keyval</span> <span class="o">=</span> <span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">attr</span><span class="p">)))</span>
+                <span class="n">cls_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyval</span><span class="p">)</span>
+
+            <span class="c1"># If &quot;params&quot; is None, eg for a transformed complex shape,</span>
+            <span class="c1"># instead give information on the regions contained</span>
+            <span class="c1"># within _boundaries info:</span>
+            <span class="k">for</span> <span class="n">bound</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span><span class="p">:</span>
+                <span class="n">keyval</span> <span class="o">=</span> <span class="p">(</span><span class="n">bound</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bound</span><span class="p">)))</span>
+                <span class="n">cls_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyval</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cls_info</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compound_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compound region containing composite boundaries for this complex</span>
+<span class="sd">        region shape.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ComplexSphericalSkyRegion.copy">
+<a class="viewcode-back" href="../../../api/regions.ComplexSphericalSkyRegion.html#regions.ComplexSphericalSkyRegion.copy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">changes</span><span class="p">):</span>
+        <span class="c1"># Boundaries: only copy stashed internal attributes &quot;_{bound name}&quot;,</span>
+        <span class="c1"># as otherwise these are derived on-the-fly.</span>
+        <span class="n">boundaries_interalattr</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">bn</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">bn</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span><span class="p">)]</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">boundaries_interalattr</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s1">&#39;_frame&#39;</span><span class="p">,</span> <span class="s1">&#39;_vertices&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_is_original_frame&#39;</span><span class="p">,</span> <span class="s1">&#39;_params&#39;</span><span class="p">,</span>
+        <span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="s1">&#39;visual&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">changes</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+                <span class="n">changes</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">changes</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_frame&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compound_region</span><span class="o">.</span><span class="n">frame</span>
+        <span class="k">return</span> <span class="n">frame</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

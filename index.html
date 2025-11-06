@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Astropy Regions &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="install.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="#"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="install.html" title="Installation">
+	  next &raquo;
+	</a>
+      </li>
+      <li>
+	<a href="#">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="astropy-regions">
+<h1>Astropy Regions<a class="headerlink" href="#astropy-regions" title="Link to this heading">¶</a></h1>
+<p><strong>regions</strong> is an in-development <a class="reference external" href="https://www.astropy.org/affiliated/index.html#coordinated-packages">coordinated package</a> of <a class="reference external" href="https://www.astropy.org">Astropy</a>
+for region handling.</p>
+<p>To get an overview of available features, see <a class="reference internal" href="getting_started.html#getting-started"><span class="std std-ref">Getting Started</span></a>.</p>
+<p>The eventual goal is to merge this package into the Astropy core
+package.</p>
+<ul class="simple">
+<li><p>Code : <a class="reference external" href="https://github.com/astropy/regions">GitHub repository</a></p></li>
+<li><p>Contributors : <a class="reference external" href="https://github.com/astropy/regions/graphs/contributors">https://github.com/astropy/regions/graphs/contributors</a></p></li>
+</ul>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Reporting Issues and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Full Changelog</a></li>
+</ul>
+</div>
+</section>
+<section id="user-documentation">
+<h2>User Documentation<a class="headerlink" href="#user-documentation" title="Link to this heading">¶</a></h2>
+<section id="defining-regions">
+<h3>Defining Regions<a class="headerlink" href="#defining-regions" title="Link to this heading">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="shapes.html">Region Shapes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Region Metadata</a></li>
+</ul>
+</div>
+</section>
+<section id="using-regions">
+<h3>Using Regions<a class="headerlink" href="#using-regions" title="Link to this heading">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contains.html">Checking for Points Inside Regions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compound.html">Combining Regions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="masks.html">Computing Overlap Masks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spherical_frame_transform.html">Coordinate Frame Transformation of Spherical Regions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spherical_bounding_regions.html">Bounding Regions for On-Sky Spatial Searches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting Regions with Matplotlib</a></li>
+</ul>
+</div>
+</section>
+<section id="i-o-reference">
+<h3>I/O &amp; Reference<a class="headerlink" href="#i-o-reference" title="Link to this heading">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="region_io.html">Reading/Writing Region Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shapely.html">Converting Regions to Shapely Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Reference/API</a></li>
+</ul>
+</div>
+</section>
+</section>
+<section id="examples">
+<span id="index-examples"></span><h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<p>The following example shows how to read a DS9 region file and plot the
+regions on an image using Matplotlib.</p>
+<p>(<a class="reference download internal" download="" href="_downloads/87b8856e6c42aa3fb7d59317b8f1dd51/index-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/3a6cd136aabaa015aa14c5538f16f6eb/index-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/eef845664d98ffc1544def0883567a9c/index-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/34a043ea91486f4777fa1ee0602f74f0/index-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/4cf5b9a0495ee813ffb1004b5d82a707/index-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/index-1.png" class="plot-directive" src="_images/index-1.png" />
+</figure>
+<p>The next example demonstrates how to plot spherical regions (e.g., a circle
+and a longitude/latitude “range”) on a full sky image (seen in the
+<a class="reference external" href="https://docs.astropy.org/en/stable/visualization/wcsaxes/custom_frames.html">visualization demo here</a>) using Matplotlib.</p>
+<p>(<a class="reference download internal" download="" href="_downloads/1428e1c7ba565703acfafaf04e41d30d/index-2.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/ad384e000b3814cd8018a060d5055b78/index-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/c8dc2f7609eb3bba8111522badac8a1e/index-2.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/74173204c8abedb55276ed8baca6e584/index-2.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="_downloads/c1e344af7e61d9c59da807e357c77f19/index-2.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/index-2.png" class="plot-directive" src="_images/index-2.png" />
+</figure>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Astropy Regions</a><ul>
+<li><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li><a class="reference internal" href="#user-documentation">User Documentation</a><ul>
+<li><a class="reference internal" href="#defining-regions">Defining Regions</a></li>
+<li><a class="reference internal" href="#using-regions">Using Regions</a></li>
+<li><a class="reference internal" href="#i-o-reference">I/O &amp; Reference</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/index.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

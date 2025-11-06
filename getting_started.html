@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Getting Started &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reporting Issues and Contributing" href="contributing.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="contributing.html" title="Reporting Issues and Contributing">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="install.html" title="Installation">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Getting Started</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="getting-started">
+<span id="id1"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>The Regions package provides classes to represent:</p>
+<ul class="simple">
+<li><p>Regions defined using pixel coordinates (a “region-on-image”; e.g.,
+<a class="reference internal" href="api/regions.CirclePixelRegion.html#regions.CirclePixelRegion" title="regions.CirclePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CirclePixelRegion</span></code></a>)</p></li>
+<li><p>Regions defined using celestial coordinates, but still in an Euclidean
+geometry (i.e., a planar projection, as a “region-on-image”;
+e.g., <a class="reference internal" href="api/regions.CircleSkyRegion.html#regions.CircleSkyRegion" title="regions.CircleSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CircleSkyRegion</span></code></a>)</p></li>
+<li><p>Regions defined using celestial coordinates, and with a spherical
+geometry (a “region-on-celestial-sphere”; e.g., <a class="reference internal" href="api/regions.CircleSphericalSkyRegion.html#regions.CircleSphericalSkyRegion" title="regions.CircleSphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CircleSphericalSkyRegion</span></code></a>)</p></li>
+</ul>
+<p>To transform between (planar) sky and pixel regions, a <a class="reference external" href="https://docs.astropy.org/en/stable/wcs/wcsapi.html">world coordinate system</a> object (e.g.,
+<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.wcs.WCS</span></code></a>) is needed. To transform between spherical and planar (sky or pixel)
+regions, in addition to a <a class="reference external" href="https://docs.astropy.org/en/stable/wcs/wcsapi.html">wcs</a>, it is also
+necessary to specify whether or not boundary distortions should be included
+(capturing the projection effects inherent in projection-to-spherical
+transformations, or the inverse).</p>
+<p>Regions also provides a unified interface for reading, writing,
+parsing, and serializing regions data in different formats, including
+the <a class="reference external" href="http://ds9.si.edu/doc/ref/region.html">DS9 Region Format</a>,
+<a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/image_analysis.html#Region-File-Format">CRTF (CASA Region Text Format)</a>, and <a class="reference external" href="https://fits.gsfc.nasa.gov/registry/region.html">FITS Region Binary Table</a> format.</p>
+</section>
+<section id="coordinates">
+<span id="getting-started-coord"></span><h2>Coordinates<a class="headerlink" href="#coordinates" title="Link to this heading">¶</a></h2>
+<section id="pixel-coordinates">
+<h3>Pixel Coordinates<a class="headerlink" href="#pixel-coordinates" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="api/regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-class docutils literal notranslate"><span class="pre">PixCoord</span></code></a> objects are used to represent pixel
+coordinates. Pixel coordinates are defined with a scalar or an array of
+<code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> Cartesian coordinates:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span>
+<span class="go">PixCoord(x=42, y=43)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span><span class="o">.</span><span class="n">x</span>
+<span class="go">42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span><span class="o">.</span><span class="n">y</span>
+<span class="go">43</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span><span class="o">.</span><span class="n">xy</span>
+<span class="go">(42, 43)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="api/regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a> objects can also represent arrays of pixel
+coordinates. These work in the same way as single-value coordinates, but
+they store multiple coordinates in a single object. Let’s create a 1D
+array of pixel coordinates:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span>
+<span class="go">PixCoord(x=[0 1], y=[2 3])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span><span class="o">.</span><span class="n">x</span>
+<span class="go">array([0, 1])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span><span class="o">.</span><span class="n">y</span>
+<span class="go">array([2, 3])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span><span class="o">.</span><span class="n">xy</span>
+<span class="go">(array([0, 1]), array([2, 3]))</span>
+</pre></div>
+</div>
+<p>Let’s now create a 2D array of pixel coordinates:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]],</span>
+<span class="gp">... </span>                    <span class="n">y</span><span class="o">=</span><span class="p">[[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span>
+<span class="go">PixCoord(x=[[1 2 3]</span>
+<span class="go"> [4 5 6]], y=[[11 12 13]</span>
+<span class="go"> [14 15 16]])</span>
+</pre></div>
+</div>
+</section>
+<section id="sky-coordinates">
+<h3>Sky Coordinates<a class="headerlink" href="#sky-coordinates" title="Link to this heading">¶</a></h3>
+<p><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> objects are used to represent
+sky coordinates. <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> is a very powerful
+class that provides a flexible interface for celestial coordinate
+representation, manipulation, and transformation between systems. See
+the extensive <a class="reference external" href="https://docs.astropy.org/en/stable/coordinates/index.html#astropy-coordinates" title="(in Astropy v7.1)"><span>Astronomical Coordinate Systems (astropy.coordinates)</span></a> documentation for more details.</p>
+<p>Let’s create a single sky coordinate:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skycoord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;galactic&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skycoord</span>
+<span class="go">&lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (42., 43.)&gt;</span>
+</pre></div>
+</div>
+<p>Sky coordinates also support array coordinates. These work in the same
+way as single-value coordinates, but they store multiple coordinates in
+a single object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">skycoord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="n">dec</span><span class="o">=</span><span class="p">[</span><span class="mi">41</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skycoord</span>
+<span class="go">&lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="go">[(10., 41.), (11., 42.), (12., 43.)]&gt;</span>
+</pre></div>
+</div>
+<p>To represent angles both on the sky and in an image,
+<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.Angle.html#astropy.coordinates.Angle" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle</span></code></a> objects or <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a>
+objects with angular units can be used.</p>
+</section>
+<section id="pixel-sky-coordinate-transformations">
+<h3>Pixel/Sky Coordinate Transformations<a class="headerlink" href="#pixel-sky-coordinate-transformations" title="Link to this heading">¶</a></h3>
+<p>To transform between pixel and sky coordinates, a <a class="reference external" href="https://docs.astropy.org/en/stable/wcs/wcsapi.html">world coordinate system</a> object (e.g.,
+<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.wcs.WCS</span></code></a>) is needed.</p>
+<p>Let’s start by creating a WCS object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_example_dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">make_example_dataset</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;simulated&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">wcs</span>
+</pre></div>
+</div>
+<p>Now let’s use this WCS to convert between sky and pixel coordinates:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">skycoord</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;galactic&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="o">.</span><span class="n">from_sky</span><span class="p">(</span><span class="n">skycoord</span><span class="o">=</span><span class="n">skycoord</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="n">wcs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span>
+<span class="go">PixCoord(x=146.2575703393558, y=131.5998051082584)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pixcoord</span><span class="o">.</span><span class="n">to_sky</span><span class="p">(</span><span class="n">wcs</span><span class="o">=</span><span class="n">wcs</span><span class="p">)</span>
+<span class="go">&lt;SkyCoord (Galactic): (l, b) in deg</span>
+<span class="go">    (42., 43.)&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="pixel-regions">
+<h2>Pixel Regions<a class="headerlink" href="#pixel-regions" title="Link to this heading">¶</a></h2>
+<p>Pixel regions are regions that are defined using pixel coordinates and
+sizes in pixels. The regions package provides a set of “pixel-based”
+regions classes, for example, <a class="reference internal" href="api/regions.CirclePixelRegion.html#regions.CirclePixelRegion" title="regions.CirclePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CirclePixelRegion</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span><span class="p">,</span> <span class="n">CirclePixelRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">center</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radius</span> <span class="o">=</span> <span class="mf">4.2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span> <span class="o">=</span> <span class="n">CirclePixelRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can print the region to get some information about its properties:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+<span class="go">Region: CirclePixelRegion</span>
+<span class="go">center: PixCoord(x=42, y=43)</span>
+<span class="go">radius: 4.2</span>
+</pre></div>
+</div>
+<p>You can access its properties via attributes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">region</span><span class="o">.</span><span class="n">center</span>
+<span class="go">PixCoord(x=42, y=43)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span><span class="o">.</span><span class="n">radius</span>
+<span class="go">4.2</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="shapes.html#shapes"><span class="std std-ref">Region Shapes</span></a> documentation for the complete list of pixel-based
+regions and to learn more about <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a> objects and
+their capabilities.</p>
+</section>
+<section id="sky-regions">
+<h2>Sky Regions<a class="headerlink" href="#sky-regions" title="Link to this heading">¶</a></h2>
+<p>Sky regions are regions that are defined using celestial coordinates.
+Please note they are <strong>not</strong> defined as regions on the celestial sphere,
+but rather are meant to represent shapes on an image (“region-on-image”).
+They simply use sky coordinates instead of pixel coordinates to define
+their position. The remaining shape parameters are converted to pixels
+using the pixel scale of the image.</p>
+<p>Let’s create a sky region:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSkyRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">center</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radius</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span> <span class="o">=</span> <span class="n">CircleSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, one can define the radius using a
+<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a> object with angular units:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSkyRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">center</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radius</span> <span class="o">=</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span> <span class="o">=</span> <span class="n">CircleSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can print the region to get some information about its properties:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+<span class="go">Region: CircleSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="go">    (42., 43.)&gt;</span>
+<span class="go">radius: 3.0 deg</span>
+</pre></div>
+</div>
+<p>You can access its properties via attributes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">region</span><span class="o">.</span><span class="n">center</span>
+<span class="go"> &lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="go">     (42., 43.)&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span><span class="o">.</span><span class="n">radius</span>
+<span class="go">&lt;Quantity 3. deg&gt;</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="shapes.html#shapes"><span class="std std-ref">Region Shapes</span></a> documentation for the complete list of pixel-based
+regions and to learn more about <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a> objects and
+their capabilities.</p>
+</section>
+<section id="spherical-sky-regions">
+<h2>Spherical Sky Regions<a class="headerlink" href="#spherical-sky-regions" title="Link to this heading">¶</a></h2>
+<p>Spherical sky regions are defined using celestial coordinates,
+and <strong>are</strong> defined as regions on the celestial sphere
+(“regions-on-celestial-sphere”, in contrast to the planar Sky Regions).
+In order to transform between spherical and planar (“region-on-image”) regions,
+the planar projection (encoded in a <a class="reference external" href="https://docs.astropy.org/en/stable/wcs/wcsapi.html">world coordinate system</a> object; e.g.,
+<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.wcs.WCS</span></code></a>) must be specified, along with a specification of
+whether or not boundary distortions should be included.
+These distortions (implemented through discrete boundary sampling)
+capture the impact of the spherical-to-planar (or vice versa) projection.
+However, it is possible to ignore these distortions (e.g.,
+transforming a spherical circle to a planar circle).</p>
+<p>Spherical sky regions are created using celestial coordinates (as
+<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a>) and angular distances,
+for instance specified as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSphericalSkyRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">center</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radius</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, one can define the radius using a
+<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a> object with angular units:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSphericalSkyRegion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">center</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">radius</span> <span class="o">=</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span> <span class="o">=</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can print the region to get some information about its properties:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+<span class="go">Region: CircleSphericalSkyRegion</span>
+<span class="go">center: &lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="go">    (42., 43.)&gt;</span>
+<span class="go">radius: 3.0 deg</span>
+</pre></div>
+</div>
+<p>You can access its properties via attributes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">region</span><span class="o">.</span><span class="n">center</span>
+<span class="go"> &lt;SkyCoord (ICRS): (ra, dec) in deg</span>
+<span class="go">     (42., 43.)&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">region</span><span class="o">.</span><span class="n">radius</span>
+<span class="go">&lt;Quantity 3. deg&gt;</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="shapes.html#shapes"><span class="std std-ref">Region Shapes</span></a> documentation for the complete list of pixel-based
+regions and to learn more about <a class="reference internal" href="api/regions.Region.html#regions.Region" title="regions.Region"><code class="xref py py-class docutils literal notranslate"><span class="pre">Region</span></code></a> objects and
+their capabilities.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#coordinates">Coordinates</a><ul>
+<li><a class="reference internal" href="#pixel-coordinates">Pixel Coordinates</a></li>
+<li><a class="reference internal" href="#sky-coordinates">Sky Coordinates</a></li>
+<li><a class="reference internal" href="#pixel-sky-coordinate-transformations">Pixel/Sky Coordinate Transformations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pixel-regions">Pixel Regions</a></li>
+<li><a class="reference internal" href="#sky-regions">Sky Regions</a></li>
+<li><a class="reference internal" href="#spherical-sky-regions">Spherical Sky Regions</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/getting_started.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

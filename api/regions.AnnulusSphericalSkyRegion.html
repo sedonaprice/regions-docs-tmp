@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>AnnulusSphericalSkyRegion &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="AsymmetricAnnulusPixelRegion" href="regions.AsymmetricAnnulusPixelRegion.html" />
+    <link rel="prev" title="AnnulusPixelRegion" href="regions.AnnulusPixelRegion.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.AsymmetricAnnulusPixelRegion.html" title="AsymmetricAnnulusPixelRegion">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.AnnulusPixelRegion.html" title="AnnulusPixelRegion">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>AnnulusSphericalSkyRegion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="annulussphericalskyregion">
+<h1>AnnulusSphericalSkyRegion<a class="headerlink" href="#annulussphericalskyregion" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.AnnulusSphericalSkyRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">AnnulusSphericalSkyRegion</span></span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#AnnulusSphericalSkyRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.AnnulusSphericalSkyRegion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.core.core.SphericalSkyRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>A base class for spherical sky annulus regions.</p>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.AnnulusSphericalSkyRegion.bounding_circle" title="regions.AnnulusSphericalSkyRegion.bounding_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_circle</span></code></a></p></td>
+<td><p>Bounding circle for the spherical sky region.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.AnnulusSphericalSkyRegion.bounding_lonlat" title="regions.AnnulusSphericalSkyRegion.bounding_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_lonlat</span></code></a></p></td>
+<td><p>Bounding longitude and latitude of the spherical sky region, in the region's frame.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.AnnulusSphericalSkyRegion.frame" title="regions.AnnulusSphericalSkyRegion.frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame</span></code></a></p></td>
+<td><p>Coordinate frame of the region.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.AnnulusSphericalSkyRegion.contains" title="regions.AnnulusSphericalSkyRegion.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code></a>(coord)</p></td>
+<td><p>Check whether a sky coordinate falls inside the spherical sky region.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AnnulusSphericalSkyRegion.bounding_circle">
+<span class="sig-name descname"><span class="pre">bounding_circle</span></span><a class="headerlink" href="#regions.AnnulusSphericalSkyRegion.bounding_circle" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AnnulusSphericalSkyRegion.bounding_lonlat">
+<span class="sig-name descname"><span class="pre">bounding_lonlat</span></span><a class="headerlink" href="#regions.AnnulusSphericalSkyRegion.bounding_lonlat" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.AnnulusSphericalSkyRegion.frame">
+<span class="sig-name descname"><span class="pre">frame</span></span><a class="headerlink" href="#regions.AnnulusSphericalSkyRegion.frame" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.AnnulusSphericalSkyRegion.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#AnnulusSphericalSkyRegion.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.AnnulusSphericalSkyRegion.contains" title="Link to this definition">¶</a></dt>
+<dd><p>Check whether a sky coordinate falls inside the spherical sky
+region.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>coord</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a></span></dt><dd><p>The position or positions to check.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">AnnulusSphericalSkyRegion</a><ul>
+<li><a class="reference internal" href="#regions.AnnulusSphericalSkyRegion"><code class="docutils literal notranslate"><span class="pre">AnnulusSphericalSkyRegion</span></code></a><ul>
+<li><a class="reference internal" href="#regions.AnnulusSphericalSkyRegion.bounding_circle"><code class="docutils literal notranslate"><span class="pre">AnnulusSphericalSkyRegion.bounding_circle</span></code></a></li>
+<li><a class="reference internal" href="#regions.AnnulusSphericalSkyRegion.bounding_lonlat"><code class="docutils literal notranslate"><span class="pre">AnnulusSphericalSkyRegion.bounding_lonlat</span></code></a></li>
+<li><a class="reference internal" href="#regions.AnnulusSphericalSkyRegion.frame"><code class="docutils literal notranslate"><span class="pre">AnnulusSphericalSkyRegion.frame</span></code></a></li>
+<li><a class="reference internal" href="#regions.AnnulusSphericalSkyRegion.contains"><code class="docutils literal notranslate"><span class="pre">AnnulusSphericalSkyRegion.contains()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.AnnulusSphericalSkyRegion.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

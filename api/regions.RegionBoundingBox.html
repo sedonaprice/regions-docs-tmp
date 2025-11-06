@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>RegionBoundingBox &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="RegionMask" href="regions.RegionMask.html" />
+    <link rel="prev" title="Region" href="regions.Region.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.RegionMask.html" title="RegionMask">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.Region.html" title="Region">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>RegionBoundingBox</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="regionboundingbox">
+<h1>RegionBoundingBox<a class="headerlink" href="#regionboundingbox" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">RegionBoundingBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ixmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ixmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iymin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iymax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/bounding_box.html#RegionBoundingBox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionBoundingBox" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A rectangular bounding box in integer (not float) pixel indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ixmin, ixmax, iymin, iymax</strong><span class="classifier">int</span></dt><dd><p>The bounding box pixel indices.  Note that the upper values
+(<code class="docutils literal notranslate"><span class="pre">iymax</span></code> and <code class="docutils literal notranslate"><span class="pre">ixmax</span></code>) are exclusive as for normal slices in
+Python.  The lower values (<code class="docutils literal notranslate"><span class="pre">ixmin</span></code> and <code class="docutils literal notranslate"><span class="pre">iymin</span></code>) must not be
+greater than the respective upper values (<code class="docutils literal notranslate"><span class="pre">ixmax</span></code> and
+<code class="docutils literal notranslate"><span class="pre">iymax</span></code>).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionBoundingBox</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># constructing a RegionBoundingBox like this is cryptic:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span> <span class="o">=</span> <span class="n">RegionBoundingBox</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># it&#39;s better to use keyword arguments for readability:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span> <span class="o">=</span> <span class="n">RegionBoundingBox</span><span class="p">(</span><span class="n">ixmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ixmax</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">iymin</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">iymax</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span>  <span class="c1"># nice repr, useful for interactive work</span>
+<span class="go">RegionBoundingBox(ixmin=1, ixmax=10, iymin=2, iymax=20)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># sometimes it&#39;s useful to check if two bounding boxes are the same</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span> <span class="o">==</span> <span class="n">RegionBoundingBox</span><span class="p">(</span><span class="n">ixmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ixmax</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">iymin</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">iymax</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span> <span class="o">==</span> <span class="n">RegionBoundingBox</span><span class="p">(</span><span class="n">ixmin</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">ixmax</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">iymin</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">iymax</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># &quot;center&quot; and &quot;shape&quot; can be useful when working with numpy arrays</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span><span class="o">.</span><span class="n">center</span>  <span class="c1"># numpy order: (y, x)</span>
+<span class="go">(10.5, 5.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span><span class="o">.</span><span class="n">shape</span>  <span class="c1"># numpy order: (y, x)</span>
+<span class="go">(18, 9)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># &quot;extent&quot; is useful when plotting the RegionBoundingBox with</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># matplotlib</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bbox</span><span class="o">.</span><span class="n">extent</span>  <span class="c1"># matplotlib order: (x, y)</span>
+<span class="go">(0.5, 9.5, 1.5, 19.5)</span>
+</pre></div>
+</div>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.center" title="regions.RegionBoundingBox.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">(y,</span> <span class="pre">x)</span></code> center of the bounding box.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.extent" title="regions.RegionBoundingBox.extent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extent</span></code></a></p></td>
+<td><p>The extent of the mask, defined as the <code class="docutils literal notranslate"><span class="pre">(xmin,</span> <span class="pre">xmax,</span> <span class="pre">ymin,</span> <span class="pre">ymax)</span></code> bounding box from the bottom-left corner of the lower- left pixel to the upper-right corner of the upper-right pixel.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.shape" title="regions.RegionBoundingBox.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">(ny,</span> <span class="pre">nx)</span></code> shape of the bounding box.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.as_artist" title="regions.RegionBoundingBox.as_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_artist</span></code></a>(**kwargs)</p></td>
+<td><p>Return a <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Rectangle.html#matplotlib.patches.Rectangle" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.Rectangle</span></code></a> that represents the bounding box.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.from_float" title="regions.RegionBoundingBox.from_float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_float</span></code></a>(xmin, xmax, ymin, ymax)</p></td>
+<td><p>Return the smallest bounding box that fully contains a given rectangle defined by float coordinate values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.get_overlap_slices" title="regions.RegionBoundingBox.get_overlap_slices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_overlap_slices</span></code></a>(shape)</p></td>
+<td><p>Get slices for the overlapping part of the bounding box and an 2D array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.intersection" title="regions.RegionBoundingBox.intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code></a>(other)</p></td>
+<td><p>Return a <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> representing the intersection of this <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> with another <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.plot" title="regions.RegionBoundingBox.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([origin, ax])</p></td>
+<td><p>Plot the <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> on a matplotlib <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Axes</span></code></a> instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.to_region" title="regions.RegionBoundingBox.to_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_region</span></code></a>()</p></td>
+<td><p>Return a <a class="reference internal" href="regions.RectanglePixelRegion.html#regions.RectanglePixelRegion" title="regions.RectanglePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectanglePixelRegion</span></code></a> that represents the bounding box.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.RegionBoundingBox.union" title="regions.RegionBoundingBox.union"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union</span></code></a>(other)</p></td>
+<td><p>Return a <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> representing the union of this <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> with another <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.center">
+<span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#regions.RegionBoundingBox.center" title="Link to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">(y,</span> <span class="pre">x)</span></code> center of the bounding box.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.extent">
+<span class="sig-name descname"><span class="pre">extent</span></span><a class="headerlink" href="#regions.RegionBoundingBox.extent" title="Link to this definition">¶</a></dt>
+<dd><p>The extent of the mask, defined as the <code class="docutils literal notranslate"><span class="pre">(xmin,</span> <span class="pre">xmax,</span> <span class="pre">ymin,</span>
+<span class="pre">ymax)</span></code> bounding box from the bottom-left corner of the lower-
+left pixel to the upper-right corner of the upper-right pixel.</p>
+<p>The upper edges here are the actual pixel positions of the
+edges, i.e., they are not “exclusive” indices used for python
+indexing. This is useful for plotting the bounding box using
+Matplotlib.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.shape">
+<span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#regions.RegionBoundingBox.shape" title="Link to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">(ny,</span> <span class="pre">nx)</span></code> shape of the bounding box.</p>
+</dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.as_artist">
+<span class="sig-name descname"><span class="pre">as_artist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/bounding_box.html#RegionBoundingBox.as_artist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionBoundingBox.as_artist" title="Link to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Rectangle.html#matplotlib.patches.Rectangle" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.Rectangle</span></code></a> that represents the
+bounding box.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Any keyword arguments accepted by
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Patch.html#matplotlib.patches.Patch" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.Patch</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>result</strong><span class="classifier"><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Rectangle.html#matplotlib.patches.Rectangle" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.Rectangle</span></code></a></span></dt><dd><p>A matplotlib rectangular patch.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionBoundingBox</span>
+<span class="n">bbox</span> <span class="o">=</span> <span class="n">RegionBoundingBox</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+          <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">as_artist</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
+             <span class="n">lw</span><span class="o">=</span><span class="mf">2.</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/b475070993a67adc763bc80ed4c553e4/regions-RegionBoundingBox-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/26677c9ffb0125b6c63cae8d70958671/regions-RegionBoundingBox-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/4e4422b9468dc6893a66bce611952010/regions-RegionBoundingBox-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/1eba7332d9ecb378710c4391a9fa748e/regions-RegionBoundingBox-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="../_downloads/5476174d09431a61ff1457756f0749f5/regions-RegionBoundingBox-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/regions-RegionBoundingBox-1.png" class="plot-directive" src="../_images/regions-RegionBoundingBox-1.png" />
+</figure>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.from_float">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/bounding_box.html#RegionBoundingBox.from_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionBoundingBox.from_float" title="Link to this definition">¶</a></dt>
+<dd><p>Return the smallest bounding box that fully contains a given
+rectangle defined by float coordinate values.</p>
+<p>Following the pixel index convention, an integer index
+corresponds to the center of a pixel and the pixel edges span
+from (index - 0.5) to (index + 0.5).  For example, the pixel
+edge spans of the following pixels are:</p>
+<ul class="simple">
+<li><p>pixel 0: from -0.5 to 0.5</p></li>
+<li><p>pixel 1: from 0.5 to 1.5</p></li>
+<li><p>pixel 2: from 1.5 to 2.5</p></li>
+</ul>
+<p>In addition, because <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> upper limits are
+exclusive (by definition), 1 is added to the upper pixel edges.
+See examples below.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>xmin, xmax, ymin, ymax</strong><span class="classifier">float</span></dt><dd><p>Float coordinates defining a rectangle.  The lower values
+(<code class="docutils literal notranslate"><span class="pre">xmin</span></code> and <code class="docutils literal notranslate"><span class="pre">ymin</span></code>) must not be greater than the
+respective upper values (<code class="docutils literal notranslate"><span class="pre">xmax</span></code> and <code class="docutils literal notranslate"><span class="pre">ymax</span></code>).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>bbox</strong><span class="classifier"><a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> object</span></dt><dd><p>The minimal <code class="docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code> object fully containing
+the input rectangle coordinates.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionBoundingBox</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RegionBoundingBox</span><span class="o">.</span><span class="n">from_float</span><span class="p">(</span><span class="n">xmin</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+<span class="gp">... </span>                             <span class="n">ymin</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+<span class="go">RegionBoundingBox(ixmin=1, ixmax=11, iymin=2, iymax=21)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RegionBoundingBox</span><span class="o">.</span><span class="n">from_float</span><span class="p">(</span><span class="n">xmin</span><span class="o">=</span><span class="mf">1.4</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">10.4</span><span class="p">,</span>
+<span class="gp">... </span>                             <span class="n">ymin</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="mf">10.6</span><span class="p">)</span>
+<span class="go">RegionBoundingBox(ixmin=1, ixmax=11, iymin=2, iymax=12)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.get_overlap_slices">
+<span class="sig-name descname"><span class="pre">get_overlap_slices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/bounding_box.html#RegionBoundingBox.get_overlap_slices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionBoundingBox.get_overlap_slices" title="Link to this definition">¶</a></dt>
+<dd><p>Get slices for the overlapping part of the bounding box and an
+2D array.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">2-tuple of int</span></dt><dd><p>The shape of the 2D array.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>slices_large</strong><span class="classifier">tuple of slices or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></dt><dd><p>A tuple of slice objects for each axis of the large array,
+such that <code class="docutils literal notranslate"><span class="pre">large_array[slices_large]</span></code> extracts the region
+of the large array that overlaps with the small array.
+<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a> is returned if there is no overlap of the bounding
+box with the given image shape.</p>
+</dd>
+<dt><strong>slices_small</strong><span class="classifier">tuple of slices or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></dt><dd><p>A tuple of slice objects for each axis of an array enclosed
+by the bounding box such that <code class="docutils literal notranslate"><span class="pre">small_array[slices_small]</span></code>
+extracts the region that is inside the large array. <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>
+is returned if there is no overlap of the bounding box with
+the given image shape.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.intersection">
+<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/bounding_box.html#RegionBoundingBox.intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionBoundingBox.intersection" title="Link to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> representing the intersection of
+this <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> with another <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a></span></dt><dd><p>The <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> to intersect with this one.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>result</strong><span class="classifier"><a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a></span></dt><dd><p>A <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> representing the intersection of the
+input <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> with this one.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/bounding_box.html#RegionBoundingBox.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionBoundingBox.plot" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> on a matplotlib
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Axes</span></code></a> instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>origin</strong><span class="classifier">array_like, optional</span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> position of the origin of the displayed
+image.</p>
+</dd>
+<dt><strong>ax</strong><span class="classifier"><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>, optional</span></dt><dd><p>If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, then the current <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Axes</span></code></a> instance
+is used.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Any keyword arguments accepted by <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Patch.html#matplotlib.patches.Patch" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.Patch</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>patch</strong><span class="classifier"><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.Patch.html#matplotlib.patches.Patch" title="(in Matplotlib v3.10.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.patches.Patch</span></code></a></span></dt><dd><p>The matplotlib patch object for the plotted bounding box.
+The patch can be used, for example, when adding a plot
+legend.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.to_region">
+<span class="sig-name descname"><span class="pre">to_region</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/bounding_box.html#RegionBoundingBox.to_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionBoundingBox.to_region" title="Link to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="regions.RectanglePixelRegion.html#regions.RectanglePixelRegion" title="regions.RectanglePixelRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RectanglePixelRegion</span></code></a> that represents the
+bounding box.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.RegionBoundingBox.union">
+<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/core/bounding_box.html#RegionBoundingBox.union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.RegionBoundingBox.union" title="Link to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> representing the union of this
+<a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> with another <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a></span></dt><dd><p>The <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> to join with this one.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>result</strong><span class="classifier"><a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a></span></dt><dd><p>A <a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> representing the union of the input
+<a class="reference internal" href="#regions.RegionBoundingBox" title="regions.RegionBoundingBox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a> with this one.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">RegionBoundingBox</a><ul>
+<li><a class="reference internal" href="#regions.RegionBoundingBox"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox</span></code></a><ul>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.center"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.center</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.extent"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.extent</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.shape"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.shape</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.as_artist"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.as_artist()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.from_float"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.from_float()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.get_overlap_slices"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.get_overlap_slices()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.intersection"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.intersection()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.plot"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.plot()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.to_region"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.to_region()</span></code></a></li>
+<li><a class="reference internal" href="#regions.RegionBoundingBox.union"><code class="docutils literal notranslate"><span class="pre">RegionBoundingBox.union()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.RegionBoundingBox.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

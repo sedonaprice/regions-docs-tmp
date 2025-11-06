@@ -1,0 +1,53 @@
+RangeSphericalSkyRegion
+=======================
+
+.. currentmodule:: regions
+
+.. autoclass:: RangeSphericalSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~RangeSphericalSkyRegion.bounding_circle
+      ~RangeSphericalSkyRegion.bounding_lonlat
+      ~RangeSphericalSkyRegion.centroid
+      ~RangeSphericalSkyRegion.centroid_avg
+      ~RangeSphericalSkyRegion.centroid_mindist
+      ~RangeSphericalSkyRegion.latitude_bounds
+      ~RangeSphericalSkyRegion.latitude_range
+      ~RangeSphericalSkyRegion.longitude_bounds
+      ~RangeSphericalSkyRegion.longitude_range
+      ~RangeSphericalSkyRegion.vertices
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~RangeSphericalSkyRegion.contains
+      ~RangeSphericalSkyRegion.discretize_boundary
+      ~RangeSphericalSkyRegion.to_pixel
+      ~RangeSphericalSkyRegion.to_sky
+      ~RangeSphericalSkyRegion.transform_to
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: bounding_circle
+   .. autoattribute:: bounding_lonlat
+   .. autoattribute:: centroid
+   .. autoattribute:: centroid_avg
+   .. autoattribute:: centroid_mindist
+   .. autoattribute:: latitude_bounds
+   .. autoattribute:: latitude_range
+   .. autoattribute:: longitude_bounds
+   .. autoattribute:: longitude_range
+   .. autoattribute:: vertices
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
+   .. automethod:: discretize_boundary
+   .. automethod:: to_pixel
+   .. automethod:: to_sky
+   .. automethod:: transform_to

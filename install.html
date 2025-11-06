@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Installation &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=975a8924"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="icon" href="_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="getting_started.html" />
+    <link rel="prev" title="Astropy Regions" href="index.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="getting_started.html" title="Getting Started">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="index.html" title="Astropy Regions">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      
+      <li>Installation</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h2>
+<p>Regions has the following strict requirements:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.11 or later</p></li>
+<li><p><a class="reference external" href="https://numpy.org/">NumPy</a> 1.25 or later</p></li>
+<li><p><a class="reference external" href="https://www.astropy.org">Astropy</a> 6.0 or later</p></li>
+</ul>
+<p>Region also optionally depends on other packages for some features:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://matplotlib.org/">Matplotlib</a> 3.8 or later</p></li>
+</ul>
+</section>
+<section id="installing-the-latest-released-version">
+<h2>Installing the latest released version<a class="headerlink" href="#installing-the-latest-released-version" title="Link to this heading">¶</a></h2>
+<section id="using-pip">
+<h3>Using pip<a class="headerlink" href="#using-pip" title="Link to this heading">¶</a></h3>
+<p>To install Regions with <a class="reference external" href="https://pip.pypa.io/en/latest/">pip</a>, run:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">regions</span>
+</pre></div>
+</div>
+<p>If you want to install Regions along with all of its optional
+dependencies, you can instead do:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="s2">&quot;regions[all]&quot;</span>
+</pre></div>
+</div>
+<p>In most cases, this will install a pre-compiled version (called a
+wheel) of Regions, but if you are using a very recent version of Python
+or if you are installing Regions on a platform that is not common,
+Regions will be installed from a source file. In this case you will
+need a C compiler (e.g., <code class="docutils literal notranslate"><span class="pre">gcc</span></code> or <code class="docutils literal notranslate"><span class="pre">clang</span></code>) to be installed for the
+installation to succeed (see <a class="reference internal" href="#building-source"><span class="std std-ref">Building from Source</span></a> prerequisites).</p>
+</section>
+<section id="using-conda">
+<h3>Using conda<a class="headerlink" href="#using-conda" title="Link to this heading">¶</a></h3>
+<p>Regions can also be installed using the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager.
+There are several methods for installing <code class="docutils literal notranslate"><span class="pre">conda</span></code> and many different
+ways to set up your Python environment, but that is beyond the
+scope of this documentation. We recommend installing <a class="reference external" href="https://github.com/conda-forge/miniforge">miniforge</a>.</p>
+<p>Once you have installed <code class="docutils literal notranslate"><span class="pre">conda</span></code>, you can install Regions using the
+<code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">regions</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="building-from-source">
+<span id="building-source"></span><h2>Building from Source<a class="headerlink" href="#building-from-source" title="Link to this heading">¶</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h3>
+<p>You will need a compiler suite and the development headers for Python
+and Numpy in order to build Regions from the source distribution. You
+do not need to install any other specific build dependencies (such as
+Cython) since these will be automatically installed into a temporary
+build environment by <a class="reference external" href="https://pip.pypa.io/en/latest/">pip</a>.</p>
+<p>On Linux, using the package manager for your distribution will usually be
+the easiest route.</p>
+<p>On MacOS X you will need the <a class="reference external" href="https://developer.apple.com/xcode/">XCode</a> command-line tools, which can be
+installed using:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">xcode</span><span class="o">-</span><span class="n">select</span> <span class="o">--</span><span class="n">install</span>
+</pre></div>
+</div>
+<p>Follow the onscreen instructions to install the command-line tools
+required.  Note that you do not need to install the full <a class="reference external" href="https://developer.apple.com/xcode/">XCode</a>
+distribution (assuming you are using MacOS X 10.9 or later).</p>
+</section>
+<section id="installing-the-development-version">
+<h3>Installing the development version<a class="headerlink" href="#installing-the-development-version" title="Link to this heading">¶</a></h3>
+<p>Regions is being developed on <a class="reference external" href="https://github.com/astropy/regions">GitHub</a>. The latest development version
+of the Regions source code can be retrieved using git:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">astropy</span><span class="o">/</span><span class="n">regions</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>Then to build and install Regions (with all of its optional
+dependencies), run:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">regions</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="s2">&quot;.[all]&quot;</span>
+</pre></div>
+</div>
+<p>Alternatively, <a class="reference external" href="https://pip.pypa.io/en/latest/">pip</a> can be used to retrieve, build, and install the
+latest development version from <a class="reference external" href="https://github.com/astropy/regions">GitHub</a>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="s2">&quot;git+https://github.com/astropy/regions.git#egg=regions[all]&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-an-installed-regions">
+<h2>Testing an installed Regions<a class="headerlink" href="#testing-an-installed-regions" title="Link to this heading">¶</a></h2>
+<p>To test your installed version of Regions, you can run the test suite
+using the <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a> command. Running the test suite requires installing
+the <a class="reference external" href="https://github.com/astropy/pytest-astropy">pytest-astropy</a> (0.11
+or later) package.</p>
+<p>To run the test suite, use the following command:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">--</span><span class="n">pyargs</span> <span class="n">regions</span>
+</pre></div>
+</div>
+<p>Any test failures can be reported to the <a class="reference external" href="https://github.com/astropy/regions/issues">Regions issue tracker</a>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#installing-the-latest-released-version">Installing the latest released version</a><ul>
+<li><a class="reference internal" href="#using-pip">Using pip</a></li>
+<li><a class="reference internal" href="#using-conda">Using conda</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building-from-source">Building from Source</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#installing-the-development-version">Installing the development version</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing-an-installed-regions">Testing an installed Regions</a></li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/install.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

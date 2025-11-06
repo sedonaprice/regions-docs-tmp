@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>EllipseAnnulusPixelRegion &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="icon" href="../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="EllipseAnnulusSkyRegion" href="regions.EllipseAnnulusSkyRegion.html" />
+    <link rel="prev" title="CompoundSphericalSkyRegion" href="regions.CompoundSphericalSkyRegion.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="regions.EllipseAnnulusSkyRegion.html" title="EllipseAnnulusSkyRegion">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="regions.CompoundSphericalSkyRegion.html" title="CompoundSphericalSkyRegion">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">Reference/API</a> &#187;</li>
+      
+      <li>EllipseAnnulusPixelRegion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ellipseannuluspixelregion">
+<h1>EllipseAnnulusPixelRegion<a class="headerlink" href="#ellipseannuluspixelregion" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regions.EllipseAnnulusPixelRegion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regions.</span></span><span class="sig-name descname"><span class="pre">EllipseAnnulusPixelRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outer_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outer_height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle=&lt;Quantity</span> <span class="pre">0.</span> <span class="pre">deg&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visual=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#EllipseAnnulusPixelRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.EllipseAnnulusPixelRegion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="regions.AsymmetricAnnulusPixelRegion.html#regions.AsymmetricAnnulusPixelRegion" title="regions.shapes.annulus.AsymmetricAnnulusPixelRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsymmetricAnnulusPixelRegion</span></code></a></p>
+<p>A elliptical annulus in pixel coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>center</strong><span class="classifier"><a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a></span></dt><dd><p>The position of the center of the elliptical annulus.</p>
+</dd>
+<dt><strong>inner_width</strong><span class="classifier">float</span></dt><dd><p>The inner width of the elliptical annulus (before rotation) in
+pixels.</p>
+</dd>
+<dt><strong>outer_width</strong><span class="classifier">float</span></dt><dd><p>The outer width of the elliptical annulus (before rotation) in
+pixels.</p>
+</dd>
+<dt><strong>inner_height</strong><span class="classifier">float</span></dt><dd><p>The inner height of the elliptical annulus (before rotation) in
+pixels.</p>
+</dd>
+<dt><strong>outer_height</strong><span class="classifier">float</span></dt><dd><p>The outer height of the elliptical annulus (before rotation) in
+pixels.</p>
+</dd>
+<dt><strong>angle</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a>, optional</span></dt><dd><p>The rotation angle of the elliptical annulus, measured
+anti-clockwise. If set to zero (the default), the width axis is
+lined up with the x axis.</p>
+</dd>
+<dt><strong>meta</strong><span class="classifier"><a class="reference internal" href="regions.RegionMeta.html#regions.RegionMeta" title="regions.RegionMeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionMeta</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the meta attributes of the region.</p>
+</dd>
+<dt><strong>visual</strong><span class="classifier"><a class="reference internal" href="regions.RegionVisual.html#regions.RegionVisual" title="regions.RegionVisual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegionVisual</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, optional</span></dt><dd><p>A dictionary that stores the visual meta attributes of the
+region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span><span class="p">,</span> <span class="n">EllipseAnnulusPixelRegion</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">reg</span> <span class="o">=</span> <span class="n">EllipseAnnulusPixelRegion</span><span class="p">(</span><span class="n">PixCoord</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+                                <span class="n">inner_width</span><span class="o">=</span><span class="mf">5.5</span><span class="p">,</span>
+                                <span class="n">outer_width</span><span class="o">=</span><span class="mf">8.5</span><span class="p">,</span>
+                                <span class="n">inner_height</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
+                                <span class="n">outer_height</span><span class="o">=</span><span class="mf">6.5</span><span class="p">,</span>
+                                <span class="n">angle</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="s1">&#39;45deg&#39;</span><span class="p">))</span>
+<span class="n">patch</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Ellipse Annulus&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="p">(</span><span class="n">patch</span><span class="p">,),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/37805da6d41034e9b71c5453e9b35f25/regions-EllipseAnnulusPixelRegion-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/340e33223b5c0130e3f5480c68ea722d/regions-EllipseAnnulusPixelRegion-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/093f83299c472213597a5dea3604f1b0/regions-EllipseAnnulusPixelRegion-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/692c1c143e0ee4fb65c362f549ef0f38/regions-EllipseAnnulusPixelRegion-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>, <a class="reference download internal" download="" href="../_downloads/8e7ac09e423ed1448e60a04ebd04048c/regions-EllipseAnnulusPixelRegion-1.svg"><code class="xref download docutils literal notranslate"><span class="pre">svg</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/regions-EllipseAnnulusPixelRegion-1.png" class="plot-directive" src="../_images/regions-EllipseAnnulusPixelRegion-1.png" />
+</figure>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.angle" title="regions.EllipseAnnulusPixelRegion.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a></p></td>
+<td><p>The rotation angle measured anti-clockwise as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.center" title="regions.EllipseAnnulusPixelRegion.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
+<td><p>The center pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.inner_height" title="regions.EllipseAnnulusPixelRegion.inner_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner_height</span></code></a></p></td>
+<td><p>The inner height (before rotation) in pixels as a float.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.inner_width" title="regions.EllipseAnnulusPixelRegion.inner_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner_width</span></code></a></p></td>
+<td><p>The inner width (before rotation) in pixels as a float.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.outer_height" title="regions.EllipseAnnulusPixelRegion.outer_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer_height</span></code></a></p></td>
+<td><p>The outer height (before rotation) in pixels as a float.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.outer_width" title="regions.EllipseAnnulusPixelRegion.outer_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer_width</span></code></a></p></td>
+<td><p>The outer width (before rotation) in pixels as a float.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.to_sky" title="regions.EllipseAnnulusPixelRegion.to_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_sky</span></code></a>(wcs)</p></td>
+<td><p>Return a region defined in sky coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.to_spherical_sky" title="regions.EllipseAnnulusPixelRegion.to_spherical_sky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_spherical_sky</span></code></a>([wcs, ...])</p></td>
+<td><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a> instance.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.EllipseAnnulusPixelRegion.angle">
+<span class="sig-name descname"><span class="pre">angle</span></span><a class="headerlink" href="#regions.EllipseAnnulusPixelRegion.angle" title="Link to this definition">¶</a></dt>
+<dd><p>The rotation angle measured anti-clockwise as a <a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a> angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.EllipseAnnulusPixelRegion.center">
+<span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#regions.EllipseAnnulusPixelRegion.center" title="Link to this definition">¶</a></dt>
+<dd><p>The center pixel position as a <a class="reference internal" href="regions.PixCoord.html#regions.PixCoord" title="regions.PixCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PixCoord</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.EllipseAnnulusPixelRegion.inner_height">
+<span class="sig-name descname"><span class="pre">inner_height</span></span><a class="headerlink" href="#regions.EllipseAnnulusPixelRegion.inner_height" title="Link to this definition">¶</a></dt>
+<dd><p>The inner height (before rotation) in pixels as a float.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.EllipseAnnulusPixelRegion.inner_width">
+<span class="sig-name descname"><span class="pre">inner_width</span></span><a class="headerlink" href="#regions.EllipseAnnulusPixelRegion.inner_width" title="Link to this definition">¶</a></dt>
+<dd><p>The inner width (before rotation) in pixels as a float.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.EllipseAnnulusPixelRegion.outer_height">
+<span class="sig-name descname"><span class="pre">outer_height</span></span><a class="headerlink" href="#regions.EllipseAnnulusPixelRegion.outer_height" title="Link to this definition">¶</a></dt>
+<dd><p>The outer height (before rotation) in pixels as a float.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="regions.EllipseAnnulusPixelRegion.outer_width">
+<span class="sig-name descname"><span class="pre">outer_width</span></span><a class="headerlink" href="#regions.EllipseAnnulusPixelRegion.outer_width" title="Link to this definition">¶</a></dt>
+<dd><p>The outer width (before rotation) in pixels as a float.</p>
+</dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.EllipseAnnulusPixelRegion.to_sky">
+<span class="sig-name descname"><span class="pre">to_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#EllipseAnnulusPixelRegion.to_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.EllipseAnnulusPixelRegion.to_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Return a region defined in sky coordinates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a></span></dt><dd><p>The world coordinate system transformation to use to convert
+from pixels to sky coordinates.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SkyRegion.html#regions.SkyRegion" title="regions.SkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyRegion</span></code></a></span></dt><dd><p>The sky region.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regions.EllipseAnnulusPixelRegion.to_spherical_sky">
+<span class="sig-name descname"><span class="pre">to_spherical_sky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_boundary_distortions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discretize_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/regions/shapes/annulus.html#EllipseAnnulusPixelRegion.to_spherical_sky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regions.EllipseAnnulusPixelRegion.to_spherical_sky" title="Link to this definition">¶</a></dt>
+<dd><p>Convert to an equivalent spherical <a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a>
+instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>wcs</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.wcs.WCS.html#astropy.wcs.WCS" title="(in Astropy v7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WCS</span></code></a> instance, optional</span></dt><dd><p>The world coordinate system transformation to use to convert
+between sky and pixel coordinates. Required if transforming
+with boundary distortions (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).
+Ignored if boundary distortions not included.</p>
+</dd>
+<dt><strong>include_boundary_distortions</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, accounts for boundary boundary distortions in spherical to planar
+conversions, by discretizing the boundary and converting the boundary polygon.
+Default is False, which converts to an equivalent idealized shape.</p>
+</dd>
+<dt><strong>discretize_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Optional keyword arguments to pass to discretize_boundary() method
+if including boundary distortions.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>spherical_sky_region</strong><span class="classifier"><a class="reference internal" href="regions.SphericalSkyRegion.html#regions.SphericalSkyRegion" title="regions.SphericalSkyRegion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalSkyRegion</span></code></a></span></dt><dd><p>A spherical sky region, with an equivalent shape (if
+<code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is False), or a discretized polygon of
+the boundary (if <code class="docutils literal notranslate"><span class="pre">include_boundary_distortions</span></code> is True).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">EllipseAnnulusPixelRegion</a><ul>
+<li><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion"><code class="docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion</span></code></a><ul>
+<li><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.angle"><code class="docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion.angle</span></code></a></li>
+<li><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.center"><code class="docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion.center</span></code></a></li>
+<li><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.inner_height"><code class="docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion.inner_height</span></code></a></li>
+<li><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.inner_width"><code class="docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion.inner_width</span></code></a></li>
+<li><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.outer_height"><code class="docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion.outer_height</span></code></a></li>
+<li><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.outer_width"><code class="docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion.outer_width</span></code></a></li>
+<li><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.to_sky"><code class="docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion.to_sky()</span></code></a></li>
+<li><a class="reference internal" href="#regions.EllipseAnnulusPixelRegion.to_spherical_sky"><code class="docutils literal notranslate"><span class="pre">EllipseAnnulusPixelRegion.to_spherical_sky()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/api/regions.EllipseAnnulusPixelRegion.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>

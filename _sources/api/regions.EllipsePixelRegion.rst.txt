@@ -1,0 +1,53 @@
+EllipsePixelRegion
+==================
+
+.. currentmodule:: regions
+
+.. autoclass:: EllipsePixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~EllipsePixelRegion.angle
+      ~EllipsePixelRegion.area
+      ~EllipsePixelRegion.bounding_box
+      ~EllipsePixelRegion.center
+      ~EllipsePixelRegion.height
+      ~EllipsePixelRegion.meta
+      ~EllipsePixelRegion.visual
+      ~EllipsePixelRegion.width
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~EllipsePixelRegion.as_artist
+      ~EllipsePixelRegion.as_mpl_selector
+      ~EllipsePixelRegion.contains
+      ~EllipsePixelRegion.rotate
+      ~EllipsePixelRegion.to_mask
+      ~EllipsePixelRegion.to_sky
+      ~EllipsePixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: angle
+   .. autoattribute:: area
+   .. autoattribute:: bounding_box
+   .. autoattribute:: center
+   .. autoattribute:: height
+   .. autoattribute:: meta
+   .. autoattribute:: visual
+   .. autoattribute:: width
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: as_mpl_selector
+   .. automethod:: contains
+   .. automethod:: rotate
+   .. automethod:: to_mask
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

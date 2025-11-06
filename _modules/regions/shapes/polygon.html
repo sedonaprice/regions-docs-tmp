@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regions.shapes.polygon &#8212; regions 0.1.dev1+g56cef4117</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-astropy.css?v=177ce38d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=975a8924"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="icon" href="../../../_static/astropy_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">regions</span><span id="logotext2"></span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">regions 0.1.dev1+g56cef4117</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for regions.shapes.polygon</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines polygon regions in both pixel and sky coordinates.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">circmean</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">polygonal_overlap_grid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._geometry.pnpoly</span><span class="w"> </span><span class="kn">import</span> <span class="n">points_in_polygon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions._utils.spherical_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cross_product_skycoord2skycoord</span><span class="p">,</span> <span class="n">cross_product_sum_skycoord2skycoord</span><span class="p">,</span>
+    <span class="n">discretize_all_edge_boundaries</span><span class="p">,</span> <span class="n">get_edge_raw_lonlat_bounds_circ_edges</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.attributes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">OneDPixCoord</span><span class="p">,</span> <span class="n">OneDSkyCoord</span><span class="p">,</span>
+                                     <span class="n">PositiveScalar</span><span class="p">,</span> <span class="n">RegionMetaDescr</span><span class="p">,</span>
+                                     <span class="n">RegionVisualDescr</span><span class="p">,</span> <span class="n">ScalarAngle</span><span class="p">,</span>
+                                     <span class="n">ScalarPixCoord</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.bounding_box</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionBoundingBox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.compound</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompoundSphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixelRegion</span><span class="p">,</span> <span class="n">SkyRegion</span><span class="p">,</span> <span class="n">SphericalSkyRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.mask</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionMask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegionMeta</span><span class="p">,</span> <span class="n">RegionVisual</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">regions.core.pixcoord</span><span class="w"> </span><span class="kn">import</span> <span class="n">PixCoord</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PolygonPixelRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;RegularPolygonPixelRegion&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PolygonSkyRegion&#39;</span><span class="p">,</span> <span class="s1">&#39;PolygonSphericalSkyRegion&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="PolygonPixelRegion">
+<a class="viewcode-back" href="../../../api/regions.PolygonPixelRegion.html#regions.PolygonPixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolygonPixelRegion</span><span class="p">(</span><span class="n">PixelRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A polygon in pixel coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vertices : `~regions.PixCoord`</span>
+<span class="sd">        The vertices of the polygon.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    origin : `~regions.PixCoord`, optional</span>
+<span class="sd">        The origin for polynomial vertices. Using this keyword allows</span>
+<span class="sd">        ``vertices`` to be specified relative to an origin pixel</span>
+<span class="sd">        coordinate.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        from regions import PixCoord, PolygonPixelRegion</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+
+<span class="sd">        fig, ax = plt.subplots(1, 1)</span>
+
+<span class="sd">        x, y = [45, 45, 55, 60], [75, 70, 65, 75]</span>
+<span class="sd">        vertices = PixCoord(x=x, y=y)</span>
+<span class="sd">        reg = PolygonPixelRegion(vertices=vertices)</span>
+<span class="sd">        patch = reg.plot(ax=ax, facecolor=&#39;none&#39;, edgecolor=&#39;red&#39;, lw=2,</span>
+<span class="sd">                         label=&#39;Polygon&#39;)</span>
+
+<span class="sd">        ax.legend(handles=(patch,), loc=&#39;upper center&#39;)</span>
+<span class="sd">        ax.set_xlim(30, 80)</span>
+<span class="sd">        ax.set_ylim(50, 80)</span>
+<span class="sd">        ax.set_aspect(&#39;equal&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;vertices&#39;</span><span class="p">,)</span>
+    <span class="n">_mpl_artist</span> <span class="o">=</span> <span class="s1">&#39;Patch&#39;</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">OneDPixCoord</span><span class="p">(</span><span class="s1">&#39;The vertices of the polygon as a |PixCoord| &#39;</span>
+                            <span class="s1">&#39;array.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vertices</span> <span class="o">=</span> <span class="n">vertices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span> <span class="o">+</span> <span class="n">origin</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># See https://stackoverflow.com/questions/24467972</span>
+
+        <span class="c1"># Use offsets to improve numerical precision</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+        <span class="c1"># Shoelace formula, for our case where the start vertex</span>
+        <span class="c1"># isn&#39;t duplicated at the end, written to avoid an array copy</span>
+        <span class="n">area_main</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x_</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y_</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x_</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">area_last</span> <span class="o">=</span> <span class="n">x_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">y_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">y_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">area_main</span> <span class="o">+</span> <span class="n">area_last</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PolygonPixelRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.PolygonPixelRegion.html#regions.PolygonPixelRegion.contains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixcoord</span><span class="p">):</span>
+        <span class="n">pixcoord</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="o">.</span><span class="n">_validate</span><span class="p">(</span><span class="n">pixcoord</span><span class="p">,</span> <span class="s1">&#39;pixcoord&#39;</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pixcoord</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pixcoord</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="n">vx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">vy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">points_in_polygon</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">in_poly</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;include&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">in_poly</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">in_poly</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PolygonPixelRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.PolygonPixelRegion.html#regions.PolygonPixelRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">vertices_sky</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PolygonSkyRegion</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices_sky</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="PolygonPixelRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.PolygonPixelRegion.html#regions.PolygonPixelRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires planar to spherical projection (using WCS) and discretization</span>
+            <span class="c1"># Will require implementing discretization in pixel space</span>
+            <span class="c1"># to get correct handling of distortions.</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+            <span class="c1"># ### Potential solution:</span>
+            <span class="c1"># # Leverage polygon class to_spherical_sky() functionality without</span>
+            <span class="c1"># # distortions, as the distortions were already computed in creating</span>
+            <span class="c1"># # that polygon approximation</span>
+            <span class="c1"># return self.to_pixel(wcs).discretize_boundary(**discretize_kwargs).to_spherical_sky(</span>
+            <span class="c1">#     wcs=wcs, include_boundary_distortions=False</span>
+            <span class="c1"># )</span>
+
+        <span class="c1"># TODO: ensure vertices are in CW order,</span>
+        <span class="c1"># as implicitly a planar -&gt; spherical polygon will not be the</span>
+        <span class="c1"># &quot;large&quot; complement polygon on the sphere?</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_sky</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span><span class="o">.</span><span class="n">to_spherical_sky</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">xmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">ymin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">RegionBoundingBox</span><span class="o">.</span><span class="n">from_float</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PolygonPixelRegion.to_mask">
+<a class="viewcode-back" href="../../../api/regions.PolygonPixelRegion.html#regions.PolygonPixelRegion.to_mask">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">subpixels</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">subpixels</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;subpixels&#39;</span>
+            <span class="n">subpixels</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">use_exact</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;subpixels&#39;</span> <span class="k">else</span> <span class="mi">1</span>
+
+        <span class="c1"># Find bounding box and mask size</span>
+        <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span>
+        <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="c1"># Find position of pixel edges and recenter so that circle is at</span>
+        <span class="c1"># origin</span>
+        <span class="n">xmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">ixmin</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">ixmax</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+        <span class="n">ymin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">iymin</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">iymax</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+
+        <span class="n">vx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">vy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="n">fraction</span> <span class="o">=</span> <span class="n">polygonal_overlap_grid</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span>
+                                          <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">use_exact</span><span class="p">,</span> <span class="n">subpixels</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">RegionMask</span><span class="p">(</span><span class="n">fraction</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="n">bbox</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PolygonPixelRegion.as_artist">
+<a class="viewcode-back" href="../../../api/regions.PolygonPixelRegion.html#regions.PolygonPixelRegion.as_artist">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a matplotlib patch object for this region</span>
+<span class="sd">        (`matplotlib.patches.Polygon`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        origin : array_like, optional</span>
+<span class="sd">            The ``(x, y)`` pixel position of the origin of the displayed</span>
+<span class="sd">            image.</span>
+
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            Any keyword arguments accepted by</span>
+<span class="sd">            `~matplotlib.patches.Polygon`. These keywords will override</span>
+<span class="sd">            any visual meta attributes of this region.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        artist : `~matplotlib.patches.Polygon`</span>
+<span class="sd">            A matplotlib polygon patch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Polygon</span>
+
+        <span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+
+        <span class="n">mpl_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">define_mpl_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mpl_artist</span><span class="p">)</span>
+        <span class="n">mpl_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">,</span> <span class="o">**</span><span class="n">mpl_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PolygonPixelRegion.rotate">
+<a class="viewcode-back" href="../../../api/regions.PolygonPixelRegion.html#regions.PolygonPixelRegion.rotate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rotate the region.</span>
+
+<span class="sd">        Positive ``angle`` corresponds to counter-clockwise rotation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        center : `~regions.PixCoord`</span>
+<span class="sd">            The rotation center point.</span>
+<span class="sd">        angle : `~astropy.coordinates.Angle`</span>
+<span class="sd">            The rotation angle.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        region : `PolygonPixelRegion`</span>
+<span class="sd">            The rotated region (which is an independent copy).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RegularPolygonPixelRegion">
+<a class="viewcode-back" href="../../../api/regions.RegularPolygonPixelRegion.html#regions.RegularPolygonPixelRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RegularPolygonPixelRegion</span><span class="p">(</span><span class="n">PolygonPixelRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A regular polygon in pixel coordinates.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        This class will be serialized as a generic polygon</span>
+<span class="sd">        region, thus when read back in it will produce a</span>
+<span class="sd">        `~regions.PolygonPixelRegion` object instead of a</span>
+<span class="sd">        `~regions.RegularPolygonPixelRegion` object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center : `~regions.PixCoord`</span>
+<span class="sd">        The position of the center of the polygon.</span>
+<span class="sd">    nvertices : `~regions.PixCoord`</span>
+<span class="sd">        The number of polygon vertices (or sides).</span>
+<span class="sd">    radius : float</span>
+<span class="sd">        The distance from the center to any vertex. This is also known</span>
+<span class="sd">        as the circumradius.</span>
+<span class="sd">    angle : `~astropy.units.Quantity`, optional</span>
+<span class="sd">        The rotation angle of the polygon, measured anti-clockwise. If</span>
+<span class="sd">        set to zero (the default), the polygon will point &quot;up&quot; following</span>
+<span class="sd">        the `matplotlib.patches.RegularPolygon` convention.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    side_length : float</span>
+<span class="sd">        The side length.</span>
+<span class="sd">    inradius : float</span>
+<span class="sd">        The radius of the largest circle contained entirely within the</span>
+<span class="sd">        polygon. This value is identical to the length of a line segment</span>
+<span class="sd">        from the polygon center to the midpoint of one of its sides</span>
+<span class="sd">        (known as as the apothem).</span>
+<span class="sd">    perimeter : float</span>
+<span class="sd">        The polygon perimeter.</span>
+<span class="sd">    interior_angle : float</span>
+<span class="sd">        The polygon interior angle, which is the angle at each vertex on</span>
+<span class="sd">        the inside of the polygon.</span>
+<span class="sd">    exterior_angle : float</span>
+<span class="sd">        The polygon exterior angle, which is an angle at each vertex on</span>
+<span class="sd">        the outside of the polygon.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        import astropy.units as u</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+<span class="sd">        from regions import PixCoord, RegularPolygonPixelRegion</span>
+
+<span class="sd">        fig, ax = plt.subplots(1, 1)</span>
+<span class="sd">        center = PixCoord(x=50, y=50)</span>
+<span class="sd">        reg1 = RegularPolygonPixelRegion(center, 6, 15)</span>
+<span class="sd">        reg1.plot(edgecolor=&#39;red&#39;, lw=2)</span>
+
+<span class="sd">        center = PixCoord(x=25, y=25)</span>
+<span class="sd">        reg2 = RegularPolygonPixelRegion(center, 3, 15)</span>
+<span class="sd">        reg2.plot(edgecolor=&#39;green&#39;, lw=2)</span>
+
+<span class="sd">        center = PixCoord(x=25, y=75)</span>
+<span class="sd">        reg3 = RegularPolygonPixelRegion(center, 3, 15, angle=25*u.deg)</span>
+<span class="sd">        reg3.plot(edgecolor=&#39;orange&#39;, lw=2)</span>
+
+<span class="sd">        center = PixCoord(x=75, y=75)</span>
+<span class="sd">        reg4 = RegularPolygonPixelRegion(center, 8, 15)</span>
+<span class="sd">        reg4.plot(edgecolor=&#39;blue&#39;, lw=2)</span>
+
+<span class="sd">        center = PixCoord(x=75, y=25)</span>
+<span class="sd">        reg5 = RegularPolygonPixelRegion(center, 5, 15)</span>
+<span class="sd">        reg5.plot(edgecolor=&#39;magenta&#39;, lw=2)</span>
+
+<span class="sd">        ax.set_xlim(0, 100)</span>
+<span class="sd">        ax.set_ylim(0, 100)</span>
+<span class="sd">        ax.set_aspect(&#39;equal&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;nvertices&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">)</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">ScalarPixCoord</span><span class="p">(</span><span class="s1">&#39;The center pixel position as a |PixCoord|.&#39;</span><span class="p">)</span>
+    <span class="n">nvertices</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The number of polygon vertices.&#39;</span><span class="p">)</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="n">PositiveScalar</span><span class="p">(</span><span class="s1">&#39;The distance from the center to any vertex in &#39;</span>
+                            <span class="s1">&#39;pixels as a float.&#39;</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">ScalarAngle</span><span class="p">(</span><span class="s1">&#39;The rotation angle measured anti-clockwise as a &#39;</span>
+                        <span class="s1">&#39;|Quantity| angle.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">nvertices</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+                 <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">nvertices</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;nvertices must be &gt;= 3&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nvertices</span> <span class="o">=</span> <span class="n">nvertices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calc_vertices</span><span class="p">(),</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="n">visual</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">side_length</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nvertices</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inradius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nvertices</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">perimeter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">side_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nvertices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interior_angle</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nvertices</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nvertices</span>
+                               <span class="o">*</span> <span class="mi">180</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exterior_angle</span> <span class="o">=</span> <span class="mf">360.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nvertices</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calc_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># uses the matplotlib convention that the polygon always points &quot;up&quot;</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="p">((</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nvertices</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nvertices</span><span class="p">)</span>
+                 <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">radian</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span>
+        <span class="n">xvert</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">yvert</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">+</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">xvert</span><span class="p">,</span> <span class="n">yvert</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RegularPolygonPixelRegion.rotate">
+<a class="viewcode-back" href="../../../api/regions.RegularPolygonPixelRegion.html#regions.RegularPolygonPixelRegion.rotate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rotate the region.</span>
+
+<span class="sd">        Positive ``angle`` corresponds to counter-clockwise rotation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        center : `~regions.PixCoord`</span>
+<span class="sd">            The rotation center point.</span>
+<span class="sd">        angle : `~astropy.coordinates.Angle`</span>
+<span class="sd">            The rotation angle.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        region : `PolygonPixelRegion`</span>
+<span class="sd">            The rotated region (which is an independent copy).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">+</span> <span class="n">angle</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RegularPolygonPixelRegion.to_polygon">
+<a class="viewcode-back" href="../../../api/regions.RegularPolygonPixelRegion.html#regions.RegularPolygonPixelRegion.to_polygon">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_polygon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a `PolygonPixelRegion` of this region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PolygonPixelRegion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">PixCoord</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                                  <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                  <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PolygonSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.PolygonSkyRegion.html#regions.PolygonSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolygonSkyRegion</span><span class="p">(</span><span class="n">SkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A polygon defined using vertices in sky coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vertices : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The vertices of the polygon.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;vertices&#39;</span><span class="p">,)</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">OneDSkyCoord</span><span class="p">(</span><span class="s1">&#39;The vertices of the polygon as a |SkyCoord| &#39;</span>
+                            <span class="s1">&#39;array.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+<div class="viewcode-block" id="PolygonSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.PolygonSkyRegion.html#regions.PolygonSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">world_to_pixel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+        <span class="n">vertices_pix</span> <span class="o">=</span> <span class="n">PixCoord</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PolygonPixelRegion</span><span class="p">(</span><span class="n">vertices_pix</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                  <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="PolygonSkyRegion.to_spherical_sky">
+<a class="viewcode-back" href="../../../api/regions.PolygonSkyRegion.html#regions.PolygonSkyRegion.to_spherical_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spherical_sky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires planar to spherical projection (using WCS) and discretization</span>
+            <span class="c1"># Will require implementing discretization in pixel space</span>
+            <span class="c1"># to get correct handling of distortions.</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+            <span class="c1"># ### Potential solution:</span>
+            <span class="c1"># # Leverage polygon class to_spherical_sky() functionality without</span>
+            <span class="c1"># # distortions, as the distortions were already computed in creating</span>
+            <span class="c1"># # that polygon approximation</span>
+            <span class="c1"># return self.to_pixel(wcs).discretize_boundary(**discretize_kwargs).to_spherical_sky(</span>
+            <span class="c1">#     wcs=wcs, include_boundary_distortions=False</span>
+            <span class="c1"># )</span>
+
+        <span class="c1"># TODO: ensure vertices are in CW order,</span>
+        <span class="c1"># as implicitly a planar -&gt; spherical polygon will not be the</span>
+        <span class="c1"># &quot;large&quot; complement polygon on the sphere?</span>
+
+        <span class="k">return</span> <span class="n">PolygonSphericalSkyRegion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PolygonSphericalSkyRegion">
+<a class="viewcode-back" href="../../../api/regions.PolygonSphericalSkyRegion.html#regions.PolygonSphericalSkyRegion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolygonSphericalSkyRegion</span><span class="p">(</span><span class="n">SphericalSkyRegion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A spherical polygon defined using vertices in sky coordinates.</span>
+
+<span class="sd">    Internal &quot;contains&quot; logic could be changed to</span>
+<span class="sd">    leverage spherical-geometry package functionality.</span>
+
+<span class="sd">    This region is very much akin to the `~regions.PolygonPixelRegion`</span>
+<span class="sd">    class (and borrows internal attributes following the same structure).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vertices : `~astropy.coordinates.SkyCoord`</span>
+<span class="sd">        The vertices of the polygon. Assumed to be in CW order.</span>
+<span class="sd">    meta : `~regions.RegionMeta` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the meta attributes of the region.</span>
+<span class="sd">    visual : `~regions.RegionVisual` or `dict`, optional</span>
+<span class="sd">        A dictionary that stores the visual meta attributes of the</span>
+<span class="sd">        region.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;vertices&#39;</span><span class="p">,)</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">OneDSkyCoord</span><span class="p">(</span><span class="s1">&#39;The vertices of the polygon as a |SkyCoord| &#39;</span>
+                            <span class="s1">&#39;array.&#39;</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">RegionMetaDescr</span><span class="p">(</span><span class="s1">&#39;The meta attributes as a |RegionMeta|&#39;</span><span class="p">)</span>
+    <span class="n">visual</span> <span class="o">=</span> <span class="n">RegionVisualDescr</span><span class="p">(</span><span class="s1">&#39;The visual attributes as a |RegionVisual|.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">RegionMeta</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visual</span> <span class="o">=</span> <span class="n">visual</span> <span class="ow">or</span> <span class="n">RegionVisual</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_edge_circs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get list of the great circles defining the polygon boundaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSphericalSkyRegion</span>
+        <span class="n">gcs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">)):</span>
+            <span class="c1"># verts are in CW order: Cross product to get bounding great circle centers</span>
+            <span class="c1"># Compute GCs and stack into a compound set:</span>
+            <span class="n">c_gc</span> <span class="o">=</span> <span class="n">cross_product_skycoord2skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">gcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="n">c_gc</span><span class="p">,</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">gcs</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compound_region</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Need N great circles to define boundaries for an N-sided polygon.</span>
+        <span class="c1"># verts are in CW order: Cross product to get bounding great circle centers</span>
+        <span class="c1"># Compute GCs and stack into a compound set:</span>
+        <span class="n">compreg</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">gcs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_circs</span>
+        <span class="k">for</span> <span class="n">gc</span> <span class="ow">in</span> <span class="n">gcs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">compreg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">compreg</span> <span class="o">=</span> <span class="n">gc</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">compreg</span> <span class="o">=</span> <span class="n">CompoundSphericalSkyRegion</span><span class="p">(</span>
+                    <span class="n">compreg</span><span class="p">,</span> <span class="n">gc</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">compreg</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Region centroid.</span>
+
+<span class="sd">        Defined as the point equidistant from all vertices.</span>
+
+<span class="sd">        However, if this is not contained within the polygon, instead</span>
+<span class="sd">        use the average of the vertices&#39; positions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calculate from cross products of vertices with cartesian representation</span>
+        <span class="c1"># verts are in CW order:</span>
+        <span class="c1"># Minimum distance</span>
+        <span class="n">centroid_mindist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid_mindist</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">centroid_mindist</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid_avg</span>
+
+        <span class="k">return</span> <span class="n">centroid_mindist</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">centroid_mindist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Region centroid, defined as the point equidistant from all</span>
+<span class="sd">        vertices (minimum distance).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calculate from cross products of vertices with cartesian representation</span>
+        <span class="c1"># verts are in CW order:</span>
+        <span class="c1"># Minimum distance</span>
+        <span class="k">return</span> <span class="n">cross_product_sum_skycoord2skycoord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">centroid_avg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Region centroid, taking the average of the vertices&#39;</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verts_sph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">represent_as</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+
+        <span class="n">lons</span> <span class="o">=</span> <span class="n">verts_sph</span><span class="o">.</span><span class="n">lon</span>
+        <span class="n">lats</span> <span class="o">=</span> <span class="n">verts_sph</span><span class="o">.</span><span class="n">lat</span>
+
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">circmean</span><span class="p">(</span><span class="n">lons</span><span class="p">)</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">lats</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.circle</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircleSphericalSkyRegion</span>
+        <span class="n">cent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span>
+        <span class="n">seps</span> <span class="o">=</span> <span class="n">cent</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CircleSphericalSkyRegion</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">cent</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">seps</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bounding_lonlat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span> <span class="o">=</span> <span class="n">get_edge_raw_lonlat_bounds_circ_edges</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_circs</span>
+        <span class="p">)</span>
+
+        <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_lonlat_bounds</span><span class="p">(</span><span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">lons_arr</span><span class="p">,</span> <span class="n">lats_arr</span>
+
+<div class="viewcode-block" id="PolygonSphericalSkyRegion.contains">
+<a class="viewcode-back" href="../../../api/regions.PolygonSphericalSkyRegion.html#regions.PolygonSphericalSkyRegion.contains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coord</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compound_region</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PolygonSphericalSkyRegion.transform_to">
+<a class="viewcode-back" href="../../../api/regions.PolygonSphericalSkyRegion.html#regions.PolygonSphericalSkyRegion.transform_to">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="c1"># Only center transforms, radii preserved</span>
+        <span class="n">verts_transf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">merge_attributes</span><span class="o">=</span><span class="n">merge_attributes</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">PolygonSphericalSkyRegion</span><span class="p">(</span>
+            <span class="n">verts_transf</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PolygonSphericalSkyRegion.discretize_boundary">
+<a class="viewcode-back" href="../../../api/regions.PolygonSphericalSkyRegion.html#regions.PolygonSphericalSkyRegion.discretize_boundary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">discretize_boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">bound_verts</span> <span class="o">=</span> <span class="n">discretize_all_edge_boundaries</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_circs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="n">n_points</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">PolygonSphericalSkyRegion</span><span class="p">(</span><span class="n">bound_verts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PolygonSphericalSkyRegion.to_sky">
+<a class="viewcode-back" href="../../../api/regions.PolygonSphericalSkyRegion.html#regions.PolygonSphericalSkyRegion.to_sky">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sky</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires spherical to planar projection (from WCS) and discretization</span>
+            <span class="c1"># Use to_pixel(), then apply &quot;small angle approx&quot; to get planar sky.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span>
+                <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="n">include_boundary_distortions</span><span class="p">,</span>
+                <span class="n">wcs</span><span class="o">=</span><span class="n">wcs</span><span class="p">,</span>
+                <span class="n">discretize_kwargs</span><span class="o">=</span><span class="n">discretize_kwargs</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to_sky</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">PolygonSkyRegion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span>
+            <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
+            <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PolygonSphericalSkyRegion.to_pixel">
+<a class="viewcode-back" href="../../../api/regions.PolygonSphericalSkyRegion.html#regions.PolygonSphericalSkyRegion.to_pixel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pixel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">include_boundary_distortions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">discretize_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">discretize_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discretize_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">include_boundary_distortions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;wcs&#39; must be set if &#39;include_boundary_distortions&#39;=True&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Requires spherical to planar projection (from WCS) and discretization</span>
+            <span class="n">verts</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">world_to_pixel</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">discretize_boundary</span><span class="p">(</span><span class="o">**</span><span class="n">discretize_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">vertices</span>
+            <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">PolygonPixelRegion</span><span class="p">(</span>
+                <span class="n">PixCoord</span><span class="p">(</span><span class="o">*</span><span class="n">verts</span><span class="p">),</span> <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                <span class="n">visual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">visual</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_sky</span><span class="p">()</span><span class="o">.</span><span class="n">to_pixel</span><span class="p">(</span><span class="n">wcs</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2015-2025, Regions Developers.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.2.3. &nbsp;
+    Last built 06 Nov 2025. <br/>
+  </p>
+</footer>
+  </body>
+</html>
