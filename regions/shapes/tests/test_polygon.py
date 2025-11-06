@@ -22,12 +22,6 @@ from regions.shapes.tests.test_common import (BaseTestPixelRegion,
 from regions.tests.helpers import assert_skycoord_allclose, make_simple_wcs
 
 
-def get_wcs():
-    config = dict(crpix=(18, 9), cdelt=(-10, 10), shape=(18, 36))
-    dataset = make_example_dataset(config=config)
-    return dataset.wcs
-
-
 @pytest.fixture(scope='session', name='wcs')
 def wcs_fixture():
     config = dict(crpix=(18, 9), cdelt=(-10, 10), shape=(18, 36))
@@ -79,7 +73,7 @@ class TestPolygonPixelRegion(BaseTestPixelRegion):
         assert reg_new.meta['text'] != self.reg.meta['text']
         assert reg_new.visual['color'] != self.reg.visual['color']
 
-    def test_sph_transformation(self, wcs):
+    def test_to_spherical_sky(self, wcs):
         polysphsky = self.reg.to_spherical_sky(wcs,
                                                include_boundary_distortions=False)
         assert isinstance(polysphsky, PolygonSphericalSkyRegion)
@@ -91,7 +85,7 @@ class TestPolygonPixelRegion(BaseTestPixelRegion):
         except NotImplementedError:
             pytest.xfail()
 
-    def test_sph_transformation_no_wcs(self):
+    def test_to_spherical_sky_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_spherical_sky(include_boundary_distortions=True)
         estr = "'wcs' must be set if 'include_boundary_distortions'=True"
@@ -211,7 +205,7 @@ class TestPolygonSkyRegion(BaseTestSkyRegion):
         except NotImplementedError:
             pytest.xfail()
 
-    def test_sph_transformation_no_wcs(self):
+    def test_to_spherical_sky_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_spherical_sky(include_boundary_distortions=True)
         estr = "'wcs' must be set if 'include_boundary_distortions'=True"

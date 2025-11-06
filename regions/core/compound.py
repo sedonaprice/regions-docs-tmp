@@ -9,7 +9,6 @@ from regions._utils.spherical_helpers import bounding_lonlat_poles_processing
 from regions.core.attributes import RegionType
 from regions.core.core import PixelRegion, SkyRegion, SphericalSkyRegion
 from regions.core.mask import RegionMask
-from regions.core.metadata import RegionMeta, RegionVisual
 
 __all__ = ['CompoundPixelRegion', 'CompoundSkyRegion', 'CompoundSphericalSkyRegion']
 
@@ -250,11 +249,11 @@ class CompoundSkyRegion(SkyRegion):
         if meta is None:
             self.meta = region1.meta
         else:
-            self.meta = RegionMeta()
+            self.meta = meta
         if visual is None:
             self.visual = region1.visual
         else:
-            self.visual = RegionVisual()
+            self.visual = visual
         self._operator = operator
 
     @property
@@ -333,11 +332,11 @@ class CompoundSphericalSkyRegion(SphericalSkyRegion):
         if meta is None:
             self.meta = region1.meta
         else:
-            self.meta = RegionMeta()
+            self.meta = meta
         if visual is None:
             self.visual = region1.visual
         else:
-            self.visual = RegionVisual()
+            self.visual = visual
         self._operator = operator
 
     @property

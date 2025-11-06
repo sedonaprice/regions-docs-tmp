@@ -181,6 +181,11 @@ def test_compound_sky():
     assert (diff.contains(coords, wcs) == [True, True, False, True]).all()
     assert 'Compound' in str(union)
 
+    # Test keeping the input meta
+    meta = {'test_meta': True}
+    compound = CompoundSkyRegion(c1, c2, operator.and_, meta=meta)
+    assert compound.meta['test_meta']
+
     union_to_sphsky = union.to_spherical_sky(wcs)
     assert isinstance(union_to_sphsky, CompoundSphericalSkyRegion)
 
