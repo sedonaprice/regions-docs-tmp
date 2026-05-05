@@ -1,4 +1,64 @@
-0.11 (unreleased)
+0.12 (unreleased)
+=================
+
+General
+-------
+
+- The minimum required NumPy is now 2.0. [#654]
+
+- The minimum required Astropy is now 6.1. [#654]
+
+- The minimum required Matplotlib is now 3.9. [#654]
+
+New Features
+------------
+
+- Added a ``to_polygon`` method to all region classes that returns a
+  ``PolygonPixelRegion`` or ``PolygonSkyRegion`` approximation of the
+  region. [#649]
+
+- Improved pixel–sky coordinate conversions for non-distorted WCS
+  objects, providing more accurate local pixel scales and North angle
+  estimates. [#650, #651]
+
+- Improved pixel–sky coordinate conversions for distorted WCS objects
+  (e.g., SIP) and non-astropy WCS implementations (e.g., GWCS), enabling
+  more accurate transformations for directed regions such as ellipses and
+  rectangles. [#650, #651]
+
+- Improved the string representations of all ``Regions`` and ``Region``
+  objects. [#653]
+
+- Regions now includes ``SphericalSkyRegion`` ("region-on-celestial-sphere"),
+  complementing the implicitly planar ``SkyRegion`` ("region-on-images").
+  ``SphericalSkyRegion`` does not require a WCS to determine whether points
+  are contained within the region or not (unlike ``SkyRegion``).
+  Additionally, ``SphericalSkyRegion`` classes include the method
+  ``transform_to`` to transform the regions between different
+  celestial coordinate reference frames.
+  It is also possible to transform between spherical and planar
+  (sky or pixel) regions (with ``to_sky``, ``to_pixel``, and ``to_spherical_sky``,
+  as appropriate), with the option to capture boundary distortions due to
+  WCS projection effects between spherical and planar geometries
+  or to ignore them (e.g., assuming a circle stays a perfect circle).
+  Current spherical shapes supported include: ``CircleSphericalSkyRegion``,
+  ``CircleAnnulusSphericalSkyRegion``,
+  ``PolygonSphericalSkyRegion`` (currently only supports convex polygons),
+  ``RangeSphericalSkyRegion``  (i.e., bounded by ranges of longitude and/or latitude), and
+  ``LuneSphericalSkyRegion`` (a slice between two great circles,
+  such as between two lines of longitude).
+  Support for additional spherical shapes, and for all cases of
+  planar <-> spherical transformation (where well defined) may be added
+  at a future date. [#618]
+
+Bug Fixes
+---------
+
+API Changes
+-----------
+
+
+0.11 (2025-11-05)
 =================
 
 General
@@ -14,14 +74,11 @@ General
 
 - The minimum required Shapely is now 2.0. [#601]
 
-New Features
-------------
-
 Bug Fixes
 ---------
 
-API Changes
------------
+- No longer overwrites input ``meta`` and ``visible`` values when
+  initializing a ``CompoundSkyRegion``. [#628]
 
 
 0.10 (2024-09-27)

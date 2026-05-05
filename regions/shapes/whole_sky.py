@@ -46,29 +46,27 @@ class WholeSphericalSkyRegion(SphericalSkyRegion):
         # Not defined
         return None
 
-    def transform_to(self, frame):
-        # TODO: handle offset origin transformations
-
+    def transform_to(self, frame, merge_attributes=True):
         return self.__class__()
 
     def discretize_boundary(self, n_points=100):
         # Not defined
-        raise NotImplementedError('Not defined.')
+        raise ValueError('Not defined.')
 
     def to_sky(
         self,
         wcs=None,
         include_boundary_distortions=False,
-        discretize_kwargs=None
+        n_points=None,
     ):
         # Not defined
-        raise NotImplementedError('Not defined.')
+        raise ValueError('Not defined.')
 
     def to_pixel(
         self,
         wcs=None,
         include_boundary_distortions=False,
-        discretize_kwargs=None
+        n_points=None,
     ):
         # Not defined
-        raise NotImplementedError('Not defined.')
+        raise ValueError('Not defined.')

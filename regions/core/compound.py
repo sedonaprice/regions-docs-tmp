@@ -98,16 +98,16 @@ class CompoundPixelRegion(PixelRegion):
                                  visual=self.visual.copy())
 
     def to_spherical_sky(self, wcs=None, include_boundary_distortions=False,
-                         discretize_kwargs=None):
+                         n_points=None):
         sphreg1 = self.region1.to_spherical_sky(
             wcs=wcs,
             include_boundary_distortions=include_boundary_distortions,
-            discretize_kwargs=discretize_kwargs,
+            n_points=n_points,
         )
         sphreg2 = self.region2.to_spherical_sky(
             wcs=wcs,
             include_boundary_distortions=include_boundary_distortions,
-            discretize_kwargs=discretize_kwargs,
+            n_points=n_points,
         )
         return CompoundSphericalSkyRegion(
             region1=sphreg1,
@@ -276,16 +276,16 @@ class CompoundSkyRegion(SkyRegion):
                                    visual=self.visual.copy())
 
     def to_spherical_sky(self, wcs=None, include_boundary_distortions=False,
-                         discretize_kwargs=None):
+                         n_points=None):
         sphreg1 = self.region1.to_spherical_sky(
             wcs=wcs,
             include_boundary_distortions=include_boundary_distortions,
-            discretize_kwargs=discretize_kwargs,
+            n_points=n_points,
         )
         sphreg2 = self.region2.to_spherical_sky(
             wcs=wcs,
             include_boundary_distortions=include_boundary_distortions,
-            discretize_kwargs=discretize_kwargs,
+            n_points=n_points,
         )
         return CompoundSphericalSkyRegion(
             region1=sphreg1,
@@ -389,19 +389,13 @@ class CompoundSphericalSkyRegion(SphericalSkyRegion):
             lons2, lats2 = self.region2.bounding_lonlat
             if (lons1 is None) | (lons2 is None):
                 return (None,
-                        Latitude([np.min([lats1[0].to(u.deg).value,
-                                          lats2[0].to(u.deg).value]) * u.deg,
-                                  np.max([lats1[1].to(u.deg).value,
-                                          lats2[1].to(u.deg).value]) * u.deg]).to(u.deg))
+                        Latitude([np.minimum(lats1[0], lats2[0]),
+                                  np.maximum(lats1[1], lats2[1])]).to(u.deg))
             # Both lon ranges defined:
-            return (Longitude([np.min([lons1[0].to(u.deg).value,
-                                       lons2[0].to(u.deg).value]) * u.deg,
-                               np.max([lons1[1].to(u.deg).value,
-                                       lons2[1].to(u.deg).value]) * u.deg]).to(u.deg),
-                    Latitude([np.min([lats1[0].to(u.deg).value,
-                                      lats2[0].to(u.deg).value]) * u.deg,
-                              np.max([lats1[1].to(u.deg).value,
-                                      lats2[1].to(u.deg).value]) * u.deg]).to(u.deg))
+            return (Longitude([np.minimum(lons1[0], lons2[0]),
+                               np.maximum(lons1[1], lons2[1])]).to(u.deg),
+                    Latitude([np.minimum(lats1[0], lats2[0]),
+                              np.maximum(lats1[1], lats2[1])]).to(u.deg))
 
         # XOR, Intersection: not implemented
         raise NotImplementedError
@@ -416,7 +410,7 @@ class CompoundSphericalSkyRegion(SphericalSkyRegion):
 
             # Check if shape covers either pole & modify lats arr accordingly:
             lons_arr, lats_arr = bounding_lonlat_poles_processing(
-                self, lons_arr, lats_arr
+                self, lons_arr, lats_arr,
             )
 
             return lons_arr, lats_arr
@@ -437,7 +431,7 @@ class CompoundSphericalSkyRegion(SphericalSkyRegion):
 
     def contains(self, coord):
         in_reg = self.operator(
-            self.region1.contains(coord), self.region2.contains(coord)
+            self.region1.contains(coord), self.region2.contains(coord),
         )
         if self.meta.get('include', True):
             return in_reg
@@ -460,22 +454,22 @@ class CompoundSphericalSkyRegion(SphericalSkyRegion):
             self.region2.discretize_boundary(n_points=n_points),
             operator=self.operator,
             meta=self.meta.copy(),
-            visual=self.visual.copy()
+            visual=self.visual.copy(),
         )
 
     def to_sky(
         self, wcs=None, include_boundary_distortions=False,
-        discretize_kwargs=None,
+        n_points=None,
     ):
         planarreg1 = self.region1.to_sky(
             wcs=wcs,
             include_boundary_distortions=include_boundary_distortions,
-            discretize_kwargs=discretize_kwargs,
+            n_points=n_points,
         )
         planarreg2 = self.region2.to_sky(
             wcs=wcs,
             include_boundary_distortions=include_boundary_distortions,
-            discretize_kwargs=discretize_kwargs,
+            n_points=n_points,
         )
         return CompoundSkyRegion(
             region1=planarreg1,
@@ -487,17 +481,17 @@ class CompoundSphericalSkyRegion(SphericalSkyRegion):
 
     def to_pixel(
         self, wcs=None, include_boundary_distortions=False,
-        discretize_kwargs=None,
+        n_points=None,
     ):
         pixreg1 = self.region1.to_pixel(
             wcs=wcs,
             include_boundary_distortions=include_boundary_distortions,
-            discretize_kwargs=discretize_kwargs,
+            n_points=n_points,
         )
         pixreg2 = self.region2.to_pixel(
             wcs=wcs,
             include_boundary_distortions=include_boundary_distortions,
-            discretize_kwargs=discretize_kwargs,
+            n_points=n_points,
         )
         return CompoundPixelRegion(
             region1=pixreg1,

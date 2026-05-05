@@ -3,7 +3,6 @@
 The tests in this file simply check what functionality is currently
 implemented and doesn't check anything about correctness.
 """
-import itertools
 from collections import OrderedDict
 
 import astropy.units as u
@@ -111,25 +110,43 @@ def test_pix_to_sky(region):
         pytest.xfail()
 
 
-@pytest.mark.parametrize(('region', 'include_dist'),
-                         itertools.product(
-                             PIXEL_REGIONS,
-                             INCLUDE_BOUNDARY_DISTORTIONS),
-                         ids=ids_func)
+@pytest.mark.parametrize('region', PIXEL_REGIONS, ids=ids_func)
+@pytest.mark.parametrize('include_dist', INCLUDE_BOUNDARY_DISTORTIONS, ids=ids_func)
 def test_pix_to_spherical_sky(region, include_dist):
-    try:
+    # TODO: remove expected failures when implemented
+    # Expected failure:
+    #    No spherical Ellipse, EllipseAnnulus, Point, Rectangle, RectangleAnnulus
+    # Also expected failure:
+    #    Boundary distortions not yet implemented for
+    #    CirclePixelRegion, CircleAnnulusPixelRegion, PolygonPixelRegion
+    if (
+        isinstance(region,
+                   (EllipsePixelRegion,
+                    EllipseAnnulusPixelRegion,
+                    PointPixelRegion,
+                    RectanglePixelRegion,
+                    RectangleAnnulusPixelRegion))
+        | ((isinstance(region,
+                       (CirclePixelRegion,
+                        CircleAnnulusPixelRegion,
+                        PolygonPixelRegion))) & include_dist)
+    ):
+        with pytest.raises(NotImplementedError):
+            sph_sky_region = region.to_spherical_sky(
+                COMMON_WCS,
+                include_boundary_distortions=include_dist,
+            )
+            assert isinstance(sph_sky_region, SphericalSkyRegion)
+    else:
         sph_sky_region = region.to_spherical_sky(
             COMMON_WCS,
-            include_boundary_distortions=include_dist
+            include_boundary_distortions=include_dist,
         )
         assert isinstance(sph_sky_region, SphericalSkyRegion)
-    except NotImplementedError:
-        pytest.xfail()
 
 
-@pytest.mark.parametrize(('region', 'mode'),
-                         itertools.product(PIXEL_REGIONS, MASK_MODES),
-                         ids=ids_func)
+@pytest.mark.parametrize('region', PIXEL_REGIONS, ids=ids_func)
+@pytest.mark.parametrize('mode', MASK_MODES, ids=ids_func)
 def test_pix_to_mask(region, mode):
     try:
         mask = region.to_mask(mode=mode)
@@ -155,52 +172,98 @@ def test_sky_to_pix(region):
     assert isinstance(pix_region, PixelRegion)
 
 
-@pytest.mark.parametrize(('region', 'include_dist'),
-                         itertools.product(
-                             SKY_REGIONS,
-                             INCLUDE_BOUNDARY_DISTORTIONS),
-                         ids=ids_func)
+@pytest.mark.parametrize('region', SKY_REGIONS, ids=ids_func)
+@pytest.mark.parametrize('include_dist', INCLUDE_BOUNDARY_DISTORTIONS, ids=ids_func)
 def test_sky_to_spherical_sky(region, include_dist):
-    try:
+    # TODO: remove expected failures when implemented
+    # Expected failure:
+    #    No spherical Ellipse, EllipseAnnulus, Point, Rectangle, RectangleAnnulus
+    # Also expected failure:
+    #    Boundary distortions not yet implemented for
+    #    CircleSkyRegion, CircleAnnulusSkyRegion, PolygonSkyRegion
+    if (
+        isinstance(region,
+                   (EllipseSkyRegion,
+                    EllipseAnnulusSkyRegion,
+                    PointSkyRegion,
+                    RectangleSkyRegion,
+                    RectangleAnnulusSkyRegion))
+        | ((isinstance(region,
+                       (CircleSkyRegion,
+                        CircleAnnulusSkyRegion,
+                        PolygonSkyRegion))) & include_dist)
+    ):
+        with pytest.raises(NotImplementedError):
+            sph_sky_region = region.to_spherical_sky(
+                COMMON_WCS,
+                include_boundary_distortions=include_dist,
+            )
+            assert isinstance(sph_sky_region, SphericalSkyRegion)
+    else:
         sph_sky_region = region.to_spherical_sky(
             COMMON_WCS,
-            include_boundary_distortions=include_dist
+            include_boundary_distortions=include_dist,
         )
         assert isinstance(sph_sky_region, SphericalSkyRegion)
-    except NotImplementedError:
-        pytest.xfail()
 
 
-@pytest.mark.parametrize(('region', 'include_dist'),
-                         itertools.product(
-                             SPHERICAL_SKY_REGIONS,
-                             INCLUDE_BOUNDARY_DISTORTIONS),
-                         ids=ids_func)
+@pytest.mark.parametrize('region', SPHERICAL_SKY_REGIONS, ids=ids_func)
+@pytest.mark.parametrize('include_dist', INCLUDE_BOUNDARY_DISTORTIONS, ids=ids_func)
 def test_spherical_sky_to_sky(region, include_dist):
-    try:
-        sph_sky_region = region.to_sky(
+    if isinstance(region, WholeSphericalSkyRegion):
+        with pytest.raises(ValueError):
+            _ = region.to_sky(
+                COMMON_WCS,
+                include_boundary_distortions=include_dist,
+            )
+
+    elif (isinstance(region, (LuneSphericalSkyRegion, RangeSphericalSkyRegion))
+          & (not include_dist)):
+        # No distortions: not defined:
+        with pytest.raises(ValueError) as excinfo:
+            _ = region.to_sky(
+                COMMON_WCS,
+                include_boundary_distortions=include_dist,
+            )
+
+        estr = 'Invalid parameter: `include_boundary_distortions=False`!'
+        assert estr in str(excinfo.value)
+
+    else:
+        sky_region = region.to_sky(
             COMMON_WCS,
-            include_boundary_distortions=include_dist
+            include_boundary_distortions=include_dist,
         )
-        assert isinstance(sph_sky_region, SkyRegion)
-    except NotImplementedError:
-        pytest.xfail()
+        assert isinstance(sky_region, SkyRegion)
 
 
-@pytest.mark.parametrize(('region', 'include_dist'),
-                         itertools.product(
-                             SPHERICAL_SKY_REGIONS,
-                             INCLUDE_BOUNDARY_DISTORTIONS),
-                         ids=ids_func)
+@pytest.mark.parametrize('region', SPHERICAL_SKY_REGIONS, ids=ids_func)
+@pytest.mark.parametrize('include_dist', INCLUDE_BOUNDARY_DISTORTIONS, ids=ids_func)
 def test_spherical_sky_to_pix(region, include_dist):
-    try:
-        sph_sky_region = region.to_pixel(
+    if isinstance(region, WholeSphericalSkyRegion):
+        with pytest.raises(ValueError):
+            _ = region.to_pixel(
+                COMMON_WCS,
+                include_boundary_distortions=include_dist,
+            )
+
+    elif (isinstance(region, (LuneSphericalSkyRegion, RangeSphericalSkyRegion))
+          & (not include_dist)):
+        # No distortions: not defined:
+        with pytest.raises(ValueError) as excinfo:
+            _ = region.to_pixel(
+                COMMON_WCS,
+                include_boundary_distortions=include_dist,
+            )
+        estr = 'Invalid parameter: `include_boundary_distortions=False`!'
+        assert estr in str(excinfo.value)
+
+    else:
+        pixel_region = region.to_pixel(
             COMMON_WCS,
-            include_boundary_distortions=include_dist
+            include_boundary_distortions=include_dist,
         )
-        assert isinstance(sph_sky_region, PixelRegion)
-    except NotImplementedError:
-        pytest.xfail()
+        assert isinstance(pixel_region, PixelRegion)
 
 
 @pytest.mark.parametrize('region', PIXEL_REGIONS, ids=ids_func)

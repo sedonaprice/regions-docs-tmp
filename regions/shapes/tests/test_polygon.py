@@ -78,17 +78,14 @@ class TestPolygonPixelRegion(BaseTestPixelRegion):
                                                include_boundary_distortions=False)
         assert isinstance(polysphsky, PolygonSphericalSkyRegion)
 
-        try:
-            polysphsky = self.reg.to_spherical_sky(wcs,
-                                                   include_boundary_distortions=True)
-            assert isinstance(polysphsky, PolygonSphericalSkyRegion)
-        except NotImplementedError:
-            pytest.xfail()
+        with pytest.raises(NotImplementedError):
+            _ = self.reg.to_spherical_sky(wcs,
+                                          include_boundary_distortions=True)
 
     def test_to_spherical_sky_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_spherical_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     def test_bounding_box(self):
@@ -198,17 +195,14 @@ class TestPolygonSkyRegion(BaseTestSkyRegion):
                                                include_boundary_distortions=False)
         assert isinstance(polysphsky, PolygonSphericalSkyRegion)
 
-        try:
-            polysphsky = self.reg.to_spherical_sky(wcs,
-                                                   include_boundary_distortions=True)
-            assert isinstance(polysphsky, PolygonSphericalSkyRegion)
-        except NotImplementedError:
-            pytest.xfail()
+        with pytest.raises(NotImplementedError):
+            _ = self.reg.to_spherical_sky(wcs,
+                                          include_boundary_distortions=True)
 
     def test_to_spherical_sky_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_spherical_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     def test_contains(self, wcs):
@@ -364,25 +358,25 @@ class TestPolygonSphericalSkyRegion(BaseTestSphericalSkyRegion):
 
         polysky3 = self.reg.to_sky(wcs,
                                    include_boundary_distortions=True,
-                                   discretize_kwargs={'n_points': 10})
+                                   n_points=10)
         assert isinstance(polysky3, PolygonSkyRegion)
-        assert len(polysky3.vertices) == 30
+        assert len(polysky3.vertices) == 10
 
         polypix2 = self.reg.to_pixel(wcs,
                                      include_boundary_distortions=True,
-                                     discretize_kwargs={'n_points': 10})
+                                     n_points=10)
         assert isinstance(polypix2, PolygonPixelRegion)
-        assert len(polypix2.vertices) == 30
+        assert len(polypix2.vertices) == 10
 
     def test_transformation_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_pixel(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     def test_frame_transformation(self):
@@ -423,6 +417,16 @@ class TestPolygonSphericalSkyRegion(BaseTestSphericalSkyRegion):
         assert_quantity_allclose(bounding_lonlat[1],
                                  Latitude([3 * u.deg,
                                            4.00015182 * u.deg]))
+
+    def test_discretize_boundary(self):
+        poly = self.reg.discretize_boundary(n_points=100)
+        assert isinstance(poly, PolygonSphericalSkyRegion)
+        assert len(poly.vertices) == 100
+
+        with pytest.raises(ValueError) as excinfo:
+            _ = self.reg.discretize_boundary(n_points=2)
+        estr = 'n_points must be greater than'
+        assert estr in str(excinfo.value)
 
     def test_centroid(self):
         # Test default polygon has mindist centroid outside region,

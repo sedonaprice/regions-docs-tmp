@@ -47,7 +47,7 @@ and determine their bounding longitude/latitude spans and circle:
     >>> print(sph_circ.bounding_lonlat)  # doctest: +FLOAT_CMP
     (<Longitude [ 59.25424338, 140.74575662] deg>, <Latitude [-70., -10.] deg>)
     >>> sph_range = RangeSphericalSkyRegion(frame="galactic",
-    ...                                     longitude_range=[-45,45]*u.deg,
+    ...                                     longitude_range=[315,45]*u.deg,
     ...                                     latitude_range=[0,45]*u.deg)
     >>> print(sph_range.bounding_circle)  # doctest: +FLOAT_CMP
     Region: CircleSphericalSkyRegion
@@ -92,6 +92,7 @@ the original and transformed coordinate frames.
 
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
+    import numpy as np
 
     from regions import (CircleSphericalSkyRegion,
                          RangeSphericalSkyRegion,
@@ -111,7 +112,7 @@ the original and transformed coordinate frames.
                                                  frame="galactic"),
                                         30*u.deg)
     sph_range = RangeSphericalSkyRegion(frame="galactic",
-                                        longitude_range=[-45,45]*u.deg,
+                                        longitude_range=[315,45]*u.deg,
                                         latitude_range=[0,45]*u.deg)
     sph_circ_transf = sph_circ.transform_to("icrs")
     sph_range_transf = sph_range.transform_to("icrs")
@@ -137,13 +138,13 @@ the original and transformed coordinate frames.
     patch = sph_circ.to_pixel(
        wcs=wcs,
        include_boundary_distortions=True,
-       discretize_kwargs={"n_points":1000}
+       n_points=1000
     ).plot(ax=ax, color='tab:blue', lw=3)
 
     sph_range.to_pixel(
        wcs=wcs,
        include_boundary_distortions=True,
-       discretize_kwargs={"n_points":250}
+       n_points=250
     ).plot(ax=ax, color='tab:red', lw=3)
 
     bound_color = 'tab:blue'
@@ -173,7 +174,7 @@ the original and transformed coordinate frames.
     sph_range.bounding_circle.to_pixel(
        wcs=wcs,
        include_boundary_distortions=True,
-       discretize_kwargs={"n_points":1000}
+       n_points=1000,
     ).plot(ax=ax, color='tab:red', lw=bound_lw, ls='--', zorder=bound_zord)
 
     patch.set_clip_path(ax.coords.frame.patch)
@@ -190,13 +191,13 @@ the original and transformed coordinate frames.
     patch = sph_circ_transf.to_pixel(
        wcs=wcs_icrs,
        include_boundary_distortions=True,
-       discretize_kwargs={"n_points":1000}
+       n_points=1000
     ).plot(ax=ax, color='tab:blue', lw=3)
 
     sph_range_transf.to_pixel(
        wcs=wcs_icrs,
        include_boundary_distortions=True,
-       discretize_kwargs={"n_points":250}
+       n_points=250
     ).plot(ax=ax, color='tab:red', lw=3)
 
 
@@ -245,7 +246,7 @@ the original and transformed coordinate frames.
     sph_range_transf.bounding_circle.to_pixel(
        wcs=wcs_icrs,
        include_boundary_distortions=True,
-       discretize_kwargs={"n_points":1000}
+       n_points=1000
     ).plot(ax=ax, color='tab:red', lw=bound_lw, ls='--', zorder=bound_zord)
 
 

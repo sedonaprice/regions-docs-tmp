@@ -41,19 +41,19 @@ class TestWholeSphericalSkyRegion(BaseTestSphericalSkyRegion):
         assert reg.visual == self.visual
 
     def test_transformation(self, wcs):
-        try:
-            self.reg.to_sky(wcs)
-        except NotImplementedError:
-            pytest.xfail()
+        with pytest.raises(ValueError):
+            _ = self.reg.to_sky(wcs)
 
-        try:
-            self.reg.to_pixel(wcs)
-        except NotImplementedError:
-            pytest.xfail()
+        with pytest.raises(ValueError):
+            _ = self.reg.to_pixel(wcs)
 
     def test_frame_transformation(self):
         reg2 = self.reg.transform_to('galactic')
         assert isinstance(reg2, WholeSphericalSkyRegion)
+
+    def test_discretize_boundary(self):
+        with pytest.raises(ValueError):
+            _ = self.reg.discretize_boundary(n_points=100)
 
     def test_eq(self):
         reg = self.reg.copy()

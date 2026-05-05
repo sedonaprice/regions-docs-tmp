@@ -36,7 +36,7 @@ with (Path(__file__).parents[1] / 'pyproject.toml').open('rb') as fh:
 highlight_language = 'python3'
 
 # If your documentation needs a minimal Sphinx version, state it here.
-needs_sphinx = '3.0'
+needs_sphinx = '8.2'
 
 # Extend astropy intersphinx_mapping with packages we use here
 intersphinx_mapping.update(  # noqa: F405
@@ -95,7 +95,7 @@ dev = 'dev' in release
 html_theme_options = {
     'logotext1': 'regions',  # white,  semi-bold
     'logotext2': '',  # orange, light
-    'logotext3': ':docs'   # white,  light
+    'logotext3': ':docs',   # white,  light
 }
 
 # Custom sidebar templates, maps document names to template names.

@@ -3,7 +3,9 @@ import abc
 import copy
 import operator
 
+import astropy.units as u
 import numpy as np
+from astropy.coordinates import SkyCoord
 from astropy.coordinates.sky_coordinate_parsers import _get_frame_class
 
 from regions._utils.spherical_helpers import bounding_lonlat_poles_processing
@@ -14,6 +16,41 @@ from regions.core.registry import RegionsRegistry
 __all__ = ['Region', 'PixelRegion', 'SkyRegion',
            'SphericalSkyRegion', 'ComplexSphericalSkyRegion']
 __doctest_skip__ = ['Region.serialize', 'Region.write']
+
+
+def _format_float(val, max_decimals=4, sci_threshold=1e5):
+    """
+    Format a float for repr/str output.
+
+    Trailing zeros are stripped (a single trailing zero after a decimal
+    point is always kept).  Scientific notation is used for values with
+    absolute value >= ``sci_threshold`` or <= 1e-5.
+
+    Parameters
+    ----------
+    val : float
+        The float value to format.
+    max_decimals : int, optional
+        The maximum number of decimal places.
+    sci_threshold : float, optional
+        The threshold above which scientific notation is used.
+    """
+    val = float(val)
+
+    if (np.isfinite(val)
+            and (abs(val) >= sci_threshold or (0 < abs(val) <= 1e-5))):
+        s = f'{val:.{max_decimals}e}'
+        mantissa, exponent = s.split('e')
+        mantissa = mantissa.rstrip('0')
+        if mantissa.endswith('.'):
+            mantissa += '0'
+        result = f'{mantissa}e{exponent}'
+    else:
+        result = f'{val:.{max_decimals}f}'
+        result = result.rstrip('0')
+        if result.endswith('.'):
+            result += '0'
+    return result
 
 
 class Region(abc.ABC):
@@ -40,32 +77,91 @@ class Region(abc.ABC):
 
         return self.__class__(**changes)
 
-    def __repr__(self):
-        prefix = f'{self.__class__.__name__}'
-        cls_info = []
+    @staticmethod
+    def _format_param_value(val, *, max_decimals=4, max_elements=5):
+        """
+        Format a region parameter value for use in repr/str output.
+
+        Floats (including pixel coordinates) are formatted using
+        `_format_float` with at most ``max_decimals`` decimal
+        places and trailing zeros stripped. `~regions.PixCoord`
+        arrays and `~astropy.coordinates.SkyCoord` arrays with more
+        than ``max_elements`` elements are truncated to the first
+        ``max_elements``.
+
+        Parameters
+        ----------
+        val : object
+            The parameter value to format.
+        max_decimals : int, optional
+            The maximum number of decimal places for floating-point
+            values.
+        max_elements : int, optional
+            The maximum number of array elements to display before
+            truncating with ``...``.
+        """
+        if isinstance(val, SkyCoord):
+            if not val.isscalar and len(val) > max_elements:
+                result = str(val[:max_elements]).rstrip('>') + ', ...]>'
+            else:
+                result = str(val)
+        elif isinstance(val, PixCoord):
+            if val.isscalar:
+                if isinstance(val.x, float):
+                    x_fmt = _format_float(val.x, max_decimals)
+                    y_fmt = _format_float(val.y, max_decimals)
+                    result = f'PixCoord(x={x_fmt}, y={y_fmt})'
+                else:
+                    result = f'PixCoord(x={val.x}, y={val.y})'
+            else:
+                n = len(val.x)
+                xs = val.x[:max_elements] if n > max_elements else val.x
+                ys = val.y[:max_elements] if n > max_elements else val.y
+                if np.issubdtype(val.x.dtype, np.floating):
+                    x_str = ' '.join(
+                        _format_float(x, max_decimals) for x in xs)
+                    y_str = ' '.join(
+                        _format_float(y, max_decimals) for y in ys)
+                else:
+                    x_str = ' '.join(str(x) for x in xs)
+                    y_str = ' '.join(str(y) for y in ys)
+                if n > max_elements:
+                    x_str += ' ...'
+                    y_str += ' ...'
+                result = f'PixCoord(x=[{x_str}], y=[{y_str}])'
+        elif isinstance(val, u.Quantity):
+            result = f'{_format_float(val.value, max_decimals)} {val.unit}'
+        elif isinstance(val, float) and not isinstance(val, bool):
+            result = _format_float(val, max_decimals)
+        else:
+            result = str(val)
+        return result
+
+    def _cls_info(self):
+        """
+        Return a list of ``(param_name, formatted_value)`` tuples for
+        all region parameters, used by `__repr__` and `__str__`.
+        """
+        info = []
         if self._params is not None:
             for param in self._params:
+                val = getattr(self, param)
                 if param == 'text':
-                    # place quotes around text value
-                    keyval = f'{param}={getattr(self, param)!r}'
+                    # Place quotes around text value
+                    formatted = repr(val)
                 else:
-                    keyval = f'{param}={getattr(self, param)}'
-                cls_info.append(keyval)
-        cls_info = ', '.join(cls_info)
+                    formatted = self._format_param_value(val)
+                info.append((param, formatted))
+        return info
+
+    def __repr__(self):
+        prefix = self.__class__.__name__
+        cls_info = ', '.join(f'{k}={v}' for k, v in self._cls_info())
         return f'<{prefix}({cls_info})>'
 
     def __str__(self):
-        cls_info = [('Region', self.__class__.__name__)]
-        if self._params is not None:
-            for param in self._params:
-                if param == 'text':
-                    # place quotes around text value
-                    keyval = (param, repr(getattr(self, param)))
-                else:
-                    keyval = (param, getattr(self, param))
-                cls_info.append(keyval)
-
-        return '\n'.join([f'{key}: {val}' for key, val in cls_info])
+        cls_info = [('Region', self.__class__.__name__)] + self._cls_info()
+        return '\n'.join(f'{key}: {val}' for key, val in cls_info)
 
     def __eq__(self, other):
         """
@@ -233,6 +329,14 @@ class Region(abc.ABC):
         return RegionsRegistry.serialize([self], Region, format=format,
                                          **kwargs)
 
+    @staticmethod
+    def _validate_planar_spherical_transform(wcs, include_boundary_distortions):
+        # Validate whether inputs are valid for planar <-> spherical transformations
+        if include_boundary_distortions and (wcs is None):
+            raise ValueError(
+                "'wcs' must be set if `include_boundary_distortions=True`",
+            )
+
 
 class PixelRegion(Region):
     """
@@ -316,12 +420,26 @@ class PixelRegion(Region):
         -------
         sky_region : `~regions.SkyRegion`
             The sky region.
+
+        Notes
+        -----
+        The conversion between pixel and sky coordinates is an
+        approximation. The pixel region shape is mapped to a sky region
+        shape using the local pixel scale and angle at the region
+        center. Projection effects over the extent of the region are not
+        accounted for. The region shape type is always preserved (e.g.,
+        a `CirclePixelRegion` converts to a `CircleSkyRegion`).
+
+        For WCS with distortions (e.g., SIP), the local Jacobian matrix
+        of the WCS transformation is used to compute directional scale
+        factors and angle. For WCS without distortions, a local pixel
+        scale and angle are computed using offset-based methods.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def to_spherical_sky(self, wcs=None, include_boundary_distortions=False,
-                         discretize_kwargs=None):
+                         n_points=None):
         """
         Convert to an equivalent spherical `~regions.SphericalSkyRegion`
         instance.
@@ -335,13 +453,14 @@ class PixelRegion(Region):
             Ignored if boundary distortions not included.
 
         include_boundary_distortions : bool, optional
-            If True, accounts for boundary boundary distortions in spherical to planar
+            If True, accounts for boundary distortions in spherical to planar
             conversions, by discretizing the boundary and converting the boundary polygon.
             Default is False, which converts to an equivalent idealized shape.
 
-        discretize_kwargs : dict, optional
-            Optional keyword arguments to pass to discretize_boundary() method
-            if including boundary distortions.
+        n_points : int, optional
+            The number of polygon vertices for boundary discretization.
+            This keyword will have effect unless ``include_boundary_distortions=True``.
+            Default is 100.
 
         Returns
         -------
@@ -563,12 +682,26 @@ class SkyRegion(Region):
         -------
         pixel_region : `~regions.PixelRegion`
             A pixel region.
+
+        Notes
+        -----
+        The conversion between sky and pixel coordinates is an
+        approximation. The sky region shape is mapped to a pixel region
+        shape using the local pixel scale and angle at the region
+        center. Projection effects over the extent of the region are not
+        accounted for. The region shape type is always preserved (e.g.,
+        a `CircleSkyRegion` converts to a `CirclePixelRegion`).
+
+        For WCS with distortions (e.g., SIP), the local Jacobian matrix
+        of the WCS transformation is used to compute directional scale
+        factors and angle. For WCS without distortions, a local pixel
+        scale and angle are computed using offset-based methods.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def to_spherical_sky(self, wcs=None, include_boundary_distortions=False,
-                         discretize_kwargs=None):
+                         n_points=None):
         """
         Convert to an equivalent spherical `~regions.SphericalSkyRegion`
         instance.
@@ -582,13 +715,14 @@ class SkyRegion(Region):
             Ignored if boundary distortions not included.
 
         include_boundary_distortions : bool, optional
-            If True, accounts for boundary boundary distortions in spherical to planar
+            If True, accounts for boundary distortions in spherical to planar
             conversions, by discretizing the boundary and converting the boundary polygon.
             Default is False, which converts to an equivalent idealized shape.
 
-        discretize_kwargs : dict, optional
-            Optional keyword arguments to pass to discretize_boundary() method
-            if including boundary distortions.
+        n_points : int, optional
+            The number of polygon vertices for boundary discretization.
+            This keyword will have effect unless ``include_boundary_distortions=True``.
+            Default is 100.
 
         Returns
         -------
@@ -619,7 +753,7 @@ class SphericalSkyRegion(Region):
         from .compound import CompoundSphericalSkyRegion
 
         return CompoundSphericalSkyRegion(
-            region1=self, region2=other, operator=operator.and_
+            region1=self, region2=other, operator=operator.and_,
         )
 
     def symmetric_difference(self, other):
@@ -635,7 +769,7 @@ class SphericalSkyRegion(Region):
         from .compound import CompoundSphericalSkyRegion
 
         return CompoundSphericalSkyRegion(
-            region1=self, region2=other, operator=operator.xor
+            region1=self, region2=other, operator=operator.xor,
         )
 
     def union(self, other):
@@ -651,7 +785,7 @@ class SphericalSkyRegion(Region):
         from .compound import CompoundSphericalSkyRegion
 
         return CompoundSphericalSkyRegion(
-            region1=self, region2=other, operator=operator.or_
+            region1=self, region2=other, operator=operator.or_,
         )
 
     @staticmethod
@@ -675,7 +809,7 @@ class SphericalSkyRegion(Region):
         else:
             raise AttributeError(
                 "Either 'center' or 'vertices' must be an attribute/property "
-                'of the SphericalSkyRegion.'
+                'of the SphericalSkyRegion.',
             )
 
     @property
@@ -694,7 +828,7 @@ class SphericalSkyRegion(Region):
     def _validate_lonlat_bounds(self, lons_arr, lats_arr, inner_region=None):
         # Check if shape covers either pole & modify lats arr accordingly:
         lons_arr, lats_arr = bounding_lonlat_poles_processing(
-            self, lons_arr, lats_arr, inner_region=inner_region
+            self, lons_arr, lats_arr, inner_region=inner_region,
         )
         return lons_arr, lats_arr
 
@@ -710,7 +844,7 @@ class SphericalSkyRegion(Region):
         lons_arr : list of `~astropy.coordinates.Longitude`
             List of lower, upper boundary longitude values.
 
-        lons_arr : list of `~astropy.coordinates.Latitude`
+        lats_arr : list of `~astropy.coordinates.Latitude`
             List of lower, upper boundary latitude values.
         """
         raise NotImplementedError
@@ -731,8 +865,8 @@ class SphericalSkyRegion(Region):
     @abc.abstractmethod
     def transform_to(self, frame, merge_attributes=True):
         """
-        Transform the `SphericalSkyRegion` instance into another
-        instance with a different coordinate reference frame.
+        Transform the `~regions.SphericalSkyRegion` instance into
+        another instance with a different coordinate reference frame.
 
         The precise frame transformed to depends on ``merge_attributes``.
         If `False`, the destination frame is used exactly as passed in.
@@ -766,15 +900,16 @@ class SphericalSkyRegion(Region):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def discretize_boundary(self, n_points=10):
+    def discretize_boundary(self, n_points=100):
         """
-        Discretize the boundary into a PolygonSphericalSkyRegion, as an
-        approximation where all sides follow great circles.
+        Discretize the boundary into a
+        `~regions.PolygonSphericalSkyRegion`, as an approximation where
+        all sides follow great circles.
 
         Parameters
         ----------
         n_points : int, optional
-            Number of points along the region's boundary.
+            Number of points along the region's boundary. Default is 100.
 
         Returns
         -------
@@ -785,7 +920,7 @@ class SphericalSkyRegion(Region):
 
     @abc.abstractmethod
     def to_sky(
-        self, wcs=None, include_boundary_distortions=False, discretize_kwargs=None
+        self, wcs=None, include_boundary_distortions=False, n_points=None,
     ):
         """
         Convert to a planar `~regions.SkyRegion` instance.
@@ -799,13 +934,14 @@ class SphericalSkyRegion(Region):
             Ignored if boundary distortions not included.
 
         include_boundary_distortions : bool, optional
-            If True, accounts for boundary boundary distortions in spherical to planar
+            If True, accounts for boundary distortions in spherical to planar
             conversions, by discretizing the boundary and converting the boundary polygon.
             Default is False, which converts to an equivalent idealized shape.
 
-        discretize_kwargs : dict, optional
-            Optional keyword arguments to pass to discretize_boundary() method
-            if including boundary distortions.
+        n_points : int, optional
+            The number of polygon vertices for boundary discretization.
+            This keyword will have no effect unless ``include_boundary_distortions=True``.
+            Default is 100.
 
         Returns
         -------
@@ -818,7 +954,7 @@ class SphericalSkyRegion(Region):
 
     @abc.abstractmethod
     def to_pixel(
-        self, wcs=None, include_boundary_distortions=False, discretize_kwargs=None
+        self, wcs=None, include_boundary_distortions=False, n_points=None,
     ):
         """
         Convert to a planar `~regions.PixelRegion` instance.
@@ -832,13 +968,14 @@ class SphericalSkyRegion(Region):
             Ignored if boundary distortions not included.
 
         include_boundary_distortions : bool, optional
-            If True, accounts for boundary boundary distortions in spherical to planar
+            If True, accounts for boundary distortions in spherical to planar
             conversions, by discretizing the boundary and converting the boundary polygon.
             Default is False, which converts to an equivalent idealized shape.
 
-        discretize_kwargs : dict, optional
-            Optional keyword arguments to pass to discretize_boundary() method
-            if including boundary distortions.
+        n_points : int, optional
+            The number of polygon vertices for boundary discretization.
+            This keyword will have no effect unless ``include_boundary_distortions=True``.
+            Default is 100.
 
         Returns
         -------
@@ -862,7 +999,7 @@ class ComplexSphericalSkyRegion(SphericalSkyRegion):
     """
     Base class for complex cases, where the definitional parameters do
     not / cannot transform between coordinate frames (including
-    RangeSphericalSkyRegion).
+    `~regions.RangeSphericalSkyRegion`).
     """
 
     # Because the parameters don't transform,

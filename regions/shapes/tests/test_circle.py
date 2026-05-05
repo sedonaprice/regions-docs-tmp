@@ -14,8 +14,7 @@ from regions._utils.optional_deps import HAS_MATPLOTLIB
 from regions.core import PixCoord, RegionMeta, RegionVisual
 from regions.shapes.circle import (CirclePixelRegion, CircleSkyRegion,
                                    CircleSphericalSkyRegion)
-from regions.shapes.polygon import (PolygonPixelRegion, PolygonSkyRegion,
-                                    PolygonSphericalSkyRegion)
+from regions.shapes.polygon import PolygonPixelRegion, PolygonSkyRegion
 from regions.shapes.tests.test_common import (BaseTestPixelRegion,
                                               BaseTestSkyRegion,
                                               BaseTestSphericalSkyRegion)
@@ -68,17 +67,14 @@ class TestCirclePixelRegion(BaseTestPixelRegion):
                                                  include_boundary_distortions=False)
         assert isinstance(sphskycircle, CircleSphericalSkyRegion)
 
-        try:
-            sphskycircle = self.reg.to_spherical_sky(wcs,
-                                                     include_boundary_distortions=True)
-            assert isinstance(sphskycircle, PolygonSphericalSkyRegion)
-        except NotImplementedError:
-            pytest.xfail()
+        with pytest.raises(NotImplementedError):
+            _ = self.reg.to_spherical_sky(wcs,
+                                          include_boundary_distortions=True)
 
     def test_to_spherical_sky_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_spherical_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     @pytest.mark.skipif(not HAS_MATPLOTLIB, reason='matplotlib is required')
@@ -129,7 +125,7 @@ class TestCircleSkyRegion(BaseTestSkyRegion):
 
         assert_allclose(pixcircle.center.x, -50.5)
         assert_allclose(pixcircle.center.y, 299.5)
-        assert_allclose(pixcircle.radius, 0.027777777777828305)
+        assert_allclose(pixcircle.radius, 0.0278117, rtol=1e-6)
 
         skycircle2 = pixcircle.to_sky(wcs)
 
@@ -143,17 +139,14 @@ class TestCircleSkyRegion(BaseTestSkyRegion):
                                                  include_boundary_distortions=False)
         assert isinstance(sphskycircle, CircleSphericalSkyRegion)
 
-        try:
-            sphskycircle = self.reg.to_spherical_sky(wcs,
-                                                     include_boundary_distortions=True)
-            assert isinstance(sphskycircle, PolygonSphericalSkyRegion)
-        except NotImplementedError:
-            pytest.xfail()
+        with pytest.raises(NotImplementedError):
+            _ = self.reg.to_spherical_sky(wcs,
+                                          include_boundary_distortions=True)
 
     def test_to_spherical_sky_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_spherical_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     def test_dimension_center(self):
@@ -210,7 +203,7 @@ class TestCircleSphericalSkyRegion(BaseTestSphericalSkyRegion):
 
         assert_allclose(pixcircle.center.x, -50.5)
         assert_allclose(pixcircle.center.y, 299.5)
-        assert_allclose(pixcircle.radius, 0.027777777777828305)
+        assert_allclose(pixcircle.radius, 0.0278117, rtol=1e-6)
 
         skycircle = sphskycircle.to_sky(wcs)
         assert isinstance(skycircle, CircleSkyRegion)
@@ -232,12 +225,12 @@ class TestCircleSphericalSkyRegion(BaseTestSphericalSkyRegion):
     def test_transformation_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_pixel(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     def test_frame_transformation(self):

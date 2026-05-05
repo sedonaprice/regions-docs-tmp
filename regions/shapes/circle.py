@@ -12,7 +12,8 @@ from astropy.coordinates import Angle
 from regions._geometry import circular_overlap_grid
 from regions._utils.spherical_helpers import (
     get_circle_latitude_tangent_limits, get_circle_longitude_tangent_limits)
-from regions._utils.wcs_helpers import pixel_scale_angle_at_skycoord
+from regions._utils.wcs_helpers import (pixel_to_sky_mean_scale,
+                                        sky_to_pixel_mean_scale)
 from regions.core.attributes import (PositiveScalar, PositiveScalarAngle,
                                      RegionMetaDescr, RegionVisualDescr,
                                      ScalarPixCoord, ScalarSkyCoord)
@@ -21,6 +22,7 @@ from regions.core.core import PixelRegion, SkyRegion, SphericalSkyRegion
 from regions.core.mask import RegionMask
 from regions.core.metadata import RegionMeta, RegionVisual
 from regions.core.pixcoord import PixCoord
+from regions.shapes.polygon import PolygonPixelRegion
 
 __all__ = ['CirclePixelRegion', 'CircleSkyRegion', 'CircleSphericalSkyRegion']
 
@@ -87,23 +89,16 @@ class CirclePixelRegion(PixelRegion):
             return np.logical_not(in_circle)
 
     def to_sky(self, wcs):
-        # TODO: write a pixel_to_skycoord_scale_angle
-        center = wcs.pixel_to_world(self.center.x, self.center.y)
-        _, pixscale, _ = pixel_scale_angle_at_skycoord(center, wcs)
-        radius = Angle(self.radius * u.pix * pixscale, 'arcsec')
+        center, mean_scale = pixel_to_sky_mean_scale(self.center, wcs)
+        radius = Angle(self.radius * mean_scale, 'arcsec')
         return CircleSkyRegion(center, radius, meta=self.meta.copy(),
                                visual=self.visual.copy())
 
     def to_spherical_sky(self, wcs=None, include_boundary_distortions=False,
-                         discretize_kwargs=None):
-        if discretize_kwargs is None:
-            discretize_kwargs = {}
+                         n_points=None):
+        self._validate_planar_spherical_transform(wcs, include_boundary_distortions)
 
         if include_boundary_distortions:
-            if wcs is None:
-                raise ValueError(
-                    "'wcs' must be set if 'include_boundary_distortions'=True"
-                )
             # Requires planar to spherical projection (using WCS) and discretization
             # Will require implementing discretization in pixel space
             # to get correct handling of distortions.
@@ -113,7 +108,7 @@ class CirclePixelRegion(PixelRegion):
             # # Leverage polygon class to_spherical_sky() functionality without
             # # distortions, as the distortions were already computed in creating
             # # that polygon approximation
-            # return self.discretize_boundary(**discretize_kwargs).to_spherical_sky(
+            # return self.discretize_boundary(n_points=npoints).to_spherical_sky(
             #     wcs=wcs, include_boundary_distortions=False
             # )
 
@@ -207,6 +202,29 @@ class CirclePixelRegion(PixelRegion):
         center = self.center.rotate(center, angle)
         return self.copy(center=center)
 
+    def to_polygon(self, n_points=100):
+        """
+        Return a `~regions.PolygonPixelRegion` that approximates this
+        circle.
+
+        Parameters
+        ----------
+        n_points : int, optional
+            The number of polygon vertices. Default is 100.
+
+        Returns
+        -------
+        polygon : `~regions.PolygonPixelRegion`
+            A polygon region approximating the circle.
+        """
+        theta = np.linspace(0, 2 * np.pi, n_points, endpoint=False)
+        x = self.radius * np.cos(theta) + self.center.x
+        y = self.radius * np.sin(theta) + self.center.y
+        vertices = PixCoord(x=x, y=y)
+        return PolygonPixelRegion(vertices=vertices,
+                                  meta=self.meta.copy(),
+                                  visual=self.visual.copy())
+
 
 class CircleSkyRegion(SkyRegion):
     """
@@ -237,22 +255,36 @@ class CircleSkyRegion(SkyRegion):
         self.meta = meta or RegionMeta()
         self.visual = visual or RegionVisual()
 
+    def to_polygon(self, wcs, n_points=100):
+        """
+        Return a `~regions.PolygonSkyRegion` that approximates this
+        circle.
+
+        Parameters
+        ----------
+        wcs : `~astropy.wcs.WCS`
+            The WCS to use for the sky-to-pixel-to-sky conversion.
+        n_points : int, optional
+            The number of polygon vertices. Default is 100.
+
+        Returns
+        -------
+        polygon : `~regions.PolygonSkyRegion`
+            A polygon region approximating the circle.
+        """
+        return self.to_pixel(wcs).to_polygon(n_points=n_points).to_sky(wcs)
+
     def to_pixel(self, wcs):
-        center, pixscale, _ = pixel_scale_angle_at_skycoord(self.center, wcs)
-        radius = (self.radius / pixscale).to(u.pix).value
+        center, mean_scale = sky_to_pixel_mean_scale(self.center, wcs)
+        radius = self.radius.to(u.arcsec).value * mean_scale
         return CirclePixelRegion(center, radius, meta=self.meta.copy(),
                                  visual=self.visual.copy())
 
     def to_spherical_sky(self, wcs=None, include_boundary_distortions=False,
-                         discretize_kwargs=None):
-        if discretize_kwargs is None:
-            discretize_kwargs = {}
+                         n_points=None):
+        self._validate_planar_spherical_transform(wcs, include_boundary_distortions)
 
         if include_boundary_distortions:
-            if wcs is None:
-                raise ValueError(
-                    "'wcs' must be set if 'include_boundary_distortions'=True"
-                )
             # Requires planar to spherical projection (using WCS) and discretization
             # Will require implementing discretization in pixel space
             # to get correct handling of distortions.
@@ -262,12 +294,12 @@ class CircleSkyRegion(SkyRegion):
             # # Leverage polygon class to_spherical_sky() functionality without
             # # distortions, as the distortions were already computed in creating
             # # that polygon approximation
-            # return self.to_pixel(wcs).discretize_boundary(**discretize_kwargs).to_spherical_sky(
+            # return self.to_pixel(wcs).discretize_boundary(n_points=n_points).to_spherical_sky(
             #     wcs=wcs, include_boundary_distortions=False
             # )
 
         return CircleSphericalSkyRegion(
-            self.center, self.radius, meta=self.meta, visual=self.visual
+            self.center, self.radius, meta=self.meta, visual=self.visual,
         )
 
 
@@ -275,9 +307,6 @@ class CircleSphericalSkyRegion(SphericalSkyRegion):
     """
     Class for a circular sky region, where the circle is interpreted
     within a spherical geometry reference frame.
-
-    This region is very much akin to the `~regions.CircleSkyRegion`
-    class (and borrows internal attributes following the same structure).
 
     Parameters
     ----------
@@ -328,14 +357,14 @@ class CircleSphericalSkyRegion(SphericalSkyRegion):
         frame = self._validate_frame(frame)
 
         center_transf = self.center.transform_to(
-            frame, merge_attributes=merge_attributes
+            frame, merge_attributes=merge_attributes,
         )
 
         return CircleSphericalSkyRegion(
             center_transf,
             self.radius.copy(),
             self.meta.copy(),
-            self.visual.copy()
+            self.visual.copy(),
         )
 
     def discretize_boundary(self, n_points=100):
@@ -344,53 +373,63 @@ class CircleSphericalSkyRegion(SphericalSkyRegion):
         theta = np.linspace(0, 1, num=n_points, endpoint=False) * 360 * u.deg
         # Need to invert order because of CW convention:
         bound_verts = self.center.directional_offset_by(theta[::-1], self.radius)
-        return PolygonSphericalSkyRegion(bound_verts)
+        return PolygonSphericalSkyRegion(bound_verts, meta=self.meta.copy(),
+                                         visual=self.visual.copy())
+
+    def to_polygon(self, n_points=100):
+        """
+        Return a `~regions.PolygonSphericalSkyRegion` that approximates this
+        circle.
+
+        Parameters
+        ----------
+        n_points : int, optional
+            The number of polygon vertices. Default is 100.
+
+        Returns
+        -------
+        polygon : `~regions.PolygonSphericalSkyRegion`
+            A polygon region approximating the circle.
+        """
+        return self.discretize_boundary(n_points=n_points)
 
     def to_sky(
-        self, wcs=None, include_boundary_distortions=False, discretize_kwargs=None
+        self, wcs=None, include_boundary_distortions=False, n_points=None,
     ):
-        if discretize_kwargs is None:
-            discretize_kwargs = {}
+        self._validate_planar_spherical_transform(wcs, include_boundary_distortions)
 
         if include_boundary_distortions:
-            if wcs is None:
-                raise ValueError(
-                    "'wcs' must be set if 'include_boundary_distortions'=True"
-                )
             # Requires spherical to planar projection (from WCS) and discretization
             # Use to_pixel(), then apply "small angle approx" to get planar sky.
             return self.to_pixel(
                 include_boundary_distortions=include_boundary_distortions,
                 wcs=wcs,
-                discretize_kwargs=discretize_kwargs,
+                n_points=n_points,
             ).to_sky(wcs)
 
         return CircleSkyRegion(
-            self.center, self.radius, meta=self.meta, visual=self.visual
+            self.center, self.radius, meta=self.meta, visual=self.visual,
         )
 
     def to_pixel(
         self,
         wcs=None,
         include_boundary_distortions=False,
-        discretize_kwargs=None,
+        n_points=None,
     ):
+        self._validate_planar_spherical_transform(wcs, include_boundary_distortions)
+
         if include_boundary_distortions:
             from .polygon import PolygonPixelRegion
 
-            if discretize_kwargs is None:
-                discretize_kwargs = {}
+            disc_kwargs = {} if n_points is None else {'n_points': n_points}
 
-            if wcs is None:
-                raise ValueError(
-                    "'wcs' must be set if 'include_boundary_distortions'=True"
-                )
             # Requires spherical to planar projection (from WCS) and discretization
             verts = wcs.world_to_pixel(
-                self.discretize_boundary(**discretize_kwargs).vertices
+                self.discretize_boundary(**disc_kwargs).vertices,
             )
             return PolygonPixelRegion(
-                PixCoord(*verts), meta=self.meta.copy(), visual=self.visual.copy()
+                PixCoord(*verts), meta=self.meta.copy(), visual=self.visual.copy(),
             )
 
         return self.to_sky().to_pixel(wcs)

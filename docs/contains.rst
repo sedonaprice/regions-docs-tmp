@@ -56,7 +56,7 @@ or `regions.PixelRegion.contains` methods::
 
     >>> pixcoords = PixCoord.from_sky(sky_center, wcs)
     >>> pixel_region.contains(pixcoords)
-    True
+    np.True_
 
 Note that `regions.SkyRegion.contains` requires a WCS to be passed::
 
@@ -70,7 +70,7 @@ Points Inside Spherical Regions
 
 For `~regions.SphericalSkyRegion` objects, checking whether point(s) are
 contained inside that region requires no other input --- since these
-regions are defined with a the spherical geometry, and not a projected geometry
+regions are defined with a spherical geometry, and not a projected geometry
 (as captured through the projection encoded in a WCS) as in
 `~regions.SkyRegion`.
 
@@ -88,7 +88,7 @@ Let's define a spherical sky region::
         (42., 43.)>
     radius: 25.0 deg
 
-Use the `~regions.SphericalSkyRegion.contains()` method to determine which
+Use the `regions.SphericalSkyRegion.contains` method to determine which
 point(s) lie inside or outside the region::
 
     >>> skycoord = SkyCoord([50, 50], [10, 60], unit='deg')

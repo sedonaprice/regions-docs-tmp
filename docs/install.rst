@@ -9,13 +9,13 @@ Regions has the following strict requirements:
 
 * `Python <https://www.python.org/>`_ 3.11 or later
 
-* `NumPy <https://numpy.org/>`_ 1.25 or later
+* `NumPy <https://numpy.org/>`_ 2.0 or later
 
-* `Astropy`_ 6.0 or later
+* `Astropy`_ 6.1 or later
 
 Region also optionally depends on other packages for some features:
 
-* `Matplotlib <https://matplotlib.org/>`_ 3.8 or later
+* `Matplotlib <https://matplotlib.org/>`_ 3.9 or later
 
 
 Installing the latest released version
@@ -26,12 +26,12 @@ Using pip
 
 To install Regions with `pip`_, run::
 
-    pip install regions
+    python -m pip install regions
 
 If you want to install Regions along with all of its optional
 dependencies, you can instead do::
 
-    pip install "regions[all]"
+    python -m pip install "regions[all]"
 
 In most cases, this will install a pre-compiled version (called a
 wheel) of Regions, but if you are using a very recent version of Python
@@ -94,12 +94,12 @@ Then to build and install Regions (with all of its optional
 dependencies), run::
 
     cd regions
-    pip install ".[all]"
+    python -m pip install ".[all]"
 
 Alternatively, `pip`_ can be used to retrieve, build, and install the
 latest development version from `GitHub`_::
 
-    pip install "git+https://github.com/astropy/regions.git#egg=regions[all]"
+    python -m pip install "git+https://github.com/astropy/regions.git#egg=regions[all]"
 
 
 Testing an installed Regions

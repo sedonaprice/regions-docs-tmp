@@ -2,7 +2,7 @@
 
 import astropy.units as u
 import pytest
-from astropy.coordinates import Latitude, Longitude, SkyCoord
+from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
 from astropy.io import fits
 from astropy.tests.helper import assert_quantity_allclose
 from astropy.utils.data import get_pkg_data_filename
@@ -12,6 +12,7 @@ from numpy.testing import assert_allclose, assert_equal
 from regions.core import RegionMeta, RegionVisual
 from regions.core.compound import CompoundSphericalSkyRegion
 from regions.shapes.circle import CircleSphericalSkyRegion
+from regions.shapes.lune import LuneSphericalSkyRegion
 from regions.shapes.polygon import (PolygonPixelRegion, PolygonSkyRegion,
                                     PolygonSphericalSkyRegion)
 from regions.shapes.range import RangeSphericalSkyRegion
@@ -49,6 +50,78 @@ class TestRangeSphericalSkyRegion(BaseTestSphericalSkyRegion):
         with pytest.raises(ValueError) as excinfo:
             _ = RangeSphericalSkyRegion(frame='icrs')
         estr = 'A range for at least one of longitude and latitude must be set'
+        assert estr in str(excinfo.value)
+
+    def test_invalid_lon_range(self):
+        # Test input types:
+        for lon_range in [u.Quantity([0, 10], u.m / u.s), [0 * u.m / u.s, 30 * u.m / u.s]]:
+            with pytest.raises(ValueError) as excinfo:
+                _ = RangeSphericalSkyRegion(longitude_range=lon_range, frame='icrs')
+            estr = 'must have angular units'
+            assert estr in str(excinfo.value)
+
+        for lon_range in [u.Quantity([0], u.deg), Angle([2 * u.radian])]:
+            with pytest.raises(ValueError) as excinfo:
+                _ = RangeSphericalSkyRegion(longitude_range=lon_range, frame='icrs')
+            estr = 'must be length 2'
+            assert estr in str(excinfo.value)
+
+        for lon_range in [[0 * u.deg], [0, 10], 'string']:
+            with pytest.raises(ValueError) as excinfo:
+                _ = RangeSphericalSkyRegion(longitude_range=lon_range, frame='icrs')
+            estr = 'must be an angle of length 2'
+            assert estr in str(excinfo.value)
+
+        # Test valid boundary values:
+        for lon_range in [[-30, 30] * u.deg, [20, 560] * u.deg]:
+            with pytest.raises(ValueError) as excinfo:
+                _ = RangeSphericalSkyRegion(longitude_range=lon_range, frame='icrs')
+            estr = 'Longitude values must be within [0, 360] degrees or equivalent!'
+            assert estr in str(excinfo.value)
+
+    def test_invalid_lat_range(self):
+        # Test input types:
+        for lat_range in [u.Quantity([0, 10], u.m / u.s), [0 * u.m / u.s, 30 * u.m / u.s]]:
+            with pytest.raises(ValueError) as excinfo:
+                _ = RangeSphericalSkyRegion(latitude_range=lat_range, frame='icrs')
+            estr = 'must have angular units'
+            assert estr in str(excinfo.value)
+
+        for lat_range in [u.Quantity([0], u.deg), Angle([2 * u.radian])]:
+            with pytest.raises(ValueError) as excinfo:
+                _ = RangeSphericalSkyRegion(latitude_range=lat_range, frame='icrs')
+            estr = 'must be length 2'
+            assert estr in str(excinfo.value)
+
+        for lat_range in [[0 * u.deg], [0, 10], 'string']:
+            with pytest.raises(ValueError) as excinfo:
+                _ = RangeSphericalSkyRegion(latitude_range=lat_range, frame='icrs')
+            estr = 'must be an angle of length 2'
+            assert estr in str(excinfo.value)
+
+        # Test valid boundary values:
+        for lat_range in [[-120, -30] * u.deg, [20, 100] * u.deg]:
+            with pytest.raises(ValueError) as excinfo:
+                _ = RangeSphericalSkyRegion(latitude_range=lat_range, frame='icrs')
+            estr = 'Latitude values must be within [-90, 90] degrees or equivalent!'
+            assert estr in str(excinfo.value)
+
+    def test_invalid_lon_bounds_input(self):
+        invalid_bounds = CircleSphericalSkyRegion(SkyCoord(5 * u.deg, 0 * u.deg),
+                                                  0.2 * u.deg)
+        with pytest.raises(ValueError) as excinfo:
+            _ = RangeSphericalSkyRegion(_longitude_bounds=invalid_bounds,
+                                        frame='icrs')
+        estr = 'Invalid direct longitude bounds input!'
+        assert estr in str(excinfo.value)
+
+    def test_invalid_lat_bounds_input(self):
+        invalid_bounds = LuneSphericalSkyRegion(SkyCoord(3 * u.deg, 0 * u.deg),
+                                                SkyCoord(178 * u.deg, 0 * u.deg))
+        with pytest.raises(ValueError) as excinfo:
+            _ = RangeSphericalSkyRegion(_latitude_bounds=invalid_bounds,
+                                        frame='icrs')
+        estr = 'Invalid direct latitude bounds input!'
         assert estr in str(excinfo.value)
 
     def test_lon_only(self):
@@ -182,54 +255,74 @@ class TestRangeSphericalSkyRegion(BaseTestSphericalSkyRegion):
         assert reg.visual == self.visual
 
     def test_transformation(self, wcs):
-        polypix = self.reg.to_pixel(wcs)
-        assert isinstance(polypix, PolygonPixelRegion)
-        assert len(polypix.vertices) == 4
 
-        assert_allclose(polypix.vertices.x,
-                        [-4536.82156523, -5685.54622545,
-                         -5771.86292244, -4861.62586712])
-        assert_allclose(polypix.vertices.y,
-                        [-3091.16199865, -3236.05135267,
-                         -2837.97224466, -2724.76777962])
+        # Test error for no boundary distortions:
+        with pytest.raises(ValueError) as excinfo:
+            _ = self.reg.to_pixel(wcs)
+        estr = 'Invalid parameter: `include_boundary_distortions=False`!'
+        assert estr in str(excinfo.value)
 
-        polysky = self.reg.to_sky(wcs)
-        assert isinstance(polysky, PolygonSkyRegion)
-        assert_allclose(self.reg.vertices.ra.deg, [0, 10, 10, 0])
-        assert_allclose(self.reg.vertices.dec.deg, [-4, -4, 4, 4])
-        assert len(polysky.vertices) == 4
+        with pytest.raises(ValueError) as excinfo:
+            _ = self.reg.to_sky(wcs)
+        estr = 'Invalid parameter: `include_boundary_distortions=False`!'
+        assert estr in str(excinfo.value)
 
+        # Test boundary distortion transformations:
         polypix2 = self.reg.to_pixel(wcs,
                                      include_boundary_distortions=True,
-                                     discretize_kwargs={'n_points': 10})
+                                     n_points=8)
         assert isinstance(polypix2, PolygonPixelRegion)
-        assert len(polypix2.vertices) == 40
+        assert len(polypix2.vertices) == 8
+
+        assert_allclose(polypix2.vertices.x,
+                        [-4861.625867, -4717.364168,
+                         -4536.821565, -5079.772466,
+                         -5685.546225, -5734.531503,
+                         -5771.862922, -5302.114084])
+        assert_allclose(polypix2.vertices.y,
+                        [-2724.76778, -2909.927597,
+                         -3091.161999, -3184.698562,
+                         -3236.051353, -3037.141783,
+                         -2837.972245, -2798.470494])
 
         polysky2 = self.reg.to_sky(wcs,
                                    include_boundary_distortions=True,
-                                   discretize_kwargs={'n_points': 10})
+                                   n_points=8)
         assert isinstance(polysky2, PolygonSkyRegion)
-        assert len(polysky2.vertices) == 40
+        assert len(polysky2.vertices) == 8
+
+        # WCS is Galactic:
+        assert_allclose(polysky2.vertices.l.deg,
+                        [99.222517, 96.337283,
+                         92.726431, 103.585449,
+                         115.700925, 116.68063,
+                         117.427258, 108.032282])
+        assert_allclose(polysky2.vertices.b.deg,
+                        [-56.485356, -60.188552,
+                         -63.81324, -65.683971,
+                         -66.711027, -62.732836,
+                         -58.749445, -57.95941])
 
     def test_transformation_over_poles(self, wcs):
         # Transformation for over-poles case:
         reg = RangeSphericalSkyRegion(longitude_range=[0, 10] * u.deg,
                                       latitude_range=[80, -80] * u.deg,
                                       frame='icrs')
-        try:
-            _ = reg.to_pixel(wcs)
-        except NotImplementedError:
-            pytest.xfail()
+
+        with pytest.raises(NotImplementedError):
+            _ = reg.to_pixel(wcs,
+                             include_boundary_distortions=True,
+                             n_points=10)
 
     def test_transformation_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_pixel(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     def test_frame_transformation(self):
@@ -325,10 +418,9 @@ class TestRangeSphericalSkyRegion(BaseTestSphericalSkyRegion):
         reg = RangeSphericalSkyRegion(longitude_range=[0, 350] * u.deg,
                                       latitude_range=[80, -80] * u.deg,
                                       frame='icrs')
-        try:
+
+        with pytest.raises(NotImplementedError):
             _ = reg.bounding_circle
-        except NotImplementedError:
-            pytest.xfail()
 
     def test_bounding_lonlat(self):
         bounding_lonlat = self.reg.bounding_lonlat
@@ -382,22 +474,23 @@ class TestRangeSphericalSkyRegion(BaseTestSphericalSkyRegion):
         reg = RangeSphericalSkyRegion(longitude_range=[0, 350] * u.deg,
                                       latitude_range=[80, -80] * u.deg,
                                       frame='icrs')
-        try:
+
+        with pytest.raises(NotImplementedError):
             _ = reg.bounding_lonlat
-        except NotImplementedError:
-            pytest.xfail()
 
     def test_discretize_boundary(self):
         polyrange = self.reg.discretize_boundary(n_points=100)
         assert isinstance(polyrange, PolygonSphericalSkyRegion)
-        assert len(polyrange.vertices) == 400
+        assert len(polyrange.vertices) == 100
 
+        # Longitude only
         reg2 = RangeSphericalSkyRegion(longitude_range=[0, 10] * u.deg,
                                        frame='icrs')
         polyrange2 = reg2.discretize_boundary(n_points=100)
         assert polyrange2 == reg2.longitude_bounds.discretize_boundary(n_points=100)
-        assert len(polyrange2.vertices) == 200
+        assert len(polyrange2.vertices) == 100
 
+        # Latitude only
         reg3 = RangeSphericalSkyRegion(latitude_range=[-4, 4] * u.deg,
                                        frame='icrs')
         polyrange3 = reg3.discretize_boundary(n_points=100)
@@ -405,12 +498,16 @@ class TestRangeSphericalSkyRegion(BaseTestSphericalSkyRegion):
         assert len(polyrange3.region1.vertices) == 100
         assert len(polyrange3.region2.vertices) == 100
 
+        with pytest.raises(ValueError) as excinfo:
+            _ = self.reg.discretize_boundary(n_points=3)
+        estr = 'n_points must be greater than'
+        assert estr in str(excinfo.value)
+
     def test_discretize_over_poles(self):
         # Wrap over poles:
         reg = RangeSphericalSkyRegion(longitude_range=[0, 350] * u.deg,
                                       latitude_range=[80, -80] * u.deg,
                                       frame='icrs')
-        try:
+
+        with pytest.raises(NotImplementedError):
             _ = reg.discretize_boundary()
-        except NotImplementedError:
-            pytest.xfail()

@@ -11,8 +11,7 @@ from astropy.wcs import WCS
 from numpy.testing import assert_allclose
 
 from regions.core import PixCoord, RegionMeta, RegionVisual
-from regions.core.compound import (CompoundPixelRegion, CompoundSkyRegion,
-                                   CompoundSphericalSkyRegion)
+from regions.core.compound import CompoundPixelRegion, CompoundSkyRegion
 from regions.shapes.annulus import (CircleAnnulusPixelRegion,
                                     CircleAnnulusSkyRegion,
                                     CircleAnnulusSphericalSkyRegion,
@@ -90,17 +89,14 @@ class TestCircleAnnulusPixelRegion(BaseTestPixelRegion):
                                               include_boundary_distortions=False)
         assert isinstance(sphskyann, CircleAnnulusSphericalSkyRegion)
 
-        try:
-            sphskyann = self.reg.to_spherical_sky(wcs,
-                                                  include_boundary_distortions=True)
-            assert isinstance(sphskyann, CompoundSphericalSkyRegion)
-        except NotImplementedError:
-            pytest.xfail()
+        with pytest.raises(NotImplementedError):
+            _ = self.reg.to_spherical_sky(wcs,
+                                          include_boundary_distortions=True)
 
     def test_to_spherical_sky_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_spherical_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     def test_rotate(self):
@@ -157,17 +153,14 @@ class TestCircleAnnulusSkyRegion(BaseTestSkyRegion):
                                               include_boundary_distortions=False)
         assert isinstance(sphskyann, CircleAnnulusSphericalSkyRegion)
 
-        try:
-            sphskyann = self.reg.to_spherical_sky(wcs,
-                                                  include_boundary_distortions=True)
-            assert isinstance(sphskyann, CompoundSphericalSkyRegion)
-        except NotImplementedError:
-            pytest.xfail()
+        with pytest.raises(NotImplementedError):
+            _ = self.reg.to_spherical_sky(wcs,
+                                          include_boundary_distortions=True)
 
     def test_to_spherical_sky_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_spherical_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     def test_eq(self):
@@ -236,12 +229,12 @@ class TestCircleAnnulusSphericalSkyRegion(BaseTestSphericalSkyRegion):
     def test_transformation_no_wcs(self):
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_sky(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
         with pytest.raises(ValueError) as excinfo:
             _ = self.reg.to_pixel(include_boundary_distortions=True)
-        estr = "'wcs' must be set if 'include_boundary_distortions'=True"
+        estr = "'wcs' must be set if `include_boundary_distortions=True`"
         assert estr in str(excinfo.value)
 
     def test_frame_transformation(self):
@@ -353,7 +346,8 @@ class TestEllipseAnnulusPixelRegion(BaseTestPixelRegion):
         assert_allclose(reg_new.outer_width, self.reg.outer_width)
         assert_allclose(reg_new.inner_height, self.reg.inner_height)
         assert_allclose(reg_new.outer_height, self.reg.outer_height)
-        assert_quantity_allclose(reg_new.angle, self.reg.angle)
+        assert_quantity_allclose(reg_new.angle, self.reg.angle,
+                                 atol=1e-10 * u.deg)
         assert reg_new.meta == self.reg.meta
         assert reg_new.visual == self.reg.visual
 

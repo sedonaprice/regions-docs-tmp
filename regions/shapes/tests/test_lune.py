@@ -12,7 +12,8 @@ from numpy.testing import assert_allclose
 from regions.core import RegionMeta, RegionVisual
 from regions.shapes.circle import CircleSphericalSkyRegion
 from regions.shapes.lune import LuneSphericalSkyRegion
-from regions.shapes.polygon import PolygonSphericalSkyRegion
+from regions.shapes.polygon import (PolygonPixelRegion, PolygonSkyRegion,
+                                    PolygonSphericalSkyRegion)
 from regions.shapes.tests.test_common import BaseTestSphericalSkyRegion
 
 
@@ -32,6 +33,11 @@ class TestLuneSphericalSkyRegion(BaseTestSphericalSkyRegion):
                                  SkyCoord(178 * u.deg, 0 * u.deg),
                                  meta=meta, visual=visual)
 
+    # Verify changing order of GC center does not change the contains results:
+    reg_inv = LuneSphericalSkyRegion(SkyCoord(178 * u.deg, 0 * u.deg),
+                                     SkyCoord(3 * u.deg, 0 * u.deg),
+                                     meta=meta, visual=visual)
+
     expected_repr = ('<LuneSphericalSkyRegion(center_gc1=<SkyCoord (ICRS): (ra, dec) in '
                      'deg\n    (3., 0.)>, center_gc2=<SkyCoord (ICRS): (ra, dec) in deg\n'
                      '    (178., 0.)>)>')
@@ -47,15 +53,37 @@ class TestLuneSphericalSkyRegion(BaseTestSphericalSkyRegion):
         assert reg.visual == self.visual
 
     def test_transformation(self, wcs):
-        try:
-            self.reg.to_sky(wcs)
-        except NotImplementedError:
-            pytest.xfail()
+        # Test error for no boundary distortions:
+        with pytest.raises(ValueError) as excinfo:
+            _ = self.reg.to_pixel(wcs)
+        estr = 'Invalid parameter: `include_boundary_distortions=False`!'
+        assert estr in str(excinfo.value)
 
-        try:
-            self.reg.to_pixel(wcs)
-        except NotImplementedError:
-            pytest.xfail()
+        with pytest.raises(ValueError) as excinfo:
+            _ = self.reg.to_sky(wcs)
+        estr = 'Invalid parameter: `include_boundary_distortions=False`!'
+        assert estr in str(excinfo.value)
+
+        # Test for transformations with `include_boundary_distortions=True`
+        polypix = self.reg.to_pixel(wcs,
+                                    include_boundary_distortions=True,
+                                    n_points=4)
+        assert isinstance(polypix, PolygonPixelRegion)
+        assert len(polypix.vertices) == 4
+        assert_allclose(polypix.vertices.x,
+                        [7797.817216, 2952.903737, 7679.463723, -6047.096263])
+        assert_allclose(polypix.vertices.y,
+                        [-560.164308, -1256.912621, -338.786552, 1455.912621])
+
+        polysky = self.reg.to_sky(wcs,
+                                  include_boundary_distortions=True,
+                                  n_points=4)
+        assert isinstance(polysky, PolygonSkyRegion)
+        assert len(polysky.vertices) == 4
+        assert_allclose(polysky.vertices.l.deg,
+                        [206.033656, 302.931925, 208.400726, 122.931925])
+        assert_allclose(polysky.vertices.b.deg,
+                        [-13.193286, -27.128252, -8.765731, 27.128252])
 
     def test_frame_transformation(self):
         reg2 = self.reg.transform_to('galactic')
@@ -84,6 +112,12 @@ class TestLuneSphericalSkyRegion(BaseTestSphericalSkyRegion):
 
     def test_bounding_lonlat(self):
         bounding_lonlat = self.reg.bounding_lonlat
+        bounding_lonlat_inv = self.reg_inv.bounding_lonlat
+
+        assert_quantity_allclose(bounding_lonlat[0],
+                                 bounding_lonlat_inv[0])
+        assert_quantity_allclose(bounding_lonlat[1],
+                                 bounding_lonlat_inv[1])
 
         assert_quantity_allclose(bounding_lonlat[0],
                                  Longitude([88. * u.deg,
@@ -108,4 +142,13 @@ class TestLuneSphericalSkyRegion(BaseTestSphericalSkyRegion):
     def test_discretize_boundary(self):
         polylune = self.reg.discretize_boundary(n_points=100)
         assert isinstance(polylune, PolygonSphericalSkyRegion)
-        assert len(polylune.vertices) == 200
+        assert len(polylune.vertices) == 100
+
+        assert polylune.contains(self.reg.centroid)
+        polylune_inv = self.reg_inv.discretize_boundary(n_points=100)
+        assert polylune_inv.contains(self.reg.centroid)
+
+        with pytest.raises(ValueError) as excinfo:
+            _ = self.reg.discretize_boundary(n_points=1)
+        estr = 'n_points must be greater than'
+        assert estr in str(excinfo.value)
