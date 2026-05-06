@@ -1,0 +1,35 @@
+TextPixelRegion
+===============
+
+.. currentmodule:: regions
+
+.. autoclass:: TextPixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~TextPixelRegion.center
+      ~TextPixelRegion.meta
+      ~TextPixelRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~TextPixelRegion.as_artist
+      ~TextPixelRegion.to_sky
+      ~TextPixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: center
+   .. autoattribute:: meta
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

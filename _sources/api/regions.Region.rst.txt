@@ -1,0 +1,29 @@
+Region
+======
+
+.. currentmodule:: regions
+
+.. autoclass:: Region
+   :show-inheritance:
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~Region.copy
+      ~Region.get_formats
+      ~Region.intersection
+      ~Region.serialize
+      ~Region.symmetric_difference
+      ~Region.union
+      ~Region.write
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: copy
+   .. automethod:: get_formats
+   .. automethod:: intersection
+   .. automethod:: serialize
+   .. automethod:: symmetric_difference
+   .. automethod:: union
+   .. automethod:: write

@@ -1,0 +1,37 @@
+CompoundSkyRegion
+=================
+
+.. currentmodule:: regions
+
+.. autoclass:: CompoundSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~CompoundSkyRegion.operator
+      ~CompoundSkyRegion.region1
+      ~CompoundSkyRegion.region2
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~CompoundSkyRegion.as_artist
+      ~CompoundSkyRegion.contains
+      ~CompoundSkyRegion.to_pixel
+      ~CompoundSkyRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: operator
+   .. autoattribute:: region1
+   .. autoattribute:: region2
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: contains
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky

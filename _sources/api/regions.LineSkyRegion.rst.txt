@@ -1,0 +1,37 @@
+LineSkyRegion
+=============
+
+.. currentmodule:: regions
+
+.. autoclass:: LineSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~LineSkyRegion.end
+      ~LineSkyRegion.meta
+      ~LineSkyRegion.start
+      ~LineSkyRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~LineSkyRegion.contains
+      ~LineSkyRegion.to_pixel
+      ~LineSkyRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: end
+   .. autoattribute:: meta
+   .. autoattribute:: start
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky

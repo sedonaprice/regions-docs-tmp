@@ -1,0 +1,45 @@
+CompoundSphericalSkyRegion
+==========================
+
+.. currentmodule:: regions
+
+.. autoclass:: CompoundSphericalSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~CompoundSphericalSkyRegion.bounding_circle
+      ~CompoundSphericalSkyRegion.bounding_lonlat
+      ~CompoundSphericalSkyRegion.frame
+      ~CompoundSphericalSkyRegion.operator
+      ~CompoundSphericalSkyRegion.region1
+      ~CompoundSphericalSkyRegion.region2
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~CompoundSphericalSkyRegion.contains
+      ~CompoundSphericalSkyRegion.discretize_boundary
+      ~CompoundSphericalSkyRegion.to_pixel
+      ~CompoundSphericalSkyRegion.to_sky
+      ~CompoundSphericalSkyRegion.transform_to
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: bounding_circle
+   .. autoattribute:: bounding_lonlat
+   .. autoattribute:: frame
+   .. autoattribute:: operator
+   .. autoattribute:: region1
+   .. autoattribute:: region2
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: contains
+   .. automethod:: discretize_boundary
+   .. automethod:: to_pixel
+   .. automethod:: to_sky
+   .. automethod:: transform_to

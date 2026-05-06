@@ -1,0 +1,33 @@
+TextSkyRegion
+=============
+
+.. currentmodule:: regions
+
+.. autoclass:: TextSkyRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~TextSkyRegion.center
+      ~TextSkyRegion.meta
+      ~TextSkyRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~TextSkyRegion.to_pixel
+      ~TextSkyRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: center
+   .. autoattribute:: meta
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: to_pixel
+   .. automethod:: to_spherical_sky

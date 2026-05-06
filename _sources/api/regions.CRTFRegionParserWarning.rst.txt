@@ -1,0 +1,6 @@
+CRTFRegionParserWarning
+=======================
+
+.. currentmodule:: regions
+
+.. autoexception:: CRTFRegionParserWarning

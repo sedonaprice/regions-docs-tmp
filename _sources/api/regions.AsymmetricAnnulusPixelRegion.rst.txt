@@ -1,0 +1,41 @@
+AsymmetricAnnulusPixelRegion
+============================
+
+.. currentmodule:: regions
+
+.. autoclass:: AsymmetricAnnulusPixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~AsymmetricAnnulusPixelRegion.angle
+      ~AsymmetricAnnulusPixelRegion.center
+      ~AsymmetricAnnulusPixelRegion.inner_height
+      ~AsymmetricAnnulusPixelRegion.inner_width
+      ~AsymmetricAnnulusPixelRegion.meta
+      ~AsymmetricAnnulusPixelRegion.outer_height
+      ~AsymmetricAnnulusPixelRegion.outer_width
+      ~AsymmetricAnnulusPixelRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~AsymmetricAnnulusPixelRegion.to_sky_args
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: angle
+   .. autoattribute:: center
+   .. autoattribute:: inner_height
+   .. autoattribute:: inner_width
+   .. autoattribute:: meta
+   .. autoattribute:: outer_height
+   .. autoattribute:: outer_width
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: to_sky_args

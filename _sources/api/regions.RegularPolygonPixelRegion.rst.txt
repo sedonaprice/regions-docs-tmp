@@ -1,0 +1,39 @@
+RegularPolygonPixelRegion
+=========================
+
+.. currentmodule:: regions
+
+.. autoclass:: RegularPolygonPixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~RegularPolygonPixelRegion.angle
+      ~RegularPolygonPixelRegion.center
+      ~RegularPolygonPixelRegion.meta
+      ~RegularPolygonPixelRegion.nvertices
+      ~RegularPolygonPixelRegion.radius
+      ~RegularPolygonPixelRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~RegularPolygonPixelRegion.rotate
+      ~RegularPolygonPixelRegion.to_polygon
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: angle
+   .. autoattribute:: center
+   .. autoattribute:: meta
+   .. autoattribute:: nvertices
+   .. autoattribute:: radius
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: rotate
+   .. automethod:: to_polygon

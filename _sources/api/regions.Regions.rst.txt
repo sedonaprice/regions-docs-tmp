@@ -1,0 +1,37 @@
+Regions
+=======
+
+.. currentmodule:: regions
+
+.. autoclass:: Regions
+   :show-inheritance:
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~Regions.append
+      ~Regions.copy
+      ~Regions.extend
+      ~Regions.get_formats
+      ~Regions.insert
+      ~Regions.parse
+      ~Regions.pop
+      ~Regions.read
+      ~Regions.reverse
+      ~Regions.serialize
+      ~Regions.write
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: append
+   .. automethod:: copy
+   .. automethod:: extend
+   .. automethod:: get_formats
+   .. automethod:: insert
+   .. automethod:: parse
+   .. automethod:: pop
+   .. automethod:: read
+   .. automethod:: reverse
+   .. automethod:: serialize
+   .. automethod:: write

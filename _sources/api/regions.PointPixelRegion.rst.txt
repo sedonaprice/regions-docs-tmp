@@ -1,0 +1,45 @@
+PointPixelRegion
+================
+
+.. currentmodule:: regions
+
+.. autoclass:: PointPixelRegion
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~PointPixelRegion.area
+      ~PointPixelRegion.bounding_box
+      ~PointPixelRegion.center
+      ~PointPixelRegion.meta
+      ~PointPixelRegion.visual
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~PointPixelRegion.as_artist
+      ~PointPixelRegion.contains
+      ~PointPixelRegion.rotate
+      ~PointPixelRegion.to_mask
+      ~PointPixelRegion.to_sky
+      ~PointPixelRegion.to_spherical_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: area
+   .. autoattribute:: bounding_box
+   .. autoattribute:: center
+   .. autoattribute:: meta
+   .. autoattribute:: visual
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: as_artist
+   .. automethod:: contains
+   .. automethod:: rotate
+   .. automethod:: to_mask
+   .. automethod:: to_sky
+   .. automethod:: to_spherical_sky

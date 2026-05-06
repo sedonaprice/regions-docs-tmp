@@ -1,0 +1,37 @@
+PixCoord
+========
+
+.. currentmodule:: regions
+
+.. autoclass:: PixCoord
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~PixCoord.isscalar
+      ~PixCoord.xy
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~PixCoord.copy
+      ~PixCoord.from_sky
+      ~PixCoord.rotate
+      ~PixCoord.separation
+      ~PixCoord.to_sky
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: isscalar
+   .. autoattribute:: xy
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: copy
+   .. automethod:: from_sky
+   .. automethod:: rotate
+   .. automethod:: separation
+   .. automethod:: to_sky
